@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS GRADE // 管理指揮終端</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-dark: #060913;
+      --card-bg: rgba(15, 23, 42, 0.82);
+      --neon-cyan: #00f0ff;
+      --neon-emerald: #10b981;
+      --neon-amber: #f59e0b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 12% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 88% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 45%),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+      color: var(--text-main);
+      padding: 1.5rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto 2rem auto;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 240, 255, 0.22);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.65);
+    }
+    .alert-box {
+      max-width: 900px;
+      margin: 0 auto 2rem auto;
+      background: rgba(69, 26, 3, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 158, 11, 0.65);
+      padding: 1.5rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+    }
+    .alert-box h3 {
+      margin-top: 0;
+      color: #fbbf24;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+      padding-bottom: 0.6rem;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.18);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .role-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      color: var(--neon-cyan);
+      letter-spacing: 0.12em;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      background: linear-gradient(90deg, #ffffff, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h3 {
+      margin-top: 0;
+      color: #e2e8f0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      padding-bottom: 0.75rem;
+      font-size: 1.05rem;
+    }
+    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .logout-btn {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .logout-btn:hover { background: rgba(244, 63, 94, 0.3); }
+    .form-row { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .form-group { flex: 1; min-width: 200px; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.45rem; color: #cbd5e1; }
+    input[type="text"], input[type="number"], input[type="date"], select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: rgba(2, 6, 23, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+    }
+    .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+    th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid rgba(148, 163, 184, 0.15); }
+    th {
+      background: rgba(2, 6, 23, 0.6);
+      color: var(--neon-cyan);
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+    }
+    tr:hover td { background: rgba(0, 240, 255, 0.03); }
+    .student-link {
+      color: #38bdf8;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .student-link:hover { color: var(--neon-cyan); }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    .modal-content {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 650px;
+      padding: 2rem;
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.25);
+      position: relative;
+    }
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .close-modal:hover { color: #fff; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
+      color: #020617;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 28px rgba(0, 240, 255, 0.5);
+    }
+    .del-btn {
+      background: rgba(244, 63, 94, 0.18);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.45);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .del-btn:hover { background: rgba(244, 63, 94, 0.35); }
+    .pw-edit-btn {
+      background: rgba(0, 240, 255, 0.14);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+    .pw-edit-btn:hover {
+      background: rgba(0, 240, 255, 0.28);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+    .resolve-btn {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(0, 240, 255, 0.12);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .badge-grader {
+      display: inline-block;
+      background: rgba(251, 191, 36, 0.16);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .summary-card {
+      flex: 1;
+      min-width: 140px;
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .summary-card .sub-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .summary-card .sub-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    #status { margin-top: 1rem; text-align: center; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <!-- 成績趨勢圖彈跳視窗 -->
+  <div class="modal" id="trendModal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeTrendModal()">&times;</span>
+      <h3 id="modalTitle" style="color: var(--neon-cyan); margin-bottom: 1rem;">📈 個人成績趨勢分析</h3>
+      <div style="position: relative; height: 300px; width: 100%;">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通知區塊 -->
+  <div class="alert-box" id="reportAlertSection" style="display: none;">
+    <h3>⚠️ 學生成績異常回報警報</h3>
+    <table style="margin-bottom: 0;">
+      <thead>
+        <tr>
+          <th>座號 / 姓名</th>
+          <th>範圍 / 階段</th>
+          <th>科目</th>
+          <th>目前分數</th>
+          <th>異常說明</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="reportList"></tbody>
+    </table>
+  </div>
+
+  <!-- 區塊一：登錄與管理成績 -->
+  <div class="container">
+    <div class="header">
+      <div>
+        <span class="role-tag" id="roleTag">COMMAND CENTER</span>
+        <h2 id="pageTitle">成績系統控制台</h2>
+      </div>
+      <div class="btn-group" id="topBtnGroup">
+        <button class="logout-btn" onclick="logout()">登出終端</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="examSelect">📂 調閱或修改歷史測驗</label>
+        <select id="examSelect" onchange="loadExamForEdit()">
+          <option value="">＋ 建立全新測驗場次</option>
+        </select>
+        <div class="hint" id="editHint">選擇現有場次可直接修改該場成績</div>
+      </div>
+
+      <div class="form-group">
+        <label for="semesterSelect">學期選擇</label>
+        <select id="semesterSelect">
+          <option value="115學年度第1學期">115學年度 第1學期</option>
+          <option value="115學年度第2學期">115學年度 第2學期</option>
+          <option value="116學年度第1學期">116學年度 第1學期</option>
+          <option value="116學年度第2學期">116學年度 第2學期</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="examStage">大考範圍 / 階段分類</label>
+        <select id="examStage">
+          <option value="第一次段考">第一次段考範圍</option>
+          <option value="第二次段考">第二次段考範圍</option>
+          <option value="第三次段考">第三次段考範圍</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="examName">測驗細項名稱 (例如：第1次平時考)</label>
+        <input type="text" id="examName" placeholder="例如：第1次平時考 / 單字小考" required>
+      </div>
+
+      <div class="form-group">
+        <label for="subjectSelect">測驗科目</label>
+        <select id="subjectSelect">
+          <option value="國文">國文</option>
+          <option value="英文">英文</option>
+          <option value="數學">數學</option>
+          <option value="理化">理化</option>
+          <option value="歷史">歷史</option>
+          <option value="地理">地理</option>
+          <option value="公民">公民</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="examDate">考試日期</label>
+        <input type="date" id="examDate" required>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>座號</th>
+          <th>學生姓名</th>
+          <th>分數 (0-100)</th>
+        </tr>
+      </thead>
+      <tbody id="studentList">
+        <tr><td colspan="3">載入學生名單中...</td></tr>
+      </tbody>
+    </table>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitScores()">寫入雲端並即時運算平均與排名</button>
+    <div id="status"></div>
+  </div>
+
+  <!-- 區塊二：全班各科平均與總平均總排名總覽 -->
+  <div class="container" id="adminRankSection" style="display: none;">
+    <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--neon-cyan); font-weight:normal;">(💡 點擊學生姓名可查看個人成績趨勢圖)</span></h3>
+    <div class="summary-grid" id="classSubjectSummary"></div>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead id="rankTableHead"></thead>
+        <tbody id="rankTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 區塊三：已發布單筆明細管理（折疊式檢視） -->
+  <div class="container" id="adminHistorySection" style="display: none;">
+    <h3 style="margin-bottom: 1rem;">🗂️ 雲端原始紀錄庫（點擊「展開 / 收合」檢視各場次明細）</h3>
+    <div id="historyAccordion">
+      <div style="color: var(--text-muted); text-align: center; padding: 1rem;">載入紀錄中...</div>
+    </div>
+  </div>
+
+  <!-- 區塊四：小老師與學生帳號密碼管理（預設收合） -->
+  <div class="container" id="adminPasswordSection" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <h3 style="margin: 0; border: none; padding: 0;">🔑 小老師與學生帳號密碼管理（最高權限）</h3>
+      <button class="pw-edit-btn" onclick="togglePasswordSection()">📂 展開 / 收合帳號管理</button>
+    </div>
+    <div id="passwordBody" style="display: none; margin-top: 1.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); padding-top: 1rem;">
+      <p class="hint" style="margin-bottom: 1rem;">小老師或學生若忘記密碼，老師可直接在此為其設定新密碼（或重設為 123456）。</p>
+      <div style="overflow-x: auto;">
+        <table style="margin-bottom: 0;">
+          <thead>
+            <tr>
+              <th>身分 / 座號</th>
+              <th>姓名</th>
+              <th>登入帳號</th>
+              <th>學校信箱</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="studentAccountList">
+            <tr><td colspan="5">載入帳號名單中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let students = [];
+    let graders = [];
+    let currentRole = '';
+    let allScoresCache = [];
+    let myChart = null;
+
+    document.getElementById('examDate').valueAsDate = new Date();
+
+    async function init() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (!profile || (profile.role !== 'admin' && profile.role !== 'grader')) {
+        alert('權限不足');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentRole = profile.role;
+      const titleEl = document.getElementById('pageTitle');
+      const roleTag = document.getElementById('roleTag');
+      const topBtnGroup = document.getElementById('topBtnGroup');
+      
+      if (currentRole === 'admin') {
+        roleTag.innerText = 'ROOT ADMIN // 老師最高權限模式';
+        titleEl.innerText = '成績系統指揮中心（老師）';
+        document.getElementById('editHint').innerText = '最高權限：可隨時建立或修改任何學期段考';
+        document.getElementById('adminRankSection').style.display = 'block';
+        document.getElementById('adminHistorySection').style.display = 'block';
+        document.getElementById('adminPasswordSection').style.display = 'block';
+
+        topBtnGroup.innerHTML = `
+          <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
+          <button class="logout-btn" onclick="logout()">登出終端</button>
+        `;
+      } else {
+        roleTag.innerText = 'GRADER NODE // 小老師登錄專用';
+        titleEl.innerText = '成績登錄控制台（小老師）';
+        document.getElementById('adminHistorySection').style.display = 'block';
+        topBtnGroup.innerHTML = `<button class="logout-btn" onclick="logout()">登出終端</button>`;
+      }
+
+      // 同時抓取學生與小老師資料
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('id, seat_number, name, email, role')
+        .in('role', ['student', 'grader'])
+        .order('seat_number', { ascending: true });
+
+      const tbody = document.getElementById('studentList');
+      if (error || !data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3">目前沒有學生資料</td></tr>';
+        return;
+      }
+
+      students = data.filter(u => u.role === 'student');
+      graders = data.filter(u => u.role === 'grader');
+
+      tbody.innerHTML = students.map(s => `
+        <tr>
+          <td>${s.seat_number ?? '-'}</td>
+          <td>${s.name}</td>
+          <td><input type="number" id="score_${s.id}" min="0" max="100" placeholder="輸入分數"></td>
+        </tr>
+      `).join('');
+
+      if (currentRole === 'admin') {
+        renderStudentAccounts();
+      }
+
+      await refreshScoresData();
+    }
+
+    async function changeMyPassword() {
+      const newPassword = prompt('請輸入您的新登入密碼（至少 6 個字元）：');
+      if (newPassword === null) return;
+
+      const trimmed = newPassword.trim();
+      if (trimmed.length < 6) {
+        alert('密碼長度至少需要 6 個字元！');
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.updateUser({ password: trimmed });
+
+      if (error) {
+        alert('密碼修改失敗：' + error.message);
+      } else {
+        alert('✓ 您的登入密碼已成功修改！');
+      }
+    }
+
+    function togglePasswordSection() {
+      const el = document.getElementById('passwordBody');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function renderStudentAccounts() {
+      const accountTbody = document.getElementById('studentAccountList');
+      // 將小老師置頂顯示，接著列出學生
+      const allAccounts = [...graders, ...students];
+
+      accountTbody.innerHTML = allAccounts.map(u => {
+        const userCode = u.email ? u.email.split('@')[0] : '-';
+        const isGrader = u.role === 'grader';
+        const identityCell = isGrader
+          ? `<span class="badge-grader">👑 小老師</span>`
+          : `${u.seat_number ?? '-'} 號`;
+
+        return `
+          <tr>
+            <td>${identityCell}</td>
+            <td><strong>${u.name}</strong></td>
+            <td><span class="badge">${userCode}</span></td>
+            <td style="color: var(--text-muted); font-size: 0.88rem;">${u.email ?? '-'}</td>
+            <td>
+              <button class="pw-edit-btn" onclick="changeUserPassword('${u.id}', '${u.name}', ${isGrader})">修改密碼</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function changeUserPassword(userId, userName, isGrader) {
+      const roleText = isGrader ? '小老師' : '學生';
+      const newPassword = prompt(`請為${roleText}「${userName}」設定新的登入密碼（至少 6 個字元，預設可填 123456）：`);
+      if (newPassword === null) return;
+
+      const trimmed = newPassword.trim();
+      if (trimmed.length < 6) {
+        alert('密碼長度至少需要 6 個字元！');
+        return;
+      }
+
+      const { error } = await supabaseClient.rpc('admin_set_student_password', {
+        target_user_id: userId,
+        new_password: trimmed
+      });
+
+      if (error) {
+        alert('密碼修改失敗：' + error.message);
+      } else {
+        alert(`✓ 已成功將${roleText}「${userName}」的密碼修改為：${trimmed}`);
+      }
+    }
+
+    async function refreshScoresData() {
+      const { data: scores } = await supabaseClient
+        .from('scores')
+        .select('id, semester, exam_stage, exam_name, subject, exam_date, score, class_avg, rank, student_id, created_at, report_note')
+        .order('id', { ascending: false });
+
+      allScoresCache = scores || [];
+      renderReportedAlerts();
+
+      const examKeys = [...new Set(allScoresCache.map(s => `${s.semester || '115學年度第1學期'}||${s.exam_stage || '第一次段考'}||${s.exam_name}||${s.subject}||${s.exam_date || ''}`))];
+      const selectEl = document.getElementById('examSelect');
+      const currentVal = selectEl.value;
+      
+      selectEl.innerHTML = '<option value="">＋ 建立全新測驗場次</option>' +
+        examKeys.map(k => {
+          const [sem, stage, name, sub, date] = k.split('||');
+          return `<option value="${k}">[${sem}] ${stage} > ${name} - ${sub} (${date})</option>`;
+        }).join('');
+      
+      if (examKeys.includes(currentVal)) selectEl.value = currentVal;
+
+      if (currentRole === 'admin') {
+        renderAdminRankOverview();
+      }
+      renderAdminHistory();
+    }
+
+    function renderReportedAlerts() {
+      const reported = allScoresCache.filter(s => s.report_note && s.report_note.trim() !== '');
+      const alertBox = document.getElementById('reportAlertSection');
+      const reportList = document.getElementById('reportList');
+
+      if (reported.length === 0) {
+        alertBox.style.display = 'none';
+        return;
+      }
+
+      const studentMap = {};
+      students.forEach(s => studentMap[s.id] = `${s.seat_number ?? '-'}號 ${s.name}`);
+
+      alertBox.style.display = 'block';
+      reportList.innerHTML = reported.map(item => `
+        <tr>
+          <td>${studentMap[item.student_id] || '未知學生'}</td>
+          <td><span class="badge">${item.semester || '115-1'}</span> ${item.exam_stage || ''} (${item.exam_name})</td>
+          <td>${item.subject}</td>
+          <td><strong>${item.score}</strong></td>
+          <td style="color: #fbbf24; font-weight: 600;">${item.report_note}</td>
+          <td><button class="resolve-btn" onclick="resolveReport(${item.id})">核對結案</button></td>
+        </tr>
+      `).join('');
+    }
+
+    async function resolveReport(scoreId) {
+      const { data, error } = await supabaseClient
+        .from('scores')
+        .update({ report_note: null })
+        .eq('id', scoreId)
+        .select();
+
+      if (error || !data || data.length === 0) {
+        alert('無法結案！');
+      } else {
+        await refreshScoresData();
+      }
+    }
+
+    function loadExamForEdit() {
+      const selectedKey = document.getElementById('examSelect').value;
+      const semSelect = document.getElementById('semesterSelect');
+      const stageSelect = document.getElementById('examStage');
+      const nameInput = document.getElementById('examName');
+      const subSelect = document.getElementById('subjectSelect');
+      const dateInput = document.getElementById('examDate');
+      document.getElementById('status').innerText = '';
+
+      students.forEach(s => {
+        document.getElementById(`score_${s.id}`).value = '';
+      });
+
+      if (!selectedKey) {
+        semSelect.disabled = false;
+        stageSelect.disabled = false;
+        nameInput.readOnly = false;
+        subSelect.disabled = false;
+        dateInput.readOnly = false;
+        return;
+      }
+
+      const [sem, stage, examName, sub, date] = selectedKey.split('||');
+      semSelect.value = sem;
+      semSelect.disabled = true;
+      stageSelect.value = stage;
+      stageSelect.disabled = true;
+      nameInput.value = examName;
+      nameInput.readOnly = true;
+      subSelect.value = sub;
+      subSelect.disabled = true;
+      dateInput.value = date;
+      dateInput.readOnly = true;
+
+      const examRecords = allScoresCache.filter(r => 
+        (r.semester || '115學年度第1學期') === sem && 
+        (r.exam_stage || '第一次段考') === stage &&
+        r.exam_name === examName && 
+        r.subject === sub && 
+        (r.exam_date || '') === date
+      );
+
+      examRecords.forEach(r => {
+        const inputEl = document.getElementById(`score_${r.student_id}`);
+        if (inputEl) inputEl.value = r.score;
+      });
+    }
+
+    async function submitScores() {
+      const semester = document.getElementById('semesterSelect').value;
+      const examStage = document.getElementById('examStage').value;
+      const examName = document.getElementById('examName').value.trim();
+      const subject = document.getElementById('subjectSelect').value;
+      const examDate = document.getElementById('examDate').value;
+      const statusEl = document.getElementById('status');
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (!examName) {
+        statusEl.style.color = '#fb7185';
+        statusEl.innerText = '請輸入測驗細項名稱！';
+        return;
+      }
+      if (!examDate) {
+        statusEl.style.color = '#fb7185';
+        statusEl.innerText = '請選擇考試日期！';
+        return;
+      }
+
+      const entries = [];
+      for (const s of students) {
+        const val = document.getElementById(`score_${s.id}`).value.trim();
+        if (val !== '') {
+          const num = Number(val);
+          if (isNaN(num) || num < 0 || num > 100) {
+            statusEl.style.color = '#fb7185';
+            statusEl.innerText = `「${s.name}」的分數必須介於 0 到 100 之間！`;
+            return;
+          }
+          entries.push({ student_id: s.id, score: num });
+        }
+      }
+
+      if (entries.length === 0) {
+        statusEl.style.color = '#fb7185';
+        statusEl.innerText = '請至少輸入一位學生的分數！';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      statusEl.style.color = '#38bdf8';
+      statusEl.innerText = '正在寫入雲端並運算班級平均與排名...';
+
+      // 計算本場全班平均與單科名次
+      const avg = Math.round((entries.reduce((sum, e) => sum + e.score, 0) / entries.length) * 10) / 10;
+      const sortedScores = [...entries].map(e => e.score).sort((a, b) => b - a);
+
+      // 先刪除該場次既有紀錄（支援直接覆蓋修改）
+      let delQuery = supabaseClient.from('scores').delete()
+        .eq('semester', semester)
+        .eq('exam_stage', examStage)
+        .eq('exam_name', examName)
+        .eq('subject', subject);
+      
+      if (examDate) {
+        delQuery = delQuery.eq('exam_date', examDate);
+      }
+      await delQuery;
+
+      const rowsToInsert = entries.map(e => ({
+        semester,
+        exam_stage: examStage,
+        exam_name: examName,
+        subject,
+        exam_date: examDate,
+        student_id: e.student_id,
+        score: e.score,
+        class_avg: avg,
+        rank: sortedScores.indexOf(e.score) + 1
+      }));
+
+      const { error } = await supabaseClient.from('scores').insert(rowsToInsert);
+      submitBtn.disabled = false;
+
+      if (error) {
+        statusEl.style.color = '#fb7185';
+        statusEl.innerText = '寫入失敗：' + error.message;
+      } else {
+        statusEl.style.color = '#34d399';
+        statusEl.innerText = `✓ 已成功寫入 ${entries.length} 筆成績（本場班均：${avg} 分）！`;
+        await refreshScoresData();
+      }
+    }
+
+    function renderAdminRankOverview() {
+      const subjects = [...new Set(allScoresCache.map(s => s.subject))];
+      const summaryEl = document.getElementById('classSubjectSummary');
+      const theadEl = document.getElementById('rankTableHead');
+      const tbodyEl = document.getElementById('rankTableBody');
+
+      if (subjects.length === 0) {
+        summaryEl.innerHTML = '';
+        theadEl.innerHTML = '';
+        tbodyEl.innerHTML = '<tr><td>尚無成績資料可統計</td></tr>';
+        return;
+      }
+
+      const subjectCards = subjects.map(sub => {
+        const subScores = allScoresCache.filter(s => s.subject === sub);
+        const avg = subScores.length > 0
+          ? (subScores.reduce((sum, item) => sum + item.score, 0) / subScores.length).toFixed(1)
+          : '-';
+        return `<div class="summary-card"><div class="sub-title">${sub} 科全班均分</div><div class="sub-val">${avg}</div></div>`;
+      });
+
+      const studentStats = students.map(st => {
+        const stScores = allScoresCache.filter(s => s.student_id === st.id);
+        const subAvgs = {};
+        let validSubCount = 0;
+        let sumOfSubAvgs = 0;
+
+        subjects.forEach(sub => {
+          const items = stScores.filter(s => s.subject === sub);
+          if (items.length > 0) {
+            const avg = items.reduce((sum, x) => sum + x.score, 0) / items.length;
+            subAvgs[sub] = Math.round(avg * 10) / 10;
+            sumOfSubAvgs += subAvgs[sub];
+            validSubCount++;
+          } else {
+            subAvgs[sub] = null;
+          }
+        });
+
+        const totalAvg = validSubCount > 0 ? Math.round((sumOfSubAvgs / validSubCount) * 10) / 10 : null;
+        return { ...st, subAvgs, totalAvg };
+      });
+
+      const validTotals = studentStats.filter(s => s.totalAvg !== null);
+      const classOverallAvg = validTotals.length > 0
+        ? (validTotals.reduce((sum, s) => sum + s.totalAvg, 0) / validTotals.length).toFixed(1)
+        : '-';
+      subjectCards.push(`<div class="summary-card" style="border-color: rgba(0,240,255,0.45); background: rgba(8,47,73,0.45);"><div class="sub-title" style="color:#38bdf8;">全班跨科總平均</div><div class="sub-val" style="color:#38bdf8;">${classOverallAvg}</div></div>`);
+      summaryEl.innerHTML = subjectCards.join('');
+
+      const sortedTotals = [...validTotals].sort((a, b) => b.totalAvg - a.totalAvg);
+      studentStats.forEach(st => {
+        if (st.totalAvg === null) {
+          st.overallRank = '-';
+        } else {
+          st.overallRank = sortedTotals.findIndex(x => x.totalAvg === st.totalAvg) + 1;
+        }
+      });
+
+      const displayList = [...studentStats].sort((a, b) => (b.totalAvg ?? -1) - (a.totalAvg ?? -1));
+      theadEl.innerHTML = `<tr>
+        <th>總排名</th>
+        <th>座號</th>
+        <th>姓名</th>
+        ${subjects.map(sub => `<th>${sub}均分</th>`).join('')}
+        <th style="color:#38bdf8;">個人總平均</th>
+      </tr>`;
+
+      tbodyEl.innerHTML = displayList.map(st => `<tr>
+        <td><strong style="color:#fbbf24;">${st.overallRank === '-' ? '-' : `第 ${st.overallRank} 名`}</strong></td>
+        <td>${st.seat_number ?? '-'}</td>
+        <td><span class="student-link" onclick="openStudentTrend('${st.id}', '${st.name}')">${st.name}</span></td>
+        ${subjects.map(sub => `<td>${st.subAvgs[sub] ?? '-'}</td>`).join('')}
+        <td style="font-weight:700; color:#38bdf8;">${st.totalAvg ?? '-'}</td>
+      </tr>`).join('');
+    }
+
+    function openStudentTrend(studentId, studentName) {
+      document.getElementById('modalTitle').innerText = `📈 「${studentName}」個人成績趨勢分析`;
+      document.getElementById('trendModal').style.display = 'flex';
+
+      const stScores = allScoresCache.filter(s => s.student_id === studentId);
+      stScores.sort((a, b) => new Date(a.exam_date || '2026-01-01') - new Date(b.exam_date || '2026-01-01'));
+
+      const labels = stScores.map(s => `${s.exam_stage || ''} - ${s.exam_name} (${s.subject})`);
+      const scores = stScores.map(s => s.score);
+      const averages = stScores.map(s => s.class_avg);
+
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      if (myChart) {
+        myChart.destroy();
+      }
+
+      myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: '個人分數',
+              data: scores,
+              borderColor: '#00f0ff',
+              backgroundColor: 'rgba(0, 240, 255, 0.1)',
+              borderWidth: 3,
+              tension: 0.3,
+              fill: true,
+              pointBackgroundColor: '#00f0ff',
+              pointRadius: 5
+            },
+            {
+              label: '班級平均',
+              data: averages,
+              borderColor: '#f59e0b',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              tension: 0.3,
+              pointRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              min: 0,
+              max: 100,
+              grid: { color: 'rgba(148, 163, 184, 0.1)' },
+              ticks: { color: '#94a3b8' }
+            },
+            x: {
+              grid: { color: 'rgba(148, 163, 184, 0.1)' },
+              ticks: { color: '#94a3b8' }
+            }
+          },
+          plugins: {
+            legend: { labels: { color: '#f8fafc' } }
+          }
+        }
+      });
+    }
+
+    function closeTrendModal() {
+      document.getElementById('trendModal').style.display = 'none';
+    }
+
+    function renderAdminHistory() {
+      const nameMap = {};
+      students.forEach(s => nameMap[s.id] = s.name);
+
+      const accordionContainer = document.getElementById('historyAccordion');
+      if (allScoresCache.length === 0) {
+        accordionContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 1rem;">尚無已發布成績</div>';
+        return;
+      }
+
+      const groups = {};
+      allScoresCache.forEach(item => {
+        const sem = item.semester || '115學年度第1學期';
+        const stage = item.exam_stage || '第一次段考';
+        const name = item.exam_name || '平時考';
+        const sub = item.subject || '其他';
+        const date = item.exam_date || '';
+        const key = `${sem}||${stage}||${name}||${sub}||${date}`;
+        
+        if (!groups[key]) {
+          groups[key] = { sem, stage, name, sub, date, records: [] };
+        }
+        groups[key].records.push(item);
+      });
+
+      let html = '';
+      let idx = 0;
+      for (const key in groups) {
+        const g = groups[key];
+        const groupId = `history_group_${idx++}`;
+        html += `
+          <div style="background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden;">
+            <div style="padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: rgba(15, 23, 42, 0.6);">
+              <div>
+                <span class="badge">${g.sem}</span> 
+                <span style="color: var(--neon-cyan); font-weight: 700; margin-left: 0.5rem;">${g.stage} > ${g.name} (${g.sub})</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 0.5rem;">📅 ${g.date} | 👥 記錄數: ${g.records.length}筆</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="pw-edit-btn" onclick="toggleGroupBody('${groupId}')">📂 展開 / 收合</button>
+                <button class="del-btn" onclick="deleteExamGroupBatch('${g.sem}', '${g.stage}', '${g.name}', '${g.sub}', '${g.date}')">🗑️ 刪除整場</button>
+              </div>
+            </div>
+            <div id="${groupId}" style="display: none; padding: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.15);">
+              <table>
+                <thead>
+                  <tr>
+                    <th>座號 / 學生姓名</th>
+                    <th>分數</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${g.records.map(r => {
+                    const st = students.find(s => s.id === r.student_id);
+                    const seat = st ? (st.seat_number ?? '-') : '-';
+                    const sName = nameMap[r.student_id] || '未知學生';
+                    return `
+                      <tr>
+                        <td>${seat}號 - <strong>${sName}</strong></td>
+                        <td><strong>${r.score}</strong> 分</td>
+                        <td><button class="del-btn" onclick="deleteScore(${r.id})" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">刪除單筆</button></td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+      accordionContainer.innerHTML = html;
+    }
+
+    function toggleGroupBody(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function deleteScore(scoreId) {
+      if (!confirm('確定要刪除此筆雲端紀錄嗎？')) return;
+      const { error } = await supabaseClient.from('scores').delete().eq('id', scoreId);
+      if (error) {
+        alert('刪除失敗：' + error.message);
+      } else {
+        await refreshScoresData();
+      }
+    }
+
+    async function deleteExamGroupBatch(sem, stage, name, sub, date) {
+      if (!confirm(`確定要一鍵刪除「[${sem}] ${stage} > ${name} - ${sub} (${date})」整場考試紀錄嗎？`)) return;
+
+      let query = supabaseClient.from('scores').delete()
+        .eq('semester', sem)
+        .eq('exam_stage', stage)
+        .eq('exam_name', name)
+        .eq('subject', sub);
+
+      if (date) {
+        query = query.eq('exam_date', date);
+      }
+
+      const { error } = await query;
+      if (error) {
+        alert('刪除整場失敗：' + error.message);
+      } else {
+        await refreshScoresData();
+      }
+    }
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    init();
+  </script>
+</body>
+</html>
