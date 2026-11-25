@@ -8,134 +8,266 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
-      --bg-dark: #060913;
-      --card-bg: rgba(15, 23, 42, 0.82);
-      --neon-cyan: #00f0ff;
-      --neon-emerald: #10b981;
-      --neon-amber: #f59e0b;
+      --bg-base: #060913;
+      --bg-glow-1: rgba(0, 240, 255, 0.1);
+      --bg-glow-2: rgba(16, 185, 129, 0.1);
+      --grid-line: rgba(0, 240, 255, 0.03);
+      --container-bg: rgba(15, 23, 42, 0.82);
+      --container-border: rgba(0, 240, 255, 0.22);
+      --container-shadow: 0 0 35px rgba(0, 0, 0, 0.65);
+      --alert-bg: rgba(69, 26, 3, 0.65);
+      --alert-border: rgba(245, 158, 11, 0.65);
+      --alert-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+      --alert-title: #fbbf24;
+      --header-border: rgba(0, 240, 255, 0.18);
+      --accent-primary: #00f0ff;
+      --accent-blue: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-gold: #fbbf24;
+      --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
       --text-main: #f8fafc;
+      --text-heading: #e2e8f0;
+      --text-label: #cbd5e1;
       --text-muted: #94a3b8;
+      --input-bg: rgba(2, 6, 23, 0.75);
+      --input-border: rgba(148, 163, 184, 0.3);
+      --input-text: #ffffff;
+      --th-bg: rgba(2, 6, 23, 0.6);
+      --td-border: rgba(148, 163, 184, 0.15);
+      --tr-hover: rgba(0, 240, 255, 0.03);
+      --modal-bg: rgba(15, 23, 42, 0.95);
+      --modal-border: rgba(0, 240, 255, 0.4);
+      --card-bg: rgba(2, 6, 23, 0.65);
+      --card-border: rgba(148, 163, 184, 0.2);
+      --card-hi-bg: rgba(8, 47, 73, 0.45);
+      --card-hi-border: rgba(0, 240, 255, 0.45);
+      --acc-item-bg: rgba(2, 6, 23, 0.6);
+      --acc-head-bg: rgba(15, 23, 42, 0.6);
+      --badge-bg: rgba(0, 240, 255, 0.12);
+      --badge-border: rgba(0, 240, 255, 0.3);
+      --btn-grad: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
+      --btn-text: #020617;
+      --toggle-bg: rgba(15, 23, 42, 0.75);
+      --toggle-border: rgba(0, 240, 255, 0.35);
+      --toggle-text: #e2e8f0;
     }
+
+    [data-theme="light"] {
+      --bg-base: #eef3f9;
+      --bg-glow-1: rgba(2, 132, 199, 0.11);
+      --bg-glow-2: rgba(16, 185, 129, 0.09);
+      --grid-line: rgba(14, 116, 144, 0.065);
+      --container-bg: rgba(255, 255, 255, 0.88);
+      --container-border: rgba(2, 132, 199, 0.24);
+      --container-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      --alert-bg: rgba(255, 251, 235, 0.94);
+      --alert-border: rgba(217, 119, 6, 0.55);
+      --alert-shadow: 0 12px 30px rgba(217, 119, 6, 0.12);
+      --alert-title: #b45309;
+      --header-border: rgba(2, 132, 199, 0.18);
+      --accent-primary: #0284c7;
+      --accent-blue: #0369a1;
+      --accent-emerald: #059669;
+      --accent-gold: #d97706;
+      --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
+      --text-main: #0f172a;
+      --text-heading: #1e293b;
+      --text-label: #334155;
+      --text-muted: #475569;
+      --input-bg: #f8fafc;
+      --input-border: rgba(148, 163, 184, 0.45);
+      --input-text: #0f172a;
+      --th-bg: rgba(241, 245, 249, 0.92);
+      --td-border: rgba(148, 163, 184, 0.24);
+      --tr-hover: rgba(2, 132, 199, 0.045);
+      --modal-bg: #ffffff;
+      --modal-border: rgba(2, 132, 199, 0.35);
+      --card-bg: rgba(248, 250, 252, 0.92);
+      --card-border: rgba(148, 163, 184, 0.32);
+      --card-hi-bg: rgba(224, 242, 254, 0.85);
+      --card-hi-border: rgba(2, 132, 199, 0.45);
+      --acc-item-bg: rgba(248, 250, 252, 0.95);
+      --acc-head-bg: rgba(241, 245, 249, 0.9);
+      --badge-bg: rgba(2, 132, 199, 0.1);
+      --badge-border: rgba(2, 132, 199, 0.28);
+      --btn-grad: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+      --btn-text: #ffffff;
+      --toggle-bg: rgba(255, 255, 255, 0.9);
+      --toggle-border: rgba(2, 132, 199, 0.3);
+      --toggle-text: #0f172a;
+    }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-dark);
+      background-color: var(--bg-base);
       background-image: 
-        radial-gradient(circle at 12% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 88% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 45%),
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 40%),
+        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 45%),
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       padding: 1.5rem;
+      transition: background-color 0.35s ease, color 0.35s ease;
     }
+
     .container {
       max-width: 900px;
       margin: 0 auto 2rem auto;
-      background: var(--card-bg);
+      background: var(--container-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 240, 255, 0.22);
+      border: 1px solid var(--container-border);
       border-radius: 16px;
       padding: 2rem;
-      box-shadow: 0 0 35px rgba(0, 0, 0, 0.65);
+      box-shadow: var(--container-shadow);
+      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     }
+
     .alert-box {
       max-width: 900px;
       margin: 0 auto 2rem auto;
-      background: rgba(69, 26, 3, 0.65);
+      background: var(--alert-bg);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(245, 158, 11, 0.65);
+      border: 1px solid var(--alert-border);
       padding: 1.5rem 2rem;
       border-radius: 16px;
-      box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+      box-shadow: var(--alert-shadow);
+      transition: background 0.35s ease, border-color 0.35s ease;
     }
+
     .alert-box h3 {
       margin-top: 0;
-      color: #fbbf24;
+      color: var(--alert-title);
       border-bottom: 1px solid rgba(245, 158, 11, 0.3);
       padding-bottom: 0.6rem;
     }
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.18);
+      border-bottom: 1px solid var(--header-border);
       padding-bottom: 1rem;
       margin-bottom: 1.5rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
+
     .role-tag {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.72rem;
-      color: var(--neon-cyan);
+      color: var(--accent-primary);
       letter-spacing: 0.12em;
       display: block;
       margin-bottom: 0.25rem;
+      font-weight: 700;
     }
+
     h2 {
       margin: 0;
       font-size: 1.35rem;
-      background: linear-gradient(90deg, #ffffff, #38bdf8);
+      background: var(--title-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
     h3 {
       margin-top: 0;
-      color: #e2e8f0;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      color: var(--text-heading);
+      border-bottom: 1px solid var(--td-border);
       padding-bottom: 0.75rem;
       font-size: 1.05rem;
     }
-    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+
+    .theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px var(--bg-glow-1);
+    }
+
+    .theme-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      box-shadow: 0 0 8px var(--accent-primary);
+    }
+
     .logout-btn {
       background: rgba(244, 63, 94, 0.15);
-      color: #fb7185;
+      color: #f43f5e;
       border: 1px solid rgba(244, 63, 94, 0.4);
       padding: 0.5rem 1.1rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
     }
-    .logout-btn:hover { background: rgba(244, 63, 94, 0.3); }
+
+    .logout-btn:hover { background: rgba(244, 63, 94, 0.26); }
+
     .form-row { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
     .form-group { flex: 1; min-width: 200px; }
-    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.45rem; color: #cbd5e1; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.45rem; color: var(--text-label); }
+
     input[type="text"], input[type="number"], input[type="date"], select {
       width: 100%;
       padding: 0.65rem 0.85rem;
-      background: rgba(2, 6, 23, 0.75);
-      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 8px;
-      color: #fff;
+      color: var(--input-text);
       font-size: 0.95rem;
+      transition: all 0.2s;
     }
+
     input:focus, select:focus {
       outline: none;
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px var(--bg-glow-1);
     }
+
     .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
-    th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid rgba(148, 163, 184, 0.15); }
+    th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid var(--td-border); }
     th {
-      background: rgba(2, 6, 23, 0.6);
-      color: var(--neon-cyan);
+      background: var(--th-bg);
+      color: var(--accent-primary);
       font-size: 0.82rem;
       letter-spacing: 0.05em;
+      font-weight: 700;
     }
-    tr:hover td { background: rgba(0, 240, 255, 0.03); }
+    tr:hover td { background: var(--tr-hover); }
+
     .student-link {
-      color: #38bdf8;
+      color: var(--accent-blue);
       cursor: pointer;
       font-weight: 700;
       text-decoration: underline;
       text-underline-offset: 3px;
     }
-    .student-link:hover { color: var(--neon-cyan); }
+    .student-link:hover { color: var(--accent-primary); }
     
     .modal {
       display: none;
@@ -145,20 +277,20 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 6, 23, 0.85);
+      background: rgba(2, 6, 23, 0.78);
       backdrop-filter: blur(8px);
       justify-content: center;
       align-items: center;
       padding: 1rem;
     }
     .modal-content {
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(0, 240, 255, 0.4);
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
       border-radius: 16px;
       width: 100%;
       max-width: 650px;
       padding: 2rem;
-      box-shadow: 0 0 40px rgba(0, 240, 255, 0.25);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
       position: relative;
     }
     .close-modal {
@@ -169,40 +301,42 @@
       color: var(--text-muted);
       cursor: pointer;
     }
-    .close-modal:hover { color: #fff; }
+    .close-modal:hover { color: var(--text-main); }
 
     .submit-btn {
       width: 100%;
       padding: 0.9rem;
-      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
-      color: #020617;
+      background: var(--btn-grad);
+      color: var(--btn-text);
       border: none;
       border-radius: 10px;
       font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.05em;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
       transition: transform 0.15s, box-shadow 0.2s;
     }
     .submit-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 28px rgba(0, 240, 255, 0.5);
+      box-shadow: 0 10px 26px rgba(2, 132, 199, 0.38);
     }
+
     .del-btn {
-      background: rgba(244, 63, 94, 0.18);
-      color: #fb7185;
+      background: rgba(244, 63, 94, 0.15);
+      color: #f43f5e;
       border: 1px solid rgba(244, 63, 94, 0.45);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
     }
-    .del-btn:hover { background: rgba(244, 63, 94, 0.35); }
+    .del-btn:hover { background: rgba(244, 63, 94, 0.28); }
+
     .pw-edit-btn {
-      background: rgba(0, 240, 255, 0.14);
-      color: var(--neon-cyan);
-      border: 1px solid rgba(0, 240, 255, 0.4);
+      background: rgba(2, 132, 199, 0.12);
+      color: var(--accent-primary);
+      border: 1px solid rgba(2, 132, 199, 0.4);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
@@ -211,12 +345,13 @@
       transition: all 0.2s;
     }
     .pw-edit-btn:hover {
-      background: rgba(0, 240, 255, 0.28);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+      background: rgba(2, 132, 199, 0.22);
+      box-shadow: 0 0 10px var(--bg-glow-1);
     }
+
     .resolve-btn {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
+      background: rgba(16, 185, 129, 0.18);
+      color: var(--accent-emerald);
       border: 1px solid rgba(16, 185, 129, 0.5);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
@@ -224,43 +359,66 @@
       font-weight: 600;
       font-size: 0.82rem;
     }
+
     .badge {
       display: inline-block;
-      background: rgba(0, 240, 255, 0.12);
-      color: var(--neon-cyan);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      background: var(--badge-bg);
+      color: var(--accent-primary);
+      border: 1px solid var(--badge-border);
       padding: 0.2rem 0.55rem;
       border-radius: 6px;
       font-size: 0.82rem;
       font-weight: 600;
     }
+
     .badge-grader {
       display: inline-block;
-      background: rgba(251, 191, 36, 0.16);
-      color: #fbbf24;
-      border: 1px solid rgba(251, 191, 36, 0.5);
+      background: rgba(245, 158, 11, 0.16);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.5);
       padding: 0.2rem 0.55rem;
       border-radius: 6px;
       font-size: 0.82rem;
       font-weight: 700;
     }
+
     .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
     .summary-card {
       flex: 1;
       min-width: 140px;
-      background: rgba(2, 6, 23, 0.65);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 1rem;
       text-align: center;
+      transition: background 0.35s ease, border-color 0.35s ease;
     }
-    .summary-card .sub-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; }
+    .summary-card .sub-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 600; }
     .summary-card .sub-val {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 1.45rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--text-main);
     }
+
+    .acc-item {
+      background: var(--acc-item-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      transition: background 0.35s ease;
+    }
+    .acc-head {
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background: var(--acc-head-bg);
+    }
+
     #status { margin-top: 1rem; text-align: center; font-weight: 600; }
   </style>
 </head>
@@ -269,7 +427,7 @@
   <div class="modal" id="trendModal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeTrendModal()">&times;</span>
-      <h3 id="modalTitle" style="color: var(--neon-cyan); margin-bottom: 1rem;">📈 個人成績趨勢分析</h3>
+      <h3 id="modalTitle" style="color: var(--accent-primary); margin-bottom: 1rem;">📈 個人成績趨勢分析</h3>
       <div style="position: relative; height: 300px; width: 100%;">
         <canvas id="trendChart"></canvas>
       </div>
@@ -302,6 +460,10 @@
         <h2 id="pageTitle">成績系統控制台</h2>
       </div>
       <div class="btn-group" id="topBtnGroup">
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="切換明暗科技主題">
+          <span class="theme-dot"></span>
+          <span id="themeText">LIGHT</span>
+        </button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
     </div>
@@ -380,7 +542,7 @@
 
   <!-- 區塊二：全班各科平均與總平均總排名總覽 -->
   <div class="container" id="adminRankSection" style="display: none;">
-    <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--neon-cyan); font-weight:normal;">(💡 點擊學生姓名可查看個人成績趨勢圖)</span></h3>
+    <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:normal;">(💡 點擊學生姓名可查看個人成績趨勢圖)</span></h3>
     <div class="summary-grid" id="classSubjectSummary"></div>
     <div style="overflow-x: auto;">
       <table>
@@ -404,7 +566,7 @@
       <h3 style="margin: 0; border: none; padding: 0;">🔑 小老師與學生帳號密碼管理（最高權限）</h3>
       <button class="pw-edit-btn" onclick="togglePasswordSection()">📂 展開 / 收合帳號管理</button>
     </div>
-    <div id="passwordBody" style="display: none; margin-top: 1.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); padding-top: 1rem;">
+    <div id="passwordBody" style="display: none; margin-top: 1.25rem; border-top: 1px solid var(--td-border); padding-top: 1rem;">
       <p class="hint" style="margin-bottom: 1rem;">小老師或學生若忘記密碼，老師可直接在此為其設定新密碼（或重設為 123456）。</p>
       <div style="overflow-x: auto;">
         <table style="margin-bottom: 0;">
@@ -424,7 +586,29 @@
       </div>
     </div>
   </div>
+
   <script>
+    // 明暗主題同步與切換
+    function applyTheme(theme) {
+      const toggleText = document.getElementById('themeText');
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (toggleText) toggleText.innerText = 'DARK';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (toggleText) toggleText.innerText = 'LIGHT';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      localStorage.setItem('nexus-theme', next);
+      applyTheme(next);
+    }
+
+    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -460,6 +644,13 @@
       const titleEl = document.getElementById('pageTitle');
       const roleTag = document.getElementById('roleTag');
       const topBtnGroup = document.getElementById('topBtnGroup');
+      const currentThemeLabel = document.documentElement.getAttribute('data-theme') === 'light' ? 'DARK' : 'LIGHT';
+      const themeBtnHtml = `
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="切換明暗科技主題">
+          <span class="theme-dot"></span>
+          <span id="themeText">${currentThemeLabel}</span>
+        </button>
+      `;
       
       if (currentRole === 'admin') {
         roleTag.innerText = 'ROOT ADMIN // 老師最高權限模式';
@@ -470,6 +661,7 @@
         document.getElementById('adminPasswordSection').style.display = 'block';
 
         topBtnGroup.innerHTML = `
+          ${themeBtnHtml}
           <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
           <button class="logout-btn" onclick="logout()">登出終端</button>
         `;
@@ -477,7 +669,10 @@
         roleTag.innerText = 'GRADER NODE // 小老師登錄專用';
         titleEl.innerText = '成績登錄控制台（小老師）';
         document.getElementById('adminHistorySection').style.display = 'block';
-        topBtnGroup.innerHTML = `<button class="logout-btn" onclick="logout()">登出終端</button>`;
+        topBtnGroup.innerHTML = `
+          ${themeBtnHtml}
+          <button class="logout-btn" onclick="logout()">登出終端</button>
+        `;
       }
 
       // 同時抓取學生與小老師資料
@@ -537,7 +732,6 @@
 
     function renderStudentAccounts() {
       const accountTbody = document.getElementById('studentAccountList');
-      // 將小老師置頂顯示，接著列出學生
       const allAccounts = [...graders, ...students];
 
       accountTbody.innerHTML = allAccounts.map(u => {
@@ -631,7 +825,7 @@
           <td><span class="badge">${item.semester || '115-1'}</span> ${item.exam_stage || ''} (${item.exam_name})</td>
           <td>${item.subject}</td>
           <td><strong>${item.score}</strong></td>
-          <td style="color: #fbbf24; font-weight: 600;">${item.report_note}</td>
+          <td style="color: var(--accent-gold); font-weight: 600;">${item.report_note}</td>
           <td><button class="resolve-btn" onclick="resolveReport(${item.id})">核對結案</button></td>
         </tr>
       `).join('');
@@ -709,12 +903,12 @@
       const submitBtn = document.getElementById('submitBtn');
 
       if (!examName) {
-        statusEl.style.color = '#fb7185';
+        statusEl.style.color = '#f43f5e';
         statusEl.innerText = '請輸入測驗細項名稱！';
         return;
       }
       if (!examDate) {
-        statusEl.style.color = '#fb7185';
+        statusEl.style.color = '#f43f5e';
         statusEl.innerText = '請選擇考試日期！';
         return;
       }
@@ -725,7 +919,7 @@
         if (val !== '') {
           const num = Number(val);
           if (isNaN(num) || num < 0 || num > 100) {
-            statusEl.style.color = '#fb7185';
+            statusEl.style.color = '#f43f5e';
             statusEl.innerText = `「${s.name}」的分數必須介於 0 到 100 之間！`;
             return;
           }
@@ -734,20 +928,18 @@
       }
 
       if (entries.length === 0) {
-        statusEl.style.color = '#fb7185';
+        statusEl.style.color = '#f43f5e';
         statusEl.innerText = '請至少輸入一位學生的分數！';
         return;
       }
 
       submitBtn.disabled = true;
-      statusEl.style.color = '#38bdf8';
+      statusEl.style.color = 'var(--accent-blue)';
       statusEl.innerText = '正在寫入雲端並運算班級平均與排名...';
 
-      // 計算本場全班平均與單科名次
       const avg = Math.round((entries.reduce((sum, e) => sum + e.score, 0) / entries.length) * 10) / 10;
       const sortedScores = [...entries].map(e => e.score).sort((a, b) => b - a);
 
-      // 先刪除該場次既有紀錄（支援直接覆蓋修改）
       let delQuery = supabaseClient.from('scores').delete()
         .eq('semester', semester)
         .eq('exam_stage', examStage)
@@ -775,10 +967,10 @@
       submitBtn.disabled = false;
 
       if (error) {
-        statusEl.style.color = '#fb7185';
+        statusEl.style.color = '#f43f5e';
         statusEl.innerText = '寫入失敗：' + error.message;
       } else {
-        statusEl.style.color = '#34d399';
+        statusEl.style.color = '#10b981';
         statusEl.innerText = `✓ 已成功寫入 ${entries.length} 筆成績（本場班均：${avg} 分）！`;
         await refreshScoresData();
       }
@@ -831,7 +1023,7 @@
       const classOverallAvg = validTotals.length > 0
         ? (validTotals.reduce((sum, s) => sum + s.totalAvg, 0) / validTotals.length).toFixed(1)
         : '-';
-      subjectCards.push(`<div class="summary-card" style="border-color: rgba(0,240,255,0.45); background: rgba(8,47,73,0.45);"><div class="sub-title" style="color:#38bdf8;">全班跨科總平均</div><div class="sub-val" style="color:#38bdf8;">${classOverallAvg}</div></div>`);
+      subjectCards.push(`<div class="summary-card" style="border-color: var(--card-hi-border); background: var(--card-hi-bg);"><div class="sub-title" style="color:var(--accent-blue);">全班跨科總平均</div><div class="sub-val" style="color:var(--accent-blue);">${classOverallAvg}</div></div>`);
       summaryEl.innerHTML = subjectCards.join('');
 
       const sortedTotals = [...validTotals].sort((a, b) => b.totalAvg - a.totalAvg);
@@ -849,21 +1041,29 @@
         <th>座號</th>
         <th>姓名</th>
         ${subjects.map(sub => `<th>${sub}均分</th>`).join('')}
-        <th style="color:#38bdf8;">個人總平均</th>
+        <th style="color:var(--accent-blue);">個人總平均</th>
       </tr>`;
 
       tbodyEl.innerHTML = displayList.map(st => `<tr>
-        <td><strong style="color:#fbbf24;">${st.overallRank === '-' ? '-' : `第 ${st.overallRank} 名`}</strong></td>
+        <td><strong style="color:var(--accent-gold);">${st.overallRank === '-' ? '-' : `第 ${st.overallRank} 名`}</strong></td>
         <td>${st.seat_number ?? '-'}</td>
         <td><span class="student-link" onclick="openStudentTrend('${st.id}', '${st.name}')">${st.name}</span></td>
         ${subjects.map(sub => `<td>${st.subAvgs[sub] ?? '-'}</td>`).join('')}
-        <td style="font-weight:700; color:#38bdf8;">${st.totalAvg ?? '-'}</td>
+        <td style="font-weight:700; color:var(--accent-blue);">${st.totalAvg ?? '-'}</td>
       </tr>`).join('');
     }
 
     function openStudentTrend(studentId, studentName) {
       document.getElementById('modalTitle').innerText = `📈 「${studentName}」個人成績趨勢分析`;
       document.getElementById('trendModal').style.display = 'flex';
+
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const primaryColor = isLight ? '#0284c7' : '#00f0ff';
+      const fillColor = isLight ? 'rgba(2, 132, 199, 0.12)' : 'rgba(0, 240, 255, 0.1)';
+      const avgColor = isLight ? '#d97706' : '#f59e0b';
+      const tickColor = isLight ? '#475569' : '#94a3b8';
+      const gridColor = isLight ? 'rgba(148, 163, 184, 0.25)' : 'rgba(148, 163, 184, 0.1)';
+      const legendColor = isLight ? '#0f172a' : '#f8fafc';
 
       const stScores = allScoresCache.filter(s => s.student_id === studentId);
       stScores.sort((a, b) => new Date(a.exam_date || '2026-01-01') - new Date(b.exam_date || '2026-01-01'));
@@ -885,18 +1085,18 @@
             {
               label: '個人分數',
               data: scores,
-              borderColor: '#00f0ff',
-              backgroundColor: 'rgba(0, 240, 255, 0.1)',
+              borderColor: primaryColor,
+              backgroundColor: fillColor,
               borderWidth: 3,
               tension: 0.3,
               fill: true,
-              pointBackgroundColor: '#00f0ff',
+              pointBackgroundColor: primaryColor,
               pointRadius: 5
             },
             {
               label: '班級平均',
               data: averages,
-              borderColor: '#f59e0b',
+              borderColor: avgColor,
               borderWidth: 2,
               borderDash: [5, 5],
               tension: 0.3,
@@ -911,16 +1111,16 @@
             y: {
               min: 0,
               max: 100,
-              grid: { color: 'rgba(148, 163, 184, 0.1)' },
-              ticks: { color: '#94a3b8' }
+              grid: { color: gridColor },
+              ticks: { color: tickColor }
             },
             x: {
-              grid: { color: 'rgba(148, 163, 184, 0.1)' },
-              ticks: { color: '#94a3b8' }
+              grid: { color: gridColor },
+              ticks: { color: tickColor }
             }
           },
           plugins: {
-            legend: { labels: { color: '#f8fafc' } }
+            legend: { labels: { color: legendColor } }
           }
         }
       });
@@ -961,11 +1161,11 @@
         const g = groups[key];
         const groupId = `history_group_${idx++}`;
         html += `
-          <div style="background: rgba(2, 6, 23, 0.6); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden;">
-            <div style="padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: rgba(15, 23, 42, 0.6);">
+          <div class="acc-item">
+            <div class="acc-head">
               <div>
                 <span class="badge">${g.sem}</span> 
-                <span style="color: var(--neon-cyan); font-weight: 700; margin-left: 0.5rem;">${g.stage} > ${g.name} (${g.sub})</span>
+                <span style="color: var(--accent-primary); font-weight: 700; margin-left: 0.5rem;">${g.stage} > ${g.name} (${g.sub})</span>
                 <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 0.5rem;">📅 ${g.date} | 👥 記錄數: ${g.records.length}筆</span>
               </div>
               <div style="display: flex; gap: 0.5rem;">
@@ -973,7 +1173,7 @@
                 <button class="del-btn" onclick="deleteExamGroupBatch('${g.sem}', '${g.stage}', '${g.name}', '${g.sub}', '${g.date}')">🗑️ 刪除整場</button>
               </div>
             </div>
-            <div id="${groupId}" style="display: none; padding: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.15);">
+            <div id="${groupId}" style="display: none; padding: 1rem; border-top: 1px solid var(--td-border);">
               <table>
                 <thead>
                   <tr>

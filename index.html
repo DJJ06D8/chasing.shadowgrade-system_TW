@@ -7,15 +7,69 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-dark: #060913;
+      --bg-base: #060913;
+      --bg-glow-1: rgba(0, 240, 255, 0.11);
+      --bg-glow-2: rgba(16, 185, 129, 0.11);
+      --grid-line: rgba(0, 240, 255, 0.035);
       --card-bg: rgba(15, 23, 42, 0.82);
-      --neon-cyan: #00f0ff;
-      --neon-emerald: #10b981;
-      --neon-amber: #f59e0b;
+      --card-border: rgba(0, 240, 255, 0.28);
+      --card-shadow: 0 0 45px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      --accent-primary: #00f0ff;
+      --accent-secondary: #10b981;
+      --tag-bg: rgba(0, 240, 255, 0.1);
+      --tag-border: rgba(0, 240, 255, 0.28);
+      --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
       --text-main: #f8fafc;
+      --text-label: #cbd5e1;
       --text-muted: #94a3b8;
+      --text-note: #64748b;
+      --input-bg: rgba(2, 6, 23, 0.8);
+      --input-border: rgba(148, 163, 184, 0.3);
+      --input-text: #ffffff;
+      --input-focus-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      --btn-grad: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
+      --btn-text: #020617;
+      --btn-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+      --btn-hover-shadow: 0 0 28px rgba(0, 240, 255, 0.5);
+      --toggle-bg: rgba(15, 23, 42, 0.75);
+      --toggle-border: rgba(0, 240, 255, 0.35);
+      --toggle-text: #e2e8f0;
+      --error-color: #fb7185;
     }
+
+    [data-theme="light"] {
+      --bg-base: #eef3f9;
+      --bg-glow-1: rgba(2, 132, 199, 0.12);
+      --bg-glow-2: rgba(16, 185, 129, 0.1);
+      --grid-line: rgba(14, 116, 144, 0.065);
+      --card-bg: rgba(255, 255, 255, 0.84);
+      --card-border: rgba(2, 132, 199, 0.25);
+      --card-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      --accent-primary: #0284c7;
+      --accent-secondary: #059669;
+      --tag-bg: rgba(2, 132, 199, 0.08);
+      --tag-border: rgba(2, 132, 199, 0.25);
+      --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
+      --text-main: #0f172a;
+      --text-label: #334155;
+      --text-muted: #475569;
+      --text-note: #64748b;
+      --input-bg: rgba(248, 250, 252, 0.92);
+      --input-border: rgba(148, 163, 184, 0.45);
+      --input-text: #0f172a;
+      --input-focus-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18);
+      --btn-grad: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+      --btn-text: #ffffff;
+      --btn-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+      --btn-hover-shadow: 0 10px 26px rgba(2, 132, 199, 0.38);
+      --toggle-bg: rgba(255, 255, 255, 0.85);
+      --toggle-border: rgba(2, 132, 199, 0.3);
+      --toggle-text: #0f172a;
+      --error-color: #e11d48;
+    }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -23,103 +77,156 @@
       justify-content: center;
       align-items: center;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-dark);
+      background-color: var(--bg-base);
       background-image: 
-        radial-gradient(circle at 12% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 88% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 45%),
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 42%),
+        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 46%),
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       padding: 1.5rem;
+      transition: background-color 0.35s ease, color 0.35s ease;
     }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 100;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 0.95rem;
+      border-radius: 999px;
+      background: var(--toggle-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--toggle-border);
+      color: var(--toggle-text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      transition: all 0.25s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 16px var(--bg-glow-1);
+    }
+
+    .theme-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      box-shadow: 0 0 8px var(--accent-primary);
+    }
+
     .login-card {
       width: 100%;
       max-width: 440px;
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 240, 255, 0.25);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 2.5rem;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+      box-shadow: var(--card-shadow);
       text-align: center;
+      position: relative;
+      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     }
+
     .portal-tag {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.75rem;
-      color: var(--neon-cyan);
+      color: var(--accent-primary);
       letter-spacing: 0.15em;
       margin-bottom: 0.75rem;
       display: inline-block;
-      background: rgba(0, 240, 255, 0.1);
+      background: var(--tag-bg);
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
-      border: 1px solid rgba(0, 240, 255, 0.25);
+      border: 1px solid var(--tag-border);
     }
+
     h2 {
       margin: 0 0 0.5rem 0;
       font-size: 1.5rem;
-      background: linear-gradient(90deg, #ffffff, #38bdf8);
+      background: var(--title-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
     .subtitle {
       font-size: 0.85rem;
       color: var(--text-muted);
       margin-bottom: 2rem;
     }
+
     .form-group {
       text-align: left;
       margin-bottom: 1.25rem;
     }
+
     label {
       display: block;
       font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.05em;
       margin-bottom: 0.5rem;
-      color: #cbd5e1;
+      color: var(--text-label);
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
+
     input {
       width: 100%;
       padding: 0.75rem 1rem;
-      background: rgba(2, 6, 23, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 10px;
-      color: #fff;
+      color: var(--input-text);
       font-size: 0.95rem;
       transition: all 0.2s;
     }
+
     input:focus {
       outline: none;
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      border-color: var(--accent-primary);
+      box-shadow: var(--input-focus-shadow);
     }
+
     .login-btn {
       width: 100%;
       padding: 0.85rem;
       margin-top: 1rem;
-      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
-      color: #020617;
+      background: var(--btn-grad);
+      color: var(--btn-text);
       border: none;
       border-radius: 10px;
       font-size: 1rem;
       font-weight: 700;
       letter-spacing: 0.05em;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+      box-shadow: var(--btn-shadow);
       transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
     }
+
     .login-btn:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 0 28px rgba(0, 240, 255, 0.5);
+      box-shadow: var(--btn-hover-shadow);
     }
+
     .login-btn:disabled {
       opacity: 0.65;
       cursor: not-allowed;
     }
+
     .links {
       margin-top: 1.5rem;
       display: flex;
@@ -127,28 +234,37 @@
       gap: 0.65rem;
       font-size: 0.85rem;
     }
+
     .links a {
       color: var(--text-muted);
       text-decoration: none;
       transition: color 0.2s;
     }
+
     .links a:hover {
-      color: var(--neon-cyan);
+      color: var(--accent-primary);
     }
+
     .role-note {
-      color: #64748b;
+      color: var(--text-note);
       font-size: 0.8rem;
     }
+
     #errorMsg {
       margin-top: 1rem;
       font-size: 0.85rem;
-      color: #fb7185;
+      color: var(--error-color);
       font-weight: 600;
       min-height: 1.2rem;
     }
   </style>
 </head>
 <body>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="切換明暗科技主題">
+    <span class="theme-dot"></span>
+    <span id="themeText">LIGHT MODE</span>
+  </button>
+
   <div class="login-card">
     <div class="portal-tag">NEXUS ACCESS PORTAL // V2.6</div>
     <h2>國二-2小考成績系統</h2>
@@ -174,6 +290,28 @@
   </div>
 
   <script>
+    // 初始化與切換明暗主題
+    function applyTheme(theme) {
+      const toggleText = document.getElementById('themeText');
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        toggleText.innerText = 'DARK MODE';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        toggleText.innerText = 'LIGHT MODE';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      localStorage.setItem('nexus-theme', next);
+      applyTheme(next);
+    }
+
+    // 載入時套用先前儲存的偏好（預設暗黑科技模式）
+    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);

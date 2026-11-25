@@ -7,113 +7,234 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-dark: #060913;
-      --card-bg: rgba(15, 23, 42, 0.8);
-      --neon-cyan: #00f0ff;
-      --neon-purple: #a855f7;
-      --neon-gold: #fbbf24;
+      --bg-base: #060913;
+      --bg-glow-1: rgba(0, 240, 255, 0.12);
+      --bg-glow-2: rgba(168, 85, 247, 0.14);
+      --grid-line: rgba(0, 240, 255, 0.03);
+      --container-bg: rgba(15, 23, 42, 0.82);
+      --container-border: rgba(0, 240, 255, 0.22);
+      --container-shadow: 0 0 35px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.03);
+      --header-border: rgba(0, 240, 255, 0.18);
+      --accent-primary: #00f0ff;
+      --accent-blue: #38bdf8;
+      --accent-gold: #fbbf24;
+      --gold-sub: #fde68a;
+      --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
       --text-main: #f8fafc;
+      --text-heading: #cbd5e1;
       --text-muted: #94a3b8;
+      --text-sub: #64748b;
+      --card-bg: rgba(2, 6, 23, 0.65);
+      --card-border: rgba(148, 163, 184, 0.2);
+      --card-hover-border: rgba(0, 240, 255, 0.45);
+      --card-hi-bg: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(8, 47, 73, 0.45));
+      --card-hi-border: rgba(0, 240, 255, 0.4);
+      --card-val-color: #ffffff;
+      --card-val-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      --scratch-bg: linear-gradient(145deg, rgba(30, 27, 75, 0.85), rgba(69, 26, 3, 0.35));
+      --scratch-border: rgba(251, 191, 36, 0.55);
+      --scratch-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
+      --th-bg: rgba(2, 6, 23, 0.6);
+      --td-border: rgba(148, 163, 184, 0.15);
+      --tr-hover: rgba(0, 240, 255, 0.04);
+      --badge-bg: rgba(0, 240, 255, 0.12);
+      --badge-border: rgba(0, 240, 255, 0.3);
+      --modal-bg: #0f172a;
+      --modal-border: rgba(0, 240, 255, 0.35);
+      --input-bg: rgba(2, 6, 23, 0.8);
+      --input-border: rgba(148, 163, 184, 0.28);
+      --input-text: #ffffff;
+      --toggle-bg: rgba(15, 23, 42, 0.75);
+      --toggle-border: rgba(0, 240, 255, 0.35);
+      --toggle-text: #e2e8f0;
     }
+
+    [data-theme="light"] {
+      --bg-base: #eef3f9;
+      --bg-glow-1: rgba(2, 132, 199, 0.11);
+      --bg-glow-2: rgba(99, 102, 241, 0.09);
+      --grid-line: rgba(14, 116, 144, 0.065);
+      --container-bg: rgba(255, 255, 255, 0.86);
+      --container-border: rgba(2, 132, 199, 0.24);
+      --container-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      --header-border: rgba(2, 132, 199, 0.18);
+      --accent-primary: #0284c7;
+      --accent-blue: #0369a1;
+      --accent-gold: #d97706;
+      --gold-sub: #b45309;
+      --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
+      --text-main: #0f172a;
+      --text-heading: #334155;
+      --text-muted: #475569;
+      --text-sub: #64748b;
+      --card-bg: rgba(248, 250, 252, 0.92);
+      --card-border: rgba(148, 163, 184, 0.32);
+      --card-hover-border: rgba(2, 132, 199, 0.5);
+      --card-hi-bg: linear-gradient(145deg, rgba(240, 249, 255, 0.95), rgba(224, 242, 254, 0.85));
+      --card-hi-border: rgba(2, 132, 199, 0.45);
+      --card-val-color: #0f172a;
+      --card-val-shadow: none;
+      --scratch-bg: linear-gradient(145deg, rgba(254, 243, 199, 0.85), rgba(253, 230, 138, 0.55));
+      --scratch-border: rgba(217, 119, 6, 0.55);
+      --scratch-shadow: 0 8px 20px rgba(217, 119, 6, 0.14);
+      --th-bg: rgba(241, 245, 249, 0.9);
+      --td-border: rgba(148, 163, 184, 0.25);
+      --tr-hover: rgba(2, 132, 199, 0.05);
+      --badge-bg: rgba(2, 132, 199, 0.1);
+      --badge-border: rgba(2, 132, 199, 0.28);
+      --modal-bg: #ffffff;
+      --modal-border: rgba(2, 132, 199, 0.35);
+      --input-bg: #f8fafc;
+      --input-border: rgba(148, 163, 184, 0.45);
+      --input-text: #0f172a;
+      --toggle-bg: rgba(255, 255, 255, 0.9);
+      --toggle-border: rgba(2, 132, 199, 0.3);
+      --toggle-text: #0f172a;
+    }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-dark);
+      background-color: var(--bg-base);
       background-image: 
-        radial-gradient(circle at 10% 15%, rgba(0, 240, 255, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 90% 85%, rgba(168, 85, 247, 0.14) 0%, transparent 45%),
-        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        radial-gradient(circle at 10% 15%, var(--bg-glow-1) 0%, transparent 40%),
+        radial-gradient(circle at 90% 85%, var(--bg-glow-2) 0%, transparent 45%),
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       padding: 1.5rem;
+      transition: background-color 0.35s ease, color 0.35s ease;
     }
+
     .container {
       max-width: 880px;
       margin: 0 auto 2rem auto;
-      background: var(--card-bg);
+      background: var(--container-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 240, 255, 0.22);
+      border: 1px solid var(--container-border);
       border-radius: 16px;
       padding: 2rem;
-      box-shadow: 0 0 35px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.03);
+      box-shadow: var(--container-shadow);
+      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     }
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.18);
+      border-bottom: 1px solid var(--header-border);
       padding-bottom: 1.1rem;
       margin-bottom: 1.6rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
+
     .user-info .tag {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.72rem;
-      color: var(--neon-cyan);
+      color: var(--accent-primary);
       letter-spacing: 0.12em;
       display: block;
       margin-bottom: 0.25rem;
+      font-weight: 700;
     }
+
     h2 {
       margin: 0;
       font-size: 1.4rem;
-      background: linear-gradient(90deg, #ffffff, #38bdf8);
+      background: var(--title-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
     h3 {
       margin: 0 0 1rem 0;
       font-size: 1rem;
       letter-spacing: 0.06em;
-      color: #cbd5e1;
+      color: var(--text-heading);
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
+
     .header-actions {
       display: flex;
-      gap: 0.65rem;
+      gap: 0.6rem;
       align-items: center;
+      flex-wrap: wrap;
     }
+
+    .theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px var(--bg-glow-1);
+    }
+
+    .theme-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      box-shadow: 0 0 8px var(--accent-primary);
+    }
+
     .pw-btn {
-      background: rgba(0, 240, 255, 0.12);
-      color: var(--neon-cyan);
-      border: 1px solid rgba(0, 240, 255, 0.4);
-      padding: 0.5rem 1.1rem;
+      background: rgba(2, 132, 199, 0.12);
+      color: var(--accent-primary);
+      border: 1px solid rgba(2, 132, 199, 0.4);
+      padding: 0.5rem 1.05rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
       transition: all 0.2s;
     }
+
     .pw-btn:hover {
-      background: rgba(0, 240, 255, 0.25);
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      background: rgba(2, 132, 199, 0.22);
+      box-shadow: 0 0 12px var(--bg-glow-1);
     }
+
     .logout-btn {
-      background: rgba(244, 63, 94, 0.15);
-      color: #fb7185;
+      background: rgba(244, 63, 94, 0.14);
+      color: #f43f5e;
       border: 1px solid rgba(244, 63, 94, 0.4);
-      padding: 0.5rem 1.1rem;
+      padding: 0.5rem 1.05rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
       transition: all 0.2s;
     }
+
     .logout-btn:hover {
-      background: rgba(244, 63, 94, 0.3);
-      box-shadow: 0 0 12px rgba(244, 63, 94, 0.35);
+      background: rgba(244, 63, 94, 0.25);
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
     }
 
     /* 修改密碼彈窗樣式 */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(2, 6, 23, 0.8);
+      background: rgba(2, 6, 23, 0.75);
       backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
@@ -125,16 +246,16 @@
     .modal-box {
       width: 100%;
       max-width: 390px;
-      background: #0f172a;
-      border: 1px solid rgba(0, 240, 255, 0.35);
+      background: var(--modal-bg);
+      border: 1px solid var(--modal-border);
       border-radius: 14px;
       padding: 1.8rem;
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
     }
     .modal-box h4 {
       margin: 0 0 0.4rem 0;
       font-size: 1.15rem;
-      color: var(--neon-cyan);
+      color: var(--accent-primary);
     }
     .modal-box p {
       margin: 0 0 1.2rem 0;
@@ -145,22 +266,23 @@
     .modal-group label {
       display: block;
       font-size: 0.8rem;
-      color: #cbd5e1;
+      color: var(--text-heading);
       margin-bottom: 0.4rem;
+      font-weight: 600;
     }
     .modal-group input {
       width: 100%;
       padding: 0.7rem 0.9rem;
-      background: rgba(2, 6, 23, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.28);
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 8px;
-      color: #fff;
+      color: var(--input-text);
       font-size: 0.95rem;
     }
     .modal-group input:focus {
       outline: none;
-      border-color: var(--neon-cyan);
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px var(--bg-glow-1);
     }
     .modal-actions {
       display: flex;
@@ -173,13 +295,13 @@
       border: none;
       border-radius: 8px;
       font-weight: 700;
-      color: #020617;
-      background: linear-gradient(135deg, #00f0ff, #38bdf8);
+      color: #ffffff;
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
       cursor: pointer;
     }
     .modal-cancel {
       padding: 0.7rem 1rem;
-      border: 1px solid rgba(148, 163, 184, 0.3);
+      border: 1px solid var(--input-border);
       border-radius: 8px;
       background: transparent;
       color: var(--text-muted);
@@ -200,22 +322,22 @@
       margin-bottom: 2rem;
     }
     .card {
-      background: rgba(2, 6, 23, 0.65);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 1.1rem 1rem;
       text-align: center;
       position: relative;
       overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
+      transition: transform 0.2s, border-color 0.2s, background 0.35s ease;
     }
     .card:hover {
-      border-color: rgba(0, 240, 255, 0.45);
+      border-color: var(--card-hover-border);
       transform: translateY(-2px);
     }
     .card-highlight {
-      border-color: rgba(0, 240, 255, 0.4);
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(8, 47, 73, 0.45));
+      border-color: var(--card-hi-border);
+      background: var(--card-hi-bg);
     }
     .card-title {
       font-size: 0.82rem;
@@ -228,20 +350,20 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 1.65rem;
       font-weight: 800;
-      color: #fff;
-      text-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      color: var(--card-val-color);
+      text-shadow: var(--card-val-shadow);
     }
     .card-sub {
       font-size: 0.78rem;
-      color: #64748b;
+      color: var(--text-sub);
       margin-top: 0.3rem;
     }
 
     /* 刮刮樂專屬卡片樣式 */
     .scratch-card {
-      border: 1px solid rgba(251, 191, 36, 0.55);
-      background: linear-gradient(145deg, rgba(30, 27, 75, 0.85), rgba(69, 26, 3, 0.35));
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
+      border: 1px solid var(--scratch-border);
+      background: var(--scratch-bg);
+      box-shadow: var(--scratch-shadow);
       min-height: 118px;
       display: flex;
       flex-direction: column;
@@ -280,22 +402,22 @@
     th, td {
       padding: 0.9rem 0.75rem;
       text-align: center;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      border-bottom: 1px solid var(--td-border);
     }
     th {
-      background: rgba(2, 6, 23, 0.6);
-      color: var(--neon-cyan);
+      background: var(--th-bg);
+      color: var(--accent-primary);
       font-size: 0.82rem;
       letter-spacing: 0.06em;
-      font-weight: 600;
+      font-weight: 700;
     }
     td:nth-child(2), th:nth-child(2) { text-align: left; }
-    tr:hover td { background: rgba(0, 240, 255, 0.04); }
+    tr:hover td { background: var(--tr-hover); }
     .badge {
       display: inline-block;
-      background: rgba(0, 240, 255, 0.12);
-      color: var(--neon-cyan);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      background: var(--badge-bg);
+      color: var(--accent-primary);
+      border: 1px solid var(--badge-border);
       padding: 0.2rem 0.6rem;
       border-radius: 6px;
       font-size: 0.82rem;
@@ -304,14 +426,13 @@
     .score-highlight {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-weight: 800;
-      color: #38bdf8;
+      color: var(--accent-blue);
       font-size: 1.15rem;
-      text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
     }
     .empty-msg { text-align: center; color: var(--text-muted); padding: 2rem 0; }
     .report-btn {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.14);
+      color: var(--accent-gold);
       border: 1px solid rgba(245, 158, 11, 0.45);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
@@ -321,13 +442,13 @@
       transition: all 0.2s;
     }
     .report-btn:hover {
-      background: rgba(245, 158, 11, 0.3);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.26);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
     }
     .reported-badge {
       display: inline-block;
-      background: rgba(244, 63, 94, 0.18);
-      color: #fb7185;
+      background: rgba(244, 63, 94, 0.15);
+      color: #f43f5e;
       border: 1px solid rgba(244, 63, 94, 0.4);
       padding: 0.3rem 0.65rem;
       border-radius: 6px;
@@ -344,6 +465,10 @@
         <h2 id="welcomeMsg">同步個人檔案中...</h2>
       </div>
       <div class="header-actions">
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="切換明暗科技主題">
+          <span class="theme-dot"></span>
+          <span id="themeText">LIGHT</span>
+        </button>
         <button class="pw-btn" onclick="openPwModal()">修改密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
@@ -398,6 +523,30 @@
   </div>
 
   <script>
+    // 明暗主題同步與切換
+    function applyTheme(theme) {
+      const toggleText = document.getElementById('themeText');
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (toggleText) toggleText.innerText = 'DARK';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (toggleText) toggleText.innerText = 'LIGHT';
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      localStorage.setItem('nexus-theme', next);
+      applyTheme(next);
+      // 若刮刮樂尚未刮開，重新繪製符合當前主題的金屬塗層
+      const canvas = document.getElementById('scratchCanvas');
+      if (canvas) initScratchCard();
+    }
+
+    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -422,7 +571,7 @@
       const btn = document.getElementById('savePwBtn');
 
       if (newPassword !== confirmPassword) {
-        msgEl.style.color = '#fb7185';
+        msgEl.style.color = '#f43f5e';
         msgEl.innerText = '兩次輸入的新密碼不一致！';
         return;
       }
@@ -439,10 +588,10 @@
       btn.disabled = false;
 
       if (error) {
-        msgEl.style.color = '#fb7185';
+        msgEl.style.color = '#f43f5e';
         msgEl.innerText = '更新失敗：' + error.message;
       } else {
-        msgEl.style.color = '#34d399';
+        msgEl.style.color = '#10b981';
         msgEl.innerText = '密碼已成功修改！下次請使用新密碼登入。';
         setTimeout(() => closePwModal(), 1400);
       }
@@ -532,14 +681,14 @@
 
       cardsHtml.push(`
         <div class="card card-highlight">
-          <div class="card-title" style="color:#38bdf8;">跨科總平均</div>
-          <div class="card-val" style="color:#38bdf8;">${myTotalAvg}</div>
+          <div class="card-title" style="color:var(--accent-blue);">跨科總平均</div>
+          <div class="card-val" style="color:var(--accent-blue);">${myTotalAvg}</div>
           <div class="card-sub">全班總均 ${classOverallAvg}</div>
         </div>
         <div class="card scratch-card" id="rankScratchCard">
-          <div class="card-title" style="color:#fbbf24;">🏆 全班總排名</div>
-          <div class="card-val" style="color:#fbbf24; text-shadow: 0 0 15px rgba(251,191,36,0.6);">第 ${myOverallRank} 名</div>
-          <div class="card-sub" style="color:#fde68a;">共 ${allTotalAvgs.length} 人參與</div>
+          <div class="card-title" style="color:var(--accent-gold);">🏆 全班總排名</div>
+          <div class="card-val" style="color:var(--accent-gold);">第 ${myOverallRank} 名</div>
+          <div class="card-sub" style="color:var(--gold-sub);">共 ${allTotalAvgs.length} 人參與</div>
           <canvas id="scratchCanvas"></canvas>
         </div>
       `);
@@ -555,7 +704,7 @@
           <td><span class="badge">${item.subject}</span></td>
           <td>${item.exam_name}</td>
           <td class="score-highlight">${item.score}</td>
-          <td style="color:#94a3b8;">${item.class_avg ?? '-'}</td>
+          <td style="color:var(--text-muted);">${item.class_avg ?? '-'}</td>
           <td>第 ${item.rank ?? '-'} 名</td>
           <td>
             ${item.report_note 
@@ -572,19 +721,27 @@
       const canvas = document.getElementById('scratchCanvas');
       if (!card || !canvas) return;
 
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const ctx = canvas.getContext('2d');
       const rect = card.getBoundingClientRect();
       canvas.width = rect.width || 180;
       canvas.height = rect.height || 118;
 
+      ctx.globalCompositeOperation = 'source-over';
       const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      grad.addColorStop(0, '#1e293b');
-      grad.addColorStop(0.5, '#334155');
-      grad.addColorStop(1, '#0f172a');
+      if (isLight) {
+        grad.addColorStop(0, '#e2e8f0');
+        grad.addColorStop(0.5, '#cbd5e1');
+        grad.addColorStop(1, '#94a3b8');
+      } else {
+        grad.addColorStop(0, '#1e293b');
+        grad.addColorStop(0.5, '#334155');
+        grad.addColorStop(1, '#0f172a');
+      }
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.25)';
+      ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.35)' : 'rgba(251, 191, 36, 0.25)';
       ctx.lineWidth = 2;
       for (let i = -canvas.height; i < canvas.width; i += 14) {
         ctx.beginPath();
@@ -593,13 +750,13 @@
         ctx.stroke();
       }
 
-      ctx.fillStyle = '#fbbf24';
+      ctx.fillStyle = isLight ? '#b45309' : '#fbbf24';
       ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('✦ 刮開揭曉排名 ✦', canvas.width / 2, canvas.height / 2 - 8);
 
-      ctx.fillStyle = '#94a3b8';
+      ctx.fillStyle = isLight ? '#475569' : '#94a3b8';
       ctx.font = '11px ui-monospace, monospace';
       ctx.fillText('SCRATCH TO REVEAL', canvas.width / 2, canvas.height / 2 + 12);
 
@@ -643,13 +800,13 @@
         }
       }
 
-      canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e); });
+      canvas.onmousedown = (e) => { isDrawing = true; scratch(e); };
       window.addEventListener('mousemove', scratch);
       window.addEventListener('mouseup', () => { isDrawing = false; });
 
-      canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, { passive: false });
-      canvas.addEventListener('touchmove', scratch, { passive: false });
-      canvas.addEventListener('touchend', () => { isDrawing = false; });
+      canvas.ontouchstart = (e) => { isDrawing = true; scratch(e); };
+      canvas.ontouchmove = (e) => { scratch(e); };
+      canvas.ontouchend = () => { isDrawing = false; };
     }
 
     async function reportError(scoreId, examTitle) {
