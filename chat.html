@@ -619,8 +619,8 @@
       </div>
 
       <div class="chat-input-bar" id="chatInputBar">
-        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息..." onkeydown="if(event.key==='Enter') sendMessage()">
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
+        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息..." autocomplete="off" onkeydown="handleInputKeydown(event)">
+        <button type="button" class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
       </div>
     </div>
   </div>
@@ -646,10 +646,10 @@
     let contacts = [];
     let userMap = {};
     let customRooms = [];
-    let roomMembersMap = {}; // roomId -> [userId, ...]
+    let roomMembersMap = {};
     let allMessages = [];
     let activeChannel = { type: 'group', targetUser: null, pairUsers: null, roomId: null };
-    let lastSendTime = 0;
+    let isSending = false;
 
     function goBackPortal() {
       if (me && (me.role === 'admin' || isDevAuditor)) {
@@ -661,6 +661,14 @@
 
     function closeMobileChat() {
       document.getElementById('igShell').classList.remove('mobile-chat-open');
+    }
+
+    function handleInputKeydown(e) {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
     }
 
     async function init() {
@@ -685,7 +693,6 @@
       me = myProfile;
       isDevAuditor = me.role === 'developer' || (me.email || '').toLowerCase() === '202020@cysh.khc.edu.tw';
 
-      // 若是系統管理員：隱形唯讀模式，不可建立群組也不可發訊息
       if (isDevAuditor) {
         document.getElementById('openCreateRoomBtn').style.display = 'none';
         document.getElementById('chatInputBar').innerHTML =
@@ -817,7 +824,6 @@
         return;
       }
 
-      // 建立群組
       const { data: roomData, error: roomErr } = await supabaseClient
         .from('chat_rooms')
         .insert([{ name: roomName, created_by: me.id }])
@@ -829,7 +835,6 @@
         return;
       }
 
-      // 加入建立者本人 + 勾選的成員
       const memberIds = Array.from(new Set([me.id, ...selectedIds]));
       const memberRows = memberIds.map(uid => ({ room_id: roomData.id, user_id: uid }));
 
@@ -961,7 +966,6 @@
         </div>
       `;
 
-      // 自建群組列表（一般學生/老師看到自己加入的群；系統管理員看到全部自建群）
       const filteredRooms = customRooms.filter(r => {
         if (!keyword) return true;
         return r.name.toLowerCase().includes(keyword);
@@ -990,7 +994,6 @@
         }).join('');
       }
 
-      // 分流 1：系統管理員看到全班所有私聊對話串
       if (isDevAuditor) {
         html += `<div class="section-label">全班私聊紀錄監看（唯讀）</div>`;
         const pairMap = new Map();
@@ -1037,7 +1040,6 @@
         return;
       }
 
-      // 分流 2：學生與老師看到私聊聯絡人
       html += `<div class="section-label">私聊聯絡人（1 對 1）</div>`;
       const filtered = contacts.filter(c => {
         if (!keyword) return true;
@@ -1132,17 +1134,21 @@
     }
 
     async function sendMessage() {
-      if (isDevAuditor) return;
+      if (isDevAuditor || isSending) return;
 
       const input = document.getElementById('messageInput');
       const content = input.value.trim();
       if (!content) return;
 
-      const now = Date.now();
-      if (now - lastSendTime < 1200) return;
-      lastSendTime = now;
+      isSending = true;
 
+      // 強制清除輸入框並結束注音組字殘留
       input.value = '';
+      input.blur();
+      requestAnimationFrame(() => {
+        input.value = '';
+        input.focus();
+      });
 
       const payload = {
         channel_type: activeChannel.type,
@@ -1155,22 +1161,26 @@
         content
       };
 
-      const { data, error } = await supabaseClient
-        .from('chat_messages')
-        .insert([payload])
-        .select()
-        .single();
+      try {
+        const { data, error } = await supabaseClient
+          .from('chat_messages')
+          .insert([payload])
+          .select()
+          .single();
 
-      if (error) {
-        alert('傳送失敗：' + error.message);
-        input.value = content;
-        return;
-      }
+        if (error) {
+          alert('傳送失敗：' + error.message);
+          input.value = content;
+          return;
+        }
 
-      if (data && !allMessages.some(m => m.id === data.id)) {
-        allMessages.push(data);
-        renderThreadList();
-        renderActiveMessages();
+        if (data && !allMessages.some(m => m.id === data.id)) {
+          allMessages.push(data);
+          renderThreadList();
+          renderActiveMessages();
+        }
+      } finally {
+        isSending = false;
       }
     }
 
