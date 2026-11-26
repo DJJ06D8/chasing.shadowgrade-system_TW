@@ -230,7 +230,6 @@
       box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
     }
 
-    /* 修改密碼彈窗樣式 */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -314,7 +313,6 @@
       min-height: 1.1rem;
     }
 
-    /* 數據卡片區 */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
@@ -359,7 +357,6 @@
       margin-top: 0.3rem;
     }
 
-    /* 刮刮樂專屬卡片樣式 */
     .scratch-card {
       border: 1px solid var(--scratch-border);
       background: var(--scratch-bg);
@@ -392,7 +389,6 @@
       transition: opacity 0.45s ease;
     }
 
-    /* 表格樣式 */
     .table-wrap { overflow-x: auto; }
     table {
       width: 100%;
@@ -523,7 +519,6 @@
   </div>
 
   <script>
-    // 明暗主題同步與切換
     function applyTheme(theme) {
       const toggleText = document.getElementById('themeText');
       if (theme === 'light') {
@@ -540,7 +535,6 @@
       const next = current === 'light' ? 'dark' : 'light';
       localStorage.setItem('nexus-theme', next);
       applyTheme(next);
-      // 若刮刮樂尚未刮開，重新繪製符合當前主題的金屬塗層
       const canvas = document.getElementById('scratchCanvas');
       if (canvas) initScratchCard();
     }
@@ -620,9 +614,11 @@
     }
 
     async function loadAllAnalytics() {
+      // 僅讀取老師已審核上架（is_published = true）的成績
       const { data: allScores, error } = await supabaseClient
         .from('scores')
-        .select('id, subject, exam_name, score, class_avg, rank, student_id, report_note')
+        .select('id, subject, exam_name, score, class_avg, rank, student_id, report_note, is_published')
+        .eq('is_published', true)
         .order('id', { ascending: false });
 
       const cardsEl = document.getElementById('subjectSummaryCards');
@@ -636,12 +632,11 @@
 
       const myScores = (allScores || []).filter(s => s.student_id === currentUserId);
       if (myScores.length === 0) {
-        cardsEl.innerHTML = '<div class="card"><div class="card-title">尚無測驗數據紀錄</div></div>';
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">目前尚無小考成績紀錄</td></tr>';
+        cardsEl.innerHTML = '<div class="card"><div class="card-title">尚無已上架的測驗數據</div></div>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">目前尚無已發布的小考成績紀錄</td></tr>';
         return;
       }
 
-      // 1. 計算個人各科平均與班級各科平均
       const mySubjects = [...new Set(myScores.map(s => s.subject))];
       let mySumOfSubAvgs = 0;
 
@@ -664,7 +659,6 @@
 
       const myTotalAvg = Math.round((mySumOfSubAvgs / mySubjects.length) * 10) / 10;
 
-      // 2. 計算全班每位學生的跨科總平均以得出總排名
       const allStudentIds = [...new Set(allScores.map(s => s.student_id))];
       const allTotalAvgs = allStudentIds.map(uid => {
         const uScores = allScores.filter(s => s.student_id === uid);
@@ -694,11 +688,8 @@
       `);
 
       cardsEl.innerHTML = cardsHtml.join('');
-
-      // 初始化刮刮樂塗層
       initScratchCard();
 
-      // 3. 渲染歷次單科明細
       tbody.innerHTML = myScores.map(item => `
         <tr>
           <td><span class="badge">${item.subject}</span></td>
