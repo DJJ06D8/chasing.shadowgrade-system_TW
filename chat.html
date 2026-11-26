@@ -919,7 +919,7 @@
       <div style="border-top:1px solid var(--border-color); margin:0.9rem 0; padding-top:0.9rem;">
         <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.4rem;">我的全站顯示暱稱（留空則僅顯示座號與本名）：</div>
         <div style="display:flex; gap:0.5rem;">
-          <input type="text" id="globalNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：阿霏、數學小老師">
+          <input type="text" id="globalNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：小老師、值日生">
           <button class="send-btn" style="border-radius:10px; padding:0 1.1rem;" onclick="saveGlobalNickname()">儲存</button>
         </div>
       </div>
@@ -1085,7 +1085,6 @@
       return u.role === 'admin' ? '師' : `${u.seat_number ?? '#'}`;
     }
 
-    // 格式化成員名稱（含全站暱稱）
     function formatUserFullLabel(u) {
       if (!u) return '未知成員';
       const base = u.role === 'admin' ? `${u.name}（導師）` : `${u.seat_number ?? '-'}號 ${u.name}`;
@@ -1251,7 +1250,6 @@
       setTimeout(() => targetEl.classList.remove('highlight-flash'), 1200);
     }
 
-    // 置頂 / 取消置頂聯絡人（最多 3 人）
     async function togglePinContact(event, targetUserId) {
       event.stopPropagation();
       if (isDevAuditor || !me) return;
@@ -1282,7 +1280,6 @@
       }
     }
 
-    // 個人資料（全站暱稱與頭像）設定彈窗
     function openProfileModal() {
       if (isDevAuditor || !me) return;
       document.getElementById('avatarPreviewLarge').innerHTML = renderUserAvatarContent(me);
@@ -2063,7 +2060,6 @@
       renderActiveMessages();
     }
 
-    // 渲染單一聯絡人列（共用給置頂區、近期對話區、所有聯絡人區）
     function buildContactItemHtml(c, isPinned, now) {
       const isTeacher = c.role === 'admin';
       const isOnline = onlineUserIds.has(c.id);
@@ -2254,7 +2250,6 @@
         return;
       }
 
-      // 過濾聯絡人（支援座號、本名、全站暱稱搜尋）
       const filtered = contacts.filter(c => {
         if (!keyword) return true;
         const seatStr = String(c.seat_number ?? '');
@@ -2262,7 +2257,6 @@
         return seatStr.includes(keyword) || (c.name || '').toLowerCase().includes(keyword) || nickStr.includes(keyword);
       });
 
-      // 1. 置頂聯絡人（最多 3 人，保持置頂順序）
       const pinnedList = pinnedContactIds
         .map(pid => filtered.find(c => c.id === pid))
         .filter(Boolean);
@@ -2272,7 +2266,6 @@
         html += pinnedList.map(c => buildContactItemHtml(c, true, now)).join('');
       }
 
-      // 2. 非置頂聯絡人：分成「近期傳訊息者（置頂下方，按最新訊息時間排序）」與「其他聯絡人（按座號排序）」
       const unpinnedList = filtered.filter(c => !pinnedContactIds.includes(c.id));
 
       const recentWithTs = [];
