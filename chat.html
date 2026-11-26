@@ -224,6 +224,11 @@
     .thread-item:hover { background: var(--item-hover); }
     .thread-item.active { background: var(--item-active); }
 
+    .avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
     .avatar {
       width: 42px;
       height: 42px;
@@ -233,14 +238,32 @@
       align-items: center;
       font-weight: 800;
       font-size: 0.9rem;
-      flex-shrink: 0;
       background: linear-gradient(135deg, rgba(0, 240, 255, 0.22), rgba(16, 185, 129, 0.22));
       border: 1.5px solid var(--accent-primary);
       color: var(--accent-primary);
     }
 
+    .online-dot {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #10b981;
+      border: 2px solid var(--panel-bg);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.85);
+    }
+
     .avatar.group-av {
       background: linear-gradient(135deg, #f59e0b, #ec4899);
+      border: none;
+      color: #ffffff;
+      font-size: 1.1rem;
+    }
+
+    .avatar.student-group-av {
+      background: linear-gradient(135deg, #10b981, #0ea5e9);
       border: none;
       color: #ffffff;
       font-size: 1.1rem;
@@ -311,6 +334,7 @@
       justify-content: center;
       align-items: center;
       padding: 0 6px;
+      flex-shrink: 0;
     }
 
     .ig-main {
@@ -350,19 +374,39 @@
       text-overflow: ellipsis;
     }
 
+    .room-settings-btn {
+      display: none;
+      background: rgba(59, 130, 246, 0.16);
+      border: 1px solid rgba(59, 130, 246, 0.45);
+      color: var(--accent-blue);
+      padding: 0.42rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
     .messages-area {
       flex: 1;
       overflow-y: auto;
       padding: 1.2rem;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.65rem;
     }
 
     .msg-row {
       display: flex;
       flex-direction: column;
       max-width: 74%;
+      transition: background 0.35s ease;
+      border-radius: 12px;
+      padding: 2px;
+    }
+
+    .msg-row.highlight-flash {
+      background: rgba(0, 240, 255, 0.22);
     }
 
     .msg-row.mine {
@@ -385,7 +429,7 @@
     .msg-bubble-wrap {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
 
     .msg-row.mine .msg-bubble-wrap {
@@ -393,12 +437,54 @@
     }
 
     .msg-bubble {
-      padding: 0.65rem 0.95rem;
+      padding: 0.55rem 0.9rem;
       border-radius: 18px;
       font-size: 0.92rem;
-      line-height: 1.45;
+      line-height: 1.4;
       word-break: break-word;
-      white-space: pre-wrap;
+      width: fit-content;
+    }
+
+    .msg-bubble.img-only {
+      padding: 0.35rem;
+      background: transparent !important;
+    }
+
+    .reply-quote-box {
+      font-size: 0.76rem;
+      padding: 0.38rem 0.6rem;
+      margin-bottom: 0.42rem;
+      border-radius: 10px;
+      border-left: 3px solid #00f0ff;
+      background: rgba(0, 0, 0, 0.22);
+      cursor: pointer;
+      opacity: 0.92;
+    }
+
+    [data-theme="light"] .msg-row.others .reply-quote-box {
+      background: rgba(15, 23, 42, 0.08);
+    }
+
+    .reply-quote-sender {
+      font-weight: 800;
+      margin-bottom: 1px;
+    }
+
+    .reply-quote-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+      opacity: 0.88;
+    }
+
+    .chat-img {
+      max-width: 240px;
+      max-height: 280px;
+      border-radius: 14px;
+      display: block;
+      cursor: zoom-in;
+      border: 1px solid var(--border-color);
     }
 
     .msg-row.mine .msg-bubble {
@@ -413,34 +499,112 @@
       border-bottom-left-radius: 4px;
     }
 
-    .msg-time {
+    .msg-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
       font-size: 0.68rem;
       color: var(--text-muted);
       margin-top: 3px;
       padding: 0 4px;
     }
 
-    .del-msg-btn {
+    .read-receipt {
+      color: var(--accent-emerald);
+      font-weight: 700;
+    }
+
+    .msg-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      opacity: 0.65;
+    }
+    .msg-actions:hover { opacity: 1; }
+
+    .action-icon-btn {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: 0.82rem;
       cursor: pointer;
-      opacity: 0.55;
       padding: 2px 4px;
     }
-    .del-msg-btn:hover { opacity: 1; color: #f43f5e; }
+    .action-icon-btn:hover { color: var(--accent-primary); }
+    .action-icon-btn.del-btn:hover { color: #f43f5e; }
+
+    .reply-preview-bar {
+      display: none;
+      padding: 0.55rem 1.1rem;
+      border-top: 1px solid var(--border-color);
+      background: rgba(0, 240, 255, 0.08);
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+    }
+
+    .reply-preview-info {
+      min-width: 0;
+      flex: 1;
+      border-left: 3px solid var(--accent-primary);
+      padding-left: 0.6rem;
+    }
+
+    .reply-preview-title {
+      font-weight: 800;
+      color: var(--accent-primary);
+      font-size: 0.78rem;
+    }
+
+    .reply-preview-snippet {
+      color: var(--text-sub);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .chat-input-bar {
       padding: 0.85rem 1.1rem;
       border-top: 1px solid var(--border-color);
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.5rem;
     }
 
-    .chat-input-bar input {
+    .media-btns-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .camera-only-btn {
+      display: none;
+    }
+
+    @media (max-width: 768px) and (pointer: coarse) {
+      .camera-only-btn { display: flex; }
+    }
+
+    .media-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--accent-primary);
+      font-size: 1.05rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .chat-input-bar input[type="text"] {
       flex: 1;
+      min-width: 0;
       padding: 0.72rem 1rem;
       border-radius: 999px;
       border: 1px solid var(--border-color);
@@ -454,12 +618,23 @@
       background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
       color: #020617;
       border: none;
-      padding: 0.7rem 1.25rem;
+      padding: 0.7rem 1.15rem;
       border-radius: 999px;
       font-weight: 800;
       font-size: 0.9rem;
       cursor: pointer;
       flex-shrink: 0;
+    }
+
+    .danger-btn {
+      background: rgba(244, 63, 94, 0.16);
+      border: 1px solid rgba(244, 63, 94, 0.45);
+      color: #fb7185;
+      padding: 0.55rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .readonly-banner {
@@ -474,13 +649,12 @@
       font-weight: 700;
     }
 
-    /* 建立群組彈窗 */
     .modal-backdrop {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 999;
-      background: rgba(2, 6, 23, 0.78);
+      background: rgba(2, 6, 23, 0.82);
       backdrop-filter: blur(8px);
       justify-content: center;
       align-items: center;
@@ -489,7 +663,9 @@
 
     .modal-card {
       width: 100%;
-      max-width: 440px;
+      max-width: 450px;
+      max-height: 88dvh;
+      overflow-y: auto;
       background: var(--modal-bg);
       border: 1px solid var(--border-color);
       border-radius: 16px;
@@ -531,7 +707,7 @@
     }
 
     .member-checklist {
-      max-height: 240px;
+      max-height: 220px;
       overflow-y: auto;
       border: 1px solid var(--border-color);
       border-radius: 10px;
@@ -543,6 +719,7 @@
     .member-check-item {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 0.65rem;
       padding: 0.5rem 0.65rem;
       border-radius: 8px;
@@ -552,6 +729,13 @@
 
     .member-check-item:hover { background: var(--item-hover); }
     .member-check-item input[type="checkbox"] { width: 17px; height: 17px; accent-color: #00f0ff; }
+
+    #imgLightbox img {
+      max-width: 94vw;
+      max-height: 88dvh;
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+    }
 
     @media (max-width: 768px) {
       body { padding: 0; }
@@ -569,6 +753,11 @@
   </style>
 </head>
 <body>
+  <!-- 圖片全螢幕檢視 -->
+  <div class="modal-backdrop" id="imgLightbox" onclick="this.style.display='none'">
+    <img id="lightboxImg" src="" alt="放大圖片">
+  </div>
+
   <!-- 建立自訂群組彈窗 -->
   <div class="modal-backdrop" id="createRoomModal">
     <div class="modal-card">
@@ -580,6 +769,17 @@
       <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.45rem;">勾選要邀請加入的同學或導師（系統會自動包含您自己）：</div>
       <div class="member-checklist" id="memberChecklist"></div>
       <button class="send-btn" style="width:100%; border-radius:10px;" onclick="createCustomRoom()">確認建立群組</button>
+    </div>
+  </div>
+
+  <!-- 群組資訊與管理彈窗（僅自建小群） -->
+  <div class="modal-backdrop" id="roomInfoModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>⚙️ 小群組資訊與暱稱設定</h3>
+        <button class="modal-close" onclick="closeRoomInfoModal()">✕</button>
+      </div>
+      <div id="roomInfoBody"></div>
     </div>
   </div>
 
@@ -607,19 +807,39 @@
     <div class="ig-main">
       <div class="chat-header">
         <button class="mobile-back-btn" onclick="closeMobileChat()">‹</button>
-        <div class="avatar group-av" id="activeAvatar">📢</div>
+        <div class="avatar-wrap">
+          <div class="avatar group-av" id="activeAvatar">📢</div>
+          <span class="online-dot" id="activeOnlineDot" style="display:none;"></span>
+        </div>
         <div class="chat-title-wrap">
           <div class="chat-title" id="activeChatTitle">國二-2 班級大群</div>
           <div class="chat-subtitle" id="activeChatSubtitle">全班同學與導師共同討論區</div>
         </div>
+        <button class="room-settings-btn" id="roomSettingsBtn" onclick="openRoomInfoModal()">⚙️ 群組資訊</button>
       </div>
 
       <div class="messages-area" id="messagesArea">
         <div style="text-align:center; color:var(--text-muted); margin-top:2rem;">載入訊息中...</div>
       </div>
 
+      <!-- 回覆特定訊息預覽條 -->
+      <div class="reply-preview-bar" id="replyPreviewBar">
+        <div class="reply-preview-info">
+          <div class="reply-preview-title" id="replyPreviewTitle">回覆對象</div>
+          <div class="reply-preview-snippet" id="replyPreviewSnippet">訊息內容...</div>
+        </div>
+        <button type="button" class="modal-close" style="font-size:1.1rem;" onclick="cancelReply()">✕</button>
+      </div>
+
       <div class="chat-input-bar" id="chatInputBar">
-        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息..." autocomplete="off" onkeydown="handleInputKeydown(event)">
+        <div class="media-btns-wrap" id="mediaBtnsWrap">
+          <button type="button" class="media-btn camera-only-btn" id="cameraBtn" title="拍照傳送" onclick="document.getElementById('cameraInput').click()">📷</button>
+          <button type="button" class="media-btn" title="選擇圖片上傳" onclick="document.getElementById('galleryInput').click()">🖼️</button>
+          <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(this)">
+          <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
+        </div>
+
+        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（電腦可直接貼上圖片）..." autocomplete="off" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
         <button type="button" class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
       </div>
     </div>
@@ -644,12 +864,21 @@
     let me = null;
     let isDevAuditor = false;
     let contacts = [];
+    let allStudents = [];
     let userMap = {};
+    let onlineUserIds = new Set();
     let customRooms = [];
     let roomMembersMap = {};
+    let groupLastReadAt = '1970-01-01T00:00:00Z';
+    let studentGroupLastReadAt = '1970-01-01T00:00:00Z';
     let allMessages = [];
     let activeChannel = { type: 'group', targetUser: null, pairUsers: null, roomId: null };
+    let replyingTo = null;
     let isSending = false;
+
+    function isMobileDevice() {
+      return window.matchMedia('(max-width: 768px) and (pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
 
     function goBackPortal() {
       if (me && (me.role === 'admin' || isDevAuditor)) {
@@ -668,7 +897,55 @@
       if (e.key === 'Enter') {
         e.preventDefault();
         sendMessage();
+      } else if (e.key === 'Escape' && replyingTo) {
+        cancelReply();
       }
+    }
+
+    function openLightbox(url) {
+      document.getElementById('lightboxImg').src = url;
+      document.getElementById('imgLightbox').style.display = 'flex';
+    }
+
+    function setReplyTarget(msgId) {
+      if (isDevAuditor) return;
+      const msg = allMessages.find(m => m.id === msgId);
+      if (!msg) return;
+
+      let senderLabel = msg.sender_role === 'admin'
+        ? `${msg.sender_name}(導師)`
+        : `${msg.sender_seat ?? '-'}號 ${msg.sender_name}`;
+      if (activeChannel.type === 'room') {
+        senderLabel = getRoomDisplayName(activeChannel.roomId, msg.sender_id);
+      }
+
+      const snippet = msg.image_url
+        ? (msg.content ? `[圖片] ${msg.content}` : '[圖片]')
+        : msg.content;
+
+      replyingTo = {
+        id: msg.id,
+        sender: senderLabel,
+        snippet: snippet.slice(0, 80)
+      };
+
+      document.getElementById('replyPreviewTitle').innerText = `↩️ 回覆 ${replyingTo.sender}`;
+      document.getElementById('replyPreviewSnippet').innerText = replyingTo.snippet;
+      document.getElementById('replyPreviewBar').style.display = 'flex';
+      document.getElementById('messageInput').focus();
+    }
+
+    function cancelReply() {
+      replyingTo = null;
+      document.getElementById('replyPreviewBar').style.display = 'none';
+    }
+
+    function scrollToMessage(msgId) {
+      const targetEl = document.getElementById(`msg-item-${msgId}`);
+      if (!targetEl) return;
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      targetEl.classList.add('highlight-flash');
+      setTimeout(() => targetEl.classList.remove('highlight-flash'), 1200);
     }
 
     async function init() {
@@ -696,7 +973,10 @@
       if (isDevAuditor) {
         document.getElementById('openCreateRoomBtn').style.display = 'none';
         document.getElementById('chatInputBar').innerHTML =
-          '<div class="readonly-banner">👁️ 系統管理員隱形唯讀模式（可檢視大群、所有自建小群與私聊紀錄，無法發言或創群）</div>';
+          '<div class="readonly-banner">👁️ 系統管理員隱形唯讀模式（可檢視所有群組與私聊紀錄，無法發言或創群）</div>';
+      } else if (!isMobileDevice()) {
+        const camBtn = document.getElementById('cameraBtn');
+        if (camBtn) camBtn.remove();
       }
 
       const { data: users } = await supabaseClient
@@ -708,11 +988,69 @@
       const visibleMembers = (users || []).filter(u => (u.email || '').toLowerCase() !== '202020@cysh.khc.edu.tw');
       visibleMembers.forEach(u => { userMap[u.id] = u; });
 
+      allStudents = visibleMembers.filter(u => u.role === 'student');
       contacts = visibleMembers.filter(u => u.id !== me.id);
 
-      await Promise.all([loadRoomsAndMembers(), loadAllMessages()]);
-      selectGroupChannel(false);
+      await Promise.all([loadRoomsAndMembers(), loadGroupReadStatus(), loadAllMessages()]);
+      await selectGroupChannel(false);
       subscribeRealtime();
+    }
+
+    async function loadGroupReadStatus() {
+      if (isDevAuditor) return;
+      const { data } = await supabaseClient
+        .from('chat_group_reads')
+        .select('last_read_at, student_group_last_read_at')
+        .eq('user_id', me.id)
+        .maybeSingle();
+
+      if (data) {
+        if (data.last_read_at) groupLastReadAt = data.last_read_at;
+        if (data.student_group_last_read_at) studentGroupLastReadAt = data.student_group_last_read_at;
+      }
+    }
+
+    async function markGroupAsRead() {
+      if (isDevAuditor) return;
+      const nowIso = new Date().toISOString();
+      groupLastReadAt = nowIso;
+      renderThreadList();
+      await supabaseClient
+        .from('chat_group_reads')
+        .upsert({
+          user_id: me.id,
+          last_read_at: groupLastReadAt,
+          student_group_last_read_at: studentGroupLastReadAt
+        });
+    }
+
+    async function markStudentGroupAsRead() {
+      if (isDevAuditor || me.role !== 'student') return;
+      const nowIso = new Date().toISOString();
+      studentGroupLastReadAt = nowIso;
+      renderThreadList();
+      await supabaseClient
+        .from('chat_group_reads')
+        .upsert({
+          user_id: me.id,
+          last_read_at: groupLastReadAt,
+          student_group_last_read_at: studentGroupLastReadAt
+        });
+    }
+
+    async function markRoomAsRead(roomId) {
+      if (isDevAuditor) return;
+      const nowIso = new Date().toISOString();
+      const members = roomMembersMap[roomId] || [];
+      const myMem = members.find(m => m.user_id === me.id);
+      if (myMem) myMem.last_read_at = nowIso;
+      renderThreadList();
+      renderActiveMessages();
+      await supabaseClient
+        .from('chat_room_members')
+        .update({ last_read_at: nowIso })
+        .eq('room_id', roomId)
+        .eq('user_id', me.id);
     }
 
     async function loadRoomsAndMembers() {
@@ -725,12 +1063,12 @@
 
       const { data: members } = await supabaseClient
         .from('chat_room_members')
-        .select('room_id, user_id');
+        .select('room_id, user_id, nickname, last_read_at');
 
       roomMembersMap = {};
       (members || []).forEach(m => {
         if (!roomMembersMap[m.room_id]) roomMembersMap[m.room_id] = [];
-        roomMembersMap[m.room_id].push(m.user_id);
+        roomMembersMap[m.room_id].push(m);
       });
     }
 
@@ -749,27 +1087,52 @@
     }
 
     function subscribeRealtime() {
-      supabaseClient
-        .channel('nexus-direct-realtime')
+      const channel = supabaseClient.channel('nexus-direct-realtime', {
+        config: { presence: { key: me.id } }
+      });
+
+      channel
+        .on('presence', { event: 'sync' }, () => {
+          const state = channel.presenceState();
+          onlineUserIds = new Set(Object.keys(state));
+          updateHeaderOnlineStatus();
+          renderThreadList();
+        })
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
           const newMsg = payload.new;
           if (!allMessages.some(m => m.id === newMsg.id)) {
             allMessages.push(newMsg);
           }
 
-          if (
-            !isDevAuditor &&
-            activeChannel.type === 'dm' &&
-            activeChannel.targetUser &&
-            newMsg.channel_type === 'dm' &&
-            newMsg.sender_id === activeChannel.targetUser.id &&
-            newMsg.receiver_id === me.id
-          ) {
-            markDmAsRead(activeChannel.targetUser.id);
+          if (!isDevAuditor) {
+            if (activeChannel.type === 'group' && newMsg.channel_type === 'group') {
+              markGroupAsRead();
+            } else if (activeChannel.type === 'student_group' && newMsg.channel_type === 'student_group') {
+              markStudentGroupAsRead();
+            } else if (activeChannel.type === 'room' && newMsg.channel_type === 'room' && newMsg.room_id === activeChannel.roomId) {
+              markRoomAsRead(activeChannel.roomId);
+            } else if (
+              activeChannel.type === 'dm' &&
+              activeChannel.targetUser &&
+              newMsg.channel_type === 'dm' &&
+              newMsg.sender_id === activeChannel.targetUser.id &&
+              newMsg.receiver_id === me.id
+            ) {
+              markDmAsRead(activeChannel.targetUser.id);
+            }
           }
 
           renderThreadList();
           renderActiveMessages();
+        })
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'chat_messages' }, payload => {
+          const updated = payload.new;
+          const idx = allMessages.findIndex(m => m.id === updated.id);
+          if (idx !== -1) {
+            allMessages[idx] = updated;
+            renderThreadList();
+            renderActiveMessages();
+          }
         })
         .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, payload => {
           allMessages = allMessages.filter(m => m.id !== payload.old.id);
@@ -778,13 +1141,43 @@
         })
         .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_rooms' }, async () => {
           await loadRoomsAndMembers();
-          renderThreadList();
+          if (activeChannel.type === 'room' && !customRooms.some(r => r.id === activeChannel.roomId)) {
+            selectGroupChannel(false);
+          } else {
+            renderThreadList();
+          }
         })
         .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_room_members' }, async () => {
           await loadRoomsAndMembers();
+          if (activeChannel.type === 'room') {
+            const mems = roomMembersMap[activeChannel.roomId] || [];
+            if (!isDevAuditor && !mems.some(m => m.user_id === me.id)) {
+              selectGroupChannel(false);
+              return;
+            }
+            updateRoomHeaderSubtitle(activeChannel.roomId);
+            renderActiveMessages();
+          }
           renderThreadList();
         })
-        .subscribe();
+        .subscribe(async status => {
+          if (status === 'SUBSCRIBED' && !isDevAuditor) {
+            await channel.track({ online_at: new Date().toISOString() });
+          }
+        });
+    }
+
+    function updateHeaderOnlineStatus() {
+      const dot = document.getElementById('activeOnlineDot');
+      const sub = document.getElementById('activeChatSubtitle');
+
+      if (activeChannel.type === 'dm' && activeChannel.targetUser) {
+        const isOnline = onlineUserIds.has(activeChannel.targetUser.id);
+        dot.style.display = isOnline ? 'block' : 'none';
+        sub.innerText = isOnline ? '🟢 目前在線上・1 對 1 私人訊息' : '⚫ 離線・1 對 1 私人訊息';
+      } else {
+        dot.style.display = 'none';
+      }
     }
 
     function openCreateRoomModal() {
@@ -796,8 +1189,10 @@
         const label = isTeacher ? `👑 ${c.name}（導師）` : `${c.seat_number ?? '-'}號 ${c.name}`;
         return `
           <label class="member-check-item">
-            <input type="checkbox" value="${c.id}">
-            <span>${escapeHtml(label)}</span>
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <input type="checkbox" value="${c.id}">
+              <span>${escapeHtml(label)}</span>
+            </div>
           </label>
         `;
       }).join('');
@@ -849,7 +1244,197 @@
 
       closeCreateRoomModal();
       await loadRoomsAndMembers();
-      selectCustomRoom(roomData.id, true);
+      await selectCustomRoom(roomData.id, true);
+    }
+
+    function getRoomDisplayName(roomId, uid) {
+      const mems = roomMembersMap[roomId] || [];
+      const mem = mems.find(m => m.user_id === uid);
+      const u = userMap[uid];
+      const baseName = u ? (u.role === 'admin' ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`) : '未知成員';
+      if (mem && mem.nickname && mem.nickname.trim()) {
+        return `${mem.nickname.trim()}（${baseName}）`;
+      }
+      return baseName;
+    }
+
+    function openRoomInfoModal() {
+      if (activeChannel.type !== 'room' || !activeChannel.roomId) return;
+      const room = customRooms.find(r => r.id === activeChannel.roomId);
+      if (!room) return;
+
+      const isOwner = !isDevAuditor && room.created_by === me.id;
+      const currentMembers = roomMembersMap[room.id] || [];
+      const myMem = currentMembers.find(m => m.user_id === me.id);
+      const creatorLabel = formatUserShort(userMap[room.created_by]);
+
+      let html = `
+        <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.85rem;">
+          建立者：<strong style="color:var(--text-main);">${escapeHtml(creatorLabel)}</strong>
+        </div>
+      `;
+
+      if (!isDevAuditor && myMem) {
+        html += `
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.35rem;">我在本群的專屬暱稱（留空則顯示本名）：</div>
+            <div style="display:flex; gap:0.5rem;">
+              <input type="text" id="myRoomNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：數學小老師" value="${escapeHtml(myMem.nickname || '')}">
+              <button class="send-btn" style="border-radius:10px; padding:0 1rem;" onclick="updateMyRoomNickname(${room.id})">套用</button>
+            </div>
+          </div>
+        `;
+      }
+
+      if (isOwner) {
+        html += `
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.35rem;">修改小群組名稱：</div>
+            <div style="display:flex; gap:0.5rem;">
+              <input type="text" id="editRoomNameInput" class="modal-input" style="margin-bottom:0;" maxlength="30" value="${escapeHtml(room.name)}">
+              <button class="send-btn" style="border-radius:10px; padding:0 1rem;" onclick="renameCustomRoom(${room.id})">儲存</button>
+            </div>
+          </div>
+        `;
+      }
+
+      html += `<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.45rem;">目前成員（${currentMembers.length} 人）：</div>`;
+      html += `<div class="member-checklist">`;
+      html += currentMembers.map(m => {
+        const uid = m.user_id;
+        const label = getRoomDisplayName(room.id, uid);
+        const isCreator = uid === room.created_by;
+        const isOnline = onlineUserIds.has(uid);
+        return `
+          <div class="member-check-item" style="cursor:default;">
+            <span>${isOnline ? '🟢' : '⚫'} ${escapeHtml(label)} ${isCreator ? '<span class="role-pill">群主</span>' : ''}</span>
+            ${(isOwner && !isCreator) ? `<button class="danger-btn" style="padding:0.25rem 0.6rem; font-size:0.75rem;" onclick="removeMemberFromRoom(${room.id}, '${uid}')">移出</button>` : ''}
+          </div>
+        `;
+      }).join('');
+      html += `</div>`;
+
+      if (isOwner) {
+        const currentIds = currentMembers.map(m => m.user_id);
+        const nonMembers = contacts.filter(c => !currentIds.includes(c.id));
+        if (nonMembers.length > 0) {
+          html += `
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.45rem;">邀請新成員加入：</div>
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+              <select id="addMemberSelect" class="modal-input" style="margin-bottom:0;">
+                ${nonMembers.map(c => `<option value="${c.id}">${escapeHtml(formatUserShort(c))}</option>`).join('')}
+              </select>
+              <button class="send-btn" style="border-radius:10px; padding:0 1rem;" onclick="addMemberToRoom(${room.id})">＋邀請</button>
+            </div>
+          `;
+        }
+        html += `<button class="danger-btn" style="width:100%;" onclick="deleteCustomRoom(${room.id})">🗑️ 解散並刪除此群組</button>`;
+      } else if (!isDevAuditor) {
+        html += `<button class="danger-btn" style="width:100%;" onclick="leaveCustomRoom(${room.id})">🚪 退出此群組</button>`;
+      }
+
+      document.getElementById('roomInfoBody').innerHTML = html;
+      document.getElementById('roomInfoModal').style.display = 'flex';
+    }
+
+    function closeRoomInfoModal() {
+      document.getElementById('roomInfoModal').style.display = 'none';
+    }
+
+    async function updateMyRoomNickname(roomId) {
+      if (isDevAuditor) return;
+      const nick = document.getElementById('myRoomNicknameInput').value.trim();
+      const { error } = await supabaseClient
+        .from('chat_room_members')
+        .update({ nickname: nick || null })
+        .eq('room_id', roomId)
+        .eq('user_id', me.id);
+
+      if (error) return alert('更新暱稱失敗：' + error.message);
+
+      await loadRoomsAndMembers();
+      updateRoomHeaderSubtitle(roomId);
+      renderActiveMessages();
+      openRoomInfoModal();
+    }
+
+    async function renameCustomRoom(roomId) {
+      const newName = document.getElementById('editRoomNameInput').value.trim();
+      if (!newName) return alert('群組名稱不可為空！');
+
+      const { error } = await supabaseClient
+        .from('chat_rooms')
+        .update({ name: newName })
+        .eq('id', roomId);
+
+      if (error) return alert('改名失敗：' + error.message);
+
+      await loadRoomsAndMembers();
+      document.getElementById('activeChatTitle').innerText = newName;
+      renderThreadList();
+      openRoomInfoModal();
+    }
+
+    async function addMemberToRoom(roomId) {
+      const selectEl = document.getElementById('addMemberSelect');
+      const targetUid = selectEl ? selectEl.value : null;
+      if (!targetUid) return;
+
+      const { error } = await supabaseClient
+        .from('chat_room_members')
+        .insert([{ room_id: roomId, user_id: targetUid }]);
+
+      if (error) return alert('邀請失敗：' + error.message);
+
+      await loadRoomsAndMembers();
+      updateRoomHeaderSubtitle(roomId);
+      renderThreadList();
+      openRoomInfoModal();
+    }
+
+    async function removeMemberFromRoom(roomId, targetUid) {
+      if (!confirm('確定要將此成員移出群組嗎？')) return;
+      const { error } = await supabaseClient
+        .from('chat_room_members')
+        .delete()
+        .eq('room_id', roomId)
+        .eq('user_id', targetUid);
+
+      if (error) return alert('移出失敗：' + error.message);
+
+      await loadRoomsAndMembers();
+      updateRoomHeaderSubtitle(roomId);
+      renderThreadList();
+      openRoomInfoModal();
+    }
+
+    async function leaveCustomRoom(roomId) {
+      if (!confirm('確定要退出此群組嗎？退出後將無法再看到此群組訊息。')) return;
+      const { error } = await supabaseClient
+        .from('chat_room_members')
+        .delete()
+        .eq('room_id', roomId)
+        .eq('user_id', me.id);
+
+      if (error) return alert('退出失敗：' + error.message);
+
+      closeRoomInfoModal();
+      await loadRoomsAndMembers();
+      await selectGroupChannel(false);
+    }
+
+    async function deleteCustomRoom(roomId) {
+      if (!confirm('確定要解散並刪除此群組嗎？所有聊天紀錄將會一併清除！')) return;
+      const { error } = await supabaseClient
+        .from('chat_rooms')
+        .delete()
+        .eq('id', roomId);
+
+      if (error) return alert('解散失敗：' + error.message);
+
+      closeRoomInfoModal();
+      await loadRoomsAndMembers();
+      await selectGroupChannel(false);
     }
 
     async function markDmAsRead(senderId) {
@@ -871,34 +1456,63 @@
         .in('id', unreadIds);
     }
 
-    function selectGroupChannel(openMobile = true) {
+    async function selectGroupChannel(openMobile = true) {
+      cancelReply();
       activeChannel = { type: 'group', targetUser: null, pairUsers: null, roomId: null };
+      document.getElementById('roomSettingsBtn').style.display = 'none';
+      document.getElementById('activeOnlineDot').style.display = 'none';
       const memberTotal = isDevAuditor ? contacts.length : contacts.length + 1;
       document.getElementById('activeAvatar').className = 'avatar group-av';
       document.getElementById('activeAvatar').innerText = '📢';
       document.getElementById('activeChatTitle').innerText = '國二-2 班級大群';
       document.getElementById('activeChatSubtitle').innerText = isDevAuditor
-        ? `共 ${memberTotal} 位成員（隱形稽核檢視中）`
+        ? `共 ${memberTotal} 位成員（隱形稽核檢視中・大群不可退人）`
         : `共 ${memberTotal} 位成員（全班同學與導師）`;
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
+      await markGroupAsRead();
       renderThreadList();
       renderActiveMessages();
     }
 
-    function selectCustomRoom(roomId, openMobile = true) {
+    async function selectStudentGroupChannel(openMobile = true) {
+      if (me.role !== 'student' && !isDevAuditor) return;
+      cancelReply();
+      activeChannel = { type: 'student_group', targetUser: null, pairUsers: null, roomId: null };
+      document.getElementById('roomSettingsBtn').style.display = 'none';
+      document.getElementById('activeOnlineDot').style.display = 'none';
+      document.getElementById('activeAvatar').className = 'avatar student-group-av';
+      document.getElementById('activeAvatar').innerText = '🎒';
+      document.getElementById('activeChatTitle').innerText = '國二-2 學生專屬群（無導師）';
+      document.getElementById('activeChatSubtitle').innerText = isDevAuditor
+        ? `全班學生 ${allStudents.length} 人（隱形稽核檢視中・導師不可見）`
+        : `全班同學 ${allStudents.length} 人專屬空間（導師無法加入與查看）`;
+      if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
+      await markStudentGroupAsRead();
+      renderThreadList();
+      renderActiveMessages();
+    }
+
+    function updateRoomHeaderSubtitle(roomId) {
+      const mems = roomMembersMap[roomId] || [];
+      const memberNames = mems.map(m => getRoomDisplayName(roomId, m.user_id)).join('、');
+      document.getElementById('activeChatSubtitle').innerText = `成員 (${mems.length}人)：${memberNames || '載入中'}`;
+    }
+
+    async function selectCustomRoom(roomId, openMobile = true) {
       const room = customRooms.find(r => r.id === roomId);
       if (!room) return;
 
+      cancelReply();
       activeChannel = { type: 'room', targetUser: null, pairUsers: null, roomId: room.id };
-      const memberIds = roomMembersMap[room.id] || [];
-      const memberNames = memberIds.map(uid => formatUserShort(userMap[uid])).join('、');
-
+      document.getElementById('roomSettingsBtn').style.display = 'inline-block';
+      document.getElementById('activeOnlineDot').style.display = 'none';
       document.getElementById('activeAvatar').className = 'avatar custom-room-av';
       document.getElementById('activeAvatar').innerText = '👥';
       document.getElementById('activeChatTitle').innerText = room.name;
-      document.getElementById('activeChatSubtitle').innerText = `成員 (${memberIds.length}人)：${memberNames || '載入中'}`;
+      updateRoomHeaderSubtitle(room.id);
 
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
+      await markRoomAsRead(room.id);
       renderThreadList();
       renderActiveMessages();
     }
@@ -908,7 +1522,9 @@
       const target = contacts.find(c => c.id === userId);
       if (!target) return;
 
+      cancelReply();
       activeChannel = { type: 'dm', targetUser: target, pairUsers: null, roomId: null };
+      document.getElementById('roomSettingsBtn').style.display = 'none';
       const isTeacher = target.role === 'admin';
 
       document.getElementById('activeAvatar').className = `avatar ${isTeacher ? 'teacher-av' : ''}`;
@@ -916,7 +1532,7 @@
       document.getElementById('activeChatTitle').innerText = isTeacher
         ? `${target.name}（導師）`
         : `${target.seat_number ?? '-'}號 ${target.name}`;
-      document.getElementById('activeChatSubtitle').innerText = '1 對 1 私人訊息（僅雙方可見）';
+      updateHeaderOnlineStatus();
 
       document.getElementById('igShell').classList.add('mobile-chat-open');
       await markDmAsRead(target.id);
@@ -926,12 +1542,15 @@
 
     function selectAuditPair(uid1, uid2) {
       if (!isDevAuditor) return;
+      cancelReply();
       const u1 = userMap[uid1] || { id: uid1, name: '成員A', seat_number: '-' };
       const u2 = userMap[uid2] || { id: uid2, name: '成員B', seat_number: '-' };
       const label1 = formatUserShort(u1);
       const label2 = formatUserShort(u2);
 
       activeChannel = { type: 'audit_dm', targetUser: null, pairUsers: [u1, u2], roomId: null };
+      document.getElementById('roomSettingsBtn').style.display = 'none';
+      document.getElementById('activeOnlineDot').style.display = 'none';
       document.getElementById('activeAvatar').className = 'avatar audit-av';
       document.getElementById('activeAvatar').innerText = '私聊';
       document.getElementById('activeChatTitle').innerText = `${label1} ⇄ ${label2}`;
@@ -953,18 +1572,50 @@
 
       const groupMsgs = allMessages.filter(m => m.channel_type === 'group');
       const lastGroup = groupMsgs[groupMsgs.length - 1];
-      const groupPreview = lastGroup ? `${lastGroup.sender_name}：${lastGroup.content}` : '點擊進入班級大群...';
+      const groupPreview = lastGroup
+        ? `${lastGroup.sender_name}：${lastGroup.image_url ? '[圖片] ' : ''}${lastGroup.content}`
+        : '點擊進入班級大群...';
+      const groupUnread = (!isDevAuditor && activeChannel.type !== 'group')
+        ? groupMsgs.filter(m => m.sender_id !== me.id && m.created_at > groupLastReadAt).length
+        : 0;
 
       let html = `
-        <div class="section-label">班級官方大群</div>
+        <div class="section-label">班級官方頻道（${onlineUserIds.size} 人在線）</div>
         <div class="thread-item ${activeChannel.type === 'group' ? 'active' : ''}" onclick="selectGroupChannel(true)">
-          <div class="avatar group-av">📢</div>
+          <div class="avatar-wrap">
+            <div class="avatar group-av">📢</div>
+          </div>
           <div class="thread-info">
             <div class="thread-name">國二-2 班級大群</div>
             <div class="thread-preview">${escapeHtml(groupPreview)}</div>
           </div>
+          ${groupUnread > 0 ? `<span class="unread-badge">${groupUnread}</span>` : ''}
         </div>
       `;
+
+      if (me.role === 'student' || isDevAuditor) {
+        const stuMsgs = allMessages.filter(m => m.channel_type === 'student_group');
+        const lastStu = stuMsgs[stuMsgs.length - 1];
+        const stuPreview = lastStu
+          ? `${lastStu.sender_name}：${lastStu.image_url ? '[圖片] ' : ''}${lastStu.content}`
+          : '全班同學專屬空間（無導師）...';
+        const stuUnread = (!isDevAuditor && activeChannel.type !== 'student_group')
+          ? stuMsgs.filter(m => m.sender_id !== me.id && m.created_at > studentGroupLastReadAt).length
+          : 0;
+
+        html += `
+          <div class="thread-item ${activeChannel.type === 'student_group' ? 'active' : ''}" onclick="selectStudentGroupChannel(true)">
+            <div class="avatar-wrap">
+              <div class="avatar student-group-av">🎒</div>
+            </div>
+            <div class="thread-info">
+              <div class="thread-name">學生專屬群 <span class="role-pill">無導師</span></div>
+              <div class="thread-preview">${escapeHtml(stuPreview)}</div>
+            </div>
+            ${stuUnread > 0 ? `<span class="unread-badge">${stuUnread}</span>` : ''}
+          </div>
+        `;
+      }
 
       const filteredRooms = customRooms.filter(r => {
         if (!keyword) return true;
@@ -978,17 +1629,27 @@
         html += filteredRooms.map(r => {
           const rMsgs = allMessages.filter(m => m.channel_type === 'room' && m.room_id === r.id);
           const lastR = rMsgs[rMsgs.length - 1];
-          const mCount = (roomMembersMap[r.id] || []).length;
-          const preview = lastR ? `${lastR.sender_name}：${lastR.content}` : `群組成員 ${mCount} 人・點擊開始聊天`;
+          const mems = roomMembersMap[r.id] || [];
+          const myMem = mems.find(m => m.user_id === me.id);
+          const preview = lastR
+            ? `${lastR.sender_name}：${lastR.image_url ? '[圖片] ' : ''}${lastR.content}`
+            : `群組成員 ${mems.length} 人・點擊開始聊天`;
           const isActive = activeChannel.type === 'room' && activeChannel.roomId === r.id;
+          const lastRead = (myMem && myMem.last_read_at) ? myMem.last_read_at : '1970-01-01T00:00:00Z';
+          const roomUnread = (!isDevAuditor && !isActive)
+            ? rMsgs.filter(m => m.sender_id !== me.id && m.created_at > lastRead).length
+            : 0;
 
           return `
             <div class="thread-item ${isActive ? 'active' : ''}" onclick="selectCustomRoom(${r.id}, true)">
-              <div class="avatar custom-room-av">👥</div>
+              <div class="avatar-wrap">
+                <div class="avatar custom-room-av">👥</div>
+              </div>
               <div class="thread-info">
-                <div class="thread-name">${escapeHtml(r.name)} <span style="font-size:0.72rem; color:var(--text-muted);">(${mCount})</span></div>
+                <div class="thread-name">${escapeHtml(r.name)} <span style="font-size:0.72rem; color:var(--text-muted);">(${mems.length})</span></div>
                 <div class="thread-preview">${escapeHtml(preview)}</div>
               </div>
+              ${roomUnread > 0 ? `<span class="unread-badge">${roomUnread}</span>` : ''}
             </div>
           `;
         }).join('');
@@ -1026,7 +1687,7 @@
 
             return `
               <div class="thread-item ${isActive ? 'active' : ''}" onclick="selectAuditPair('${p.uid1}', '${p.uid2}')">
-                <div class="avatar audit-av">私聊</div>
+                <div class="avatar-wrap"><div class="avatar audit-av">私聊</div></div>
                 <div class="thread-info">
                   <div class="thread-name">${escapeHtml(label1)} ⇄ ${escapeHtml(label2)}</div>
                   <div class="thread-preview">${escapeHtml(p.lastMsg.sender_name)}：${escapeHtml(p.lastMsg.content)}</div>
@@ -1049,6 +1710,7 @@
 
       html += filtered.map(c => {
         const isTeacher = c.role === 'admin';
+        const isOnline = onlineUserIds.has(c.id);
         const dmMsgs = allMessages.filter(m =>
           m.channel_type === 'dm' &&
           ((m.sender_id === me.id && m.receiver_id === c.id) || (m.sender_id === c.id && m.receiver_id === me.id))
@@ -1056,14 +1718,19 @@
         const lastDm = dmMsgs[dmMsgs.length - 1];
         const unreadCount = dmMsgs.filter(m => m.sender_id === c.id && m.receiver_id === me.id && !m.is_read).length;
         const preview = lastDm
-          ? (lastDm.sender_id === me.id ? `你：${lastDm.content}` : lastDm.content)
-          : '點擊開始私聊...';
+          ? (lastDm.sender_id === me.id
+              ? `你：${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`
+              : `${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`)
+          : (isOnline ? '🟢 在線上・點擊開始私聊' : '點擊開始私聊...');
 
         const isActive = activeChannel.type === 'dm' && activeChannel.targetUser && activeChannel.targetUser.id === c.id;
 
         return `
           <div class="thread-item ${isActive ? 'active' : ''}" onclick="selectDmChannel('${c.id}')">
-            <div class="avatar ${isTeacher ? 'teacher-av' : ''}">${isTeacher ? '師' : (c.seat_number ?? '#')}</div>
+            <div class="avatar-wrap">
+              <div class="avatar ${isTeacher ? 'teacher-av' : ''}">${isTeacher ? '師' : (c.seat_number ?? '#')}</div>
+              ${isOnline ? '<span class="online-dot"></span>' : ''}
+            </div>
             <div class="thread-info">
               <div class="thread-name">
                 ${isTeacher ? c.name : `${c.seat_number ?? '-'}號 ${c.name}`}
@@ -1085,6 +1752,8 @@
 
       if (activeChannel.type === 'group') {
         msgs = allMessages.filter(m => m.channel_type === 'group');
+      } else if (activeChannel.type === 'student_group') {
+        msgs = allMessages.filter(m => m.channel_type === 'student_group');
       } else if (activeChannel.type === 'room' && activeChannel.roomId) {
         msgs = allMessages.filter(m => m.channel_type === 'room' && m.room_id === activeChannel.roomId);
       } else if (activeChannel.type === 'dm' && activeChannel.targetUser) {
@@ -1107,30 +1776,193 @@
       }
 
       const canModDelete = me.role === 'admin' || isDevAuditor;
+      const roomMembers = activeChannel.type === 'room' ? (roomMembersMap[activeChannel.roomId] || []) : [];
 
       area.innerHTML = msgs.map(m => {
         const isMine = !isDevAuditor && m.sender_id === me.id;
         const dt = new Date(m.created_at);
         const timeStr = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
-        const senderLabel = m.sender_role === 'admin'
+
+        let senderLabel = m.sender_role === 'admin'
           ? `👑 ${m.sender_name}（導師）`
           : `${m.sender_seat ?? '-'}號 ${m.sender_name}`;
+        if (activeChannel.type === 'room') {
+          senderLabel = getRoomDisplayName(activeChannel.roomId, m.sender_id);
+        }
 
-        const showSenderName = !isMine && (activeChannel.type === 'group' || activeChannel.type === 'room' || activeChannel.type === 'audit_dm');
+        const showSenderName = !isMine && (
+          activeChannel.type === 'group' ||
+          activeChannel.type === 'student_group' ||
+          activeChannel.type === 'room' ||
+          activeChannel.type === 'audit_dm'
+        );
+
+        let readReceiptHtml = '';
+        if (isMine) {
+          if (activeChannel.type === 'dm' && m.is_read) {
+            readReceiptHtml = '<span class="read-receipt">已讀</span>';
+          } else if (activeChannel.type === 'room') {
+            const readCount = roomMembers.filter(rm =>
+              rm.user_id !== me.id &&
+              rm.last_read_at &&
+              new Date(rm.last_read_at) >= new Date(m.created_at)
+            ).length;
+            if (readCount > 0) {
+              readReceiptHtml = `<span class="read-receipt">已讀 ${readCount}</span>`;
+            }
+          }
+        }
+
+        const quoteHtml = (m.reply_to_sender || m.reply_to_content)
+          ? `<div class="reply-quote-box" onclick="${m.reply_to_id ? `scrollToMessage(${m.reply_to_id})` : ''}"><div class="reply-quote-sender">↩️ ${escapeHtml(m.reply_to_sender || '原訊息')}</div><div class="reply-quote-text">${escapeHtml(m.reply_to_content || '')}</div></div>`
+          : '';
+
+        const imgHtml = m.image_url
+          ? `<img src="${escapeHtml(m.image_url)}" class="chat-img" alt="聊天圖片" onclick="openLightbox('${escapeHtml(m.image_url)}')">`
+          : '';
+        const textHtml = m.content ? `<div style="white-space:pre-wrap;">${escapeHtml(m.content)}</div>` : '';
+        const isImgOnly = m.image_url && !m.content && !quoteHtml;
 
         return `
-          <div class="msg-row ${isMine ? 'mine' : 'others'}">
+          <div class="msg-row ${isMine ? 'mine' : 'others'}" id="msg-item-${m.id}">
             ${showSenderName ? `<div class="msg-sender">${escapeHtml(senderLabel)}</div>` : ''}
             <div class="msg-bubble-wrap">
-              <div class="msg-bubble">${escapeHtml(m.content)}</div>
-              ${(isMine || canModDelete) ? `<button class="del-msg-btn" title="收回/刪除訊息" onclick="deleteMessage(${m.id})">✕</button>` : ''}
+              <div class="msg-bubble ${isImgOnly ? 'img-only' : ''}">${quoteHtml}${imgHtml}${textHtml}</div>
+              <div class="msg-actions">
+                ${!isDevAuditor ? `<button class="action-icon-btn" title="回覆此訊息" onclick="setReplyTarget(${m.id})">↩️</button>` : ''}
+                ${(isMine || canModDelete) ? `<button class="action-icon-btn del-btn" title="收回/刪除訊息" onclick="deleteMessage(${m.id})">✕</button>` : ''}
+              </div>
             </div>
-            <div class="msg-time">${timeStr}</div>
+            <div class="msg-meta">
+              ${readReceiptHtml}
+              <span>${timeStr}</span>
+            </div>
           </div>
         `;
       }).join('');
 
       area.scrollTop = area.scrollHeight;
+    }
+
+    async function compressImageFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = new Image();
+          img.onload = () => {
+            const maxSide = 1280;
+            let { width, height } = img;
+            if (width > maxSide || height > maxSide) {
+              if (width > height) {
+                height = Math.round((height * maxSide) / width);
+                width = maxSide;
+              } else {
+                width = Math.round((width * maxSide) / height);
+                height = maxSide;
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob(blob => {
+              if (blob) resolve(blob);
+              else reject(new Error('圖片壓縮失敗'));
+            }, 'image/jpeg', 0.8);
+          };
+          img.onerror = reject;
+          img.src = ev.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function uploadAndSendImageFile(file) {
+      if (isDevAuditor || !file) return;
+
+      const msgInput = document.getElementById('messageInput');
+      const oldPlaceholder = msgInput.placeholder;
+      msgInput.placeholder = '正在上傳圖片...';
+      msgInput.disabled = true;
+
+      try {
+        const compressedBlob = await compressImageFile(file);
+        const filePath = `${me.id}/${Date.now()}_${Math.random().toString(36).slice(2, 7)}.jpg`;
+
+        const { error: uploadErr } = await supabaseClient.storage
+          .from('chat-images')
+          .upload(filePath, compressedBlob, { contentType: 'image/jpeg' });
+
+        if (uploadErr) {
+          alert('圖片上傳失敗：' + uploadErr.message);
+          return;
+        }
+
+        const { data: pubData } = supabaseClient.storage
+          .from('chat-images')
+          .getPublicUrl(filePath);
+
+        const payload = {
+          channel_type: activeChannel.type,
+          sender_id: me.id,
+          sender_name: me.name || '成員',
+          sender_seat: me.seat_number ?? null,
+          sender_role: me.role,
+          receiver_id: activeChannel.type === 'dm' ? activeChannel.targetUser.id : null,
+          room_id: activeChannel.type === 'room' ? activeChannel.roomId : null,
+          content: '',
+          image_url: pubData.publicUrl,
+          reply_to_id: replyingTo ? replyingTo.id : null,
+          reply_to_sender: replyingTo ? replyingTo.sender : null,
+          reply_to_content: replyingTo ? replyingTo.snippet : null
+        };
+
+        cancelReply();
+
+        const { data, error } = await supabaseClient
+          .from('chat_messages')
+          .insert([payload])
+          .select()
+          .single();
+
+        if (error) {
+          alert('傳送圖片訊息失敗：' + error.message);
+          return;
+        }
+
+        if (data && !allMessages.some(m => m.id === data.id)) {
+          allMessages.push(data);
+          renderThreadList();
+          renderActiveMessages();
+        }
+      } catch (err) {
+        alert('處理圖片時發生錯誤：' + err.message);
+      } finally {
+        msgInput.disabled = false;
+        msgInput.placeholder = oldPlaceholder;
+      }
+    }
+
+    async function handleImageUpload(fileInput) {
+      const file = fileInput.files && fileInput.files[0];
+      fileInput.value = '';
+      if (file) await uploadAndSendImageFile(file);
+    }
+
+    async function handlePasteImage(e) {
+      if (isDevAuditor) return;
+      const items = (e.clipboardData || window.clipboardData)?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.indexOf('image') !== -1) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) await uploadAndSendImageFile(file);
+          break;
+        }
+      }
     }
 
     async function sendMessage() {
@@ -1142,7 +1974,9 @@
 
       isSending = true;
 
-      // 強制清除輸入框並結束注音組字殘留
+      const currentReply = replyingTo;
+      cancelReply();
+
       input.value = '';
       input.blur();
       requestAnimationFrame(() => {
@@ -1158,7 +1992,10 @@
         sender_role: me.role,
         receiver_id: activeChannel.type === 'dm' ? activeChannel.targetUser.id : null,
         room_id: activeChannel.type === 'room' ? activeChannel.roomId : null,
-        content
+        content,
+        reply_to_id: currentReply ? currentReply.id : null,
+        reply_to_sender: currentReply ? currentReply.sender : null,
+        reply_to_content: currentReply ? currentReply.snippet : null
       };
 
       try {
