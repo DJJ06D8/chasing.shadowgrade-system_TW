@@ -48,9 +48,10 @@
       --badge-border: rgba(0, 240, 255, 0.3);
       --btn-grad: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
       --btn-text: #020617;
-      --toggle-bg: rgba(15, 23, 42, 0.75);
-      --toggle-border: rgba(0, 240, 255, 0.35);
-      --toggle-text: #e2e8f0;
+      --pill-bg: rgba(2, 6, 23, 0.85);
+      --pill-border: rgba(0, 240, 255, 0.4);
+      --pill-knob: linear-gradient(135deg, #00f0ff, #38bdf8);
+      --pill-knob-shadow: 0 0 10px rgba(0, 240, 255, 0.75);
       --dropzone-bg: rgba(2, 6, 23, 0.55);
       --dropzone-border: rgba(0, 240, 255, 0.45);
     }
@@ -95,9 +96,10 @@
       --badge-border: rgba(2, 132, 199, 0.28);
       --btn-grad: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
       --btn-text: #ffffff;
-      --toggle-bg: rgba(255, 255, 255, 0.9);
-      --toggle-border: rgba(2, 132, 199, 0.3);
-      --toggle-text: #0f172a;
+      --pill-bg: #e2e8f0;
+      --pill-border: rgba(2, 132, 199, 0.38);
+      --pill-knob: linear-gradient(135deg, #f59e0b, #fbbf24);
+      --pill-knob-shadow: 0 0 10px rgba(245, 158, 11, 0.65);
       --dropzone-bg: rgba(240, 249, 255, 0.85);
       --dropzone-border: rgba(2, 132, 199, 0.45);
     }
@@ -205,28 +207,52 @@
 
     .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
 
-    .theme-btn {
+    /* 滑動膠囊明暗切換條 */
+    .theme-switch {
+      position: relative;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      background: var(--toggle-bg);
-      color: var(--toggle-text);
-      border: 1px solid var(--toggle-border);
-      padding: 0.5rem 0.9rem;
-      border-radius: 8px;
+      width: 78px;
+      height: 32px;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--pill-bg);
+      border: 1px solid var(--pill-border);
       cursor: pointer;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+      user-select: none;
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
 
-    .theme-dot {
-      width: 7px;
-      height: 7px;
+    .theme-switch-knob {
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      background: var(--accent-primary);
+      background: var(--pill-knob);
+      box-shadow: var(--pill-knob-shadow);
+      transform: translateX(0);
+      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+      flex-shrink: 0;
     }
+
+    [data-theme="light"] .theme-switch-knob {
+      transform: translateX(46px);
+    }
+
+    .theme-switch-label {
+      position: absolute;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .label-dark { right: 9px; opacity: 1; color: var(--accent-primary); }
+    .label-light { left: 9px; opacity: 0; color: #b45309; }
+
+    [data-theme="light"] .label-dark { opacity: 0; }
+    [data-theme="light"] .label-light { opacity: 1; }
 
     .excel-btn {
       display: inline-flex;
@@ -573,15 +599,16 @@
   <div class="container" id="entrySection">
     <div class="header" id="entryHeader">
       <div>
-        <span class="role-tag">TEACHER COMMAND CENTER // V3.8</span>
+        <span class="role-tag">TEACHER COMMAND CENTER // V3.9</span>
         <h2>國二-2 成績系統指揮中心（老師專用）</h2>
       </div>
       <div class="btn-group">
         <button class="pw-edit-btn" onclick="toggleEntrySection()">📂 展開 / 收合成績登錄區</button>
-        <button class="theme-btn" onclick="toggleTheme()">
-          <span class="theme-dot"></span>
-          <span id="themeText">LIGHT</span>
-        </button>
+        <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
+          <span class="theme-switch-label label-light">LIGHT</span>
+          <div class="theme-switch-knob"></div>
+          <span class="theme-switch-label label-dark">DARK</span>
+        </div>
         <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
@@ -747,13 +774,10 @@
 
   <script>
     function applyTheme(theme) {
-      const toggleText = document.getElementById('themeText');
       if (theme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-        if (toggleText) toggleText.innerText = 'DARK';
       } else {
         document.documentElement.removeAttribute('data-theme');
-        if (toggleText) toggleText.innerText = 'LIGHT';
       }
     }
     function toggleTheme() {
@@ -1283,13 +1307,11 @@
 
       const examKeys = [...new Set(allScoresCache.map(s => `${s.semester || '115學年度第1學期'}||${s.exam_stage || '第一次段考'}||${s.exam_name}||${s.subject}||${s.exam_date || ''}`))];
       const selectEl = document.getElementById('examSelect');
-      const currentVal = selectEl.value;
       selectEl.innerHTML = '<option value="">＋ 建立全新測驗場次</option>' +
         examKeys.map(k => {
           const [sem, stage, name, sub, date] = k.split('||');
           return `<option value="${k}">[${sem}] ${stage} > ${name} - ${sub} (${date})</option>`;
         }).join('');
-      if (examKeys.includes(currentVal)) selectEl.value = currentVal;
 
       renderAdminRankOverview();
       renderAdminHistory();
@@ -1333,6 +1355,37 @@
       else await refreshScoresData();
     }
 
+    function resetEntryFormAfterSubmit() {
+      // 清空所有學生的分數欄
+      students.forEach(s => {
+        const inputEl = document.getElementById(`score_${s.id}`);
+        if (inputEl) inputEl.value = '';
+      });
+
+      // 重置上方表單並解除唯讀鎖定，方便直接輸入下一場考試
+      const examSelect = document.getElementById('examSelect');
+      const semSelect = document.getElementById('semesterSelect');
+      const stageSelect = document.getElementById('examStage');
+      const nameInput = document.getElementById('examName');
+      const subSelect = document.getElementById('subjectSelect');
+      const dateInput = document.getElementById('examDate');
+
+      examSelect.value = '';
+      semSelect.disabled = false;
+      stageSelect.disabled = false;
+      nameInput.value = '';
+      nameInput.readOnly = false;
+      subSelect.disabled = false;
+      dateInput.readOnly = false;
+
+      // 清除 Excel 匯入殘留提示與多欄選擇器
+      parsedExcelState = null;
+      document.getElementById('excelColumnPicker').style.display = 'none';
+      const msgEl = document.getElementById('excelImportMsg');
+      msgEl.style.display = 'none';
+      msgEl.innerText = '';
+    }
+
     function loadExamForEdit() {
       const selectedKey = document.getElementById('examSelect').value;
       const semSelect = document.getElementById('semesterSelect');
@@ -1347,6 +1400,7 @@
       if (!selectedKey) {
         semSelect.disabled = false;
         stageSelect.disabled = false;
+        nameInput.value = '';
         nameInput.readOnly = false;
         subSelect.disabled = false;
         dateInput.readOnly = false;
@@ -1439,9 +1493,10 @@
         statusEl.style.color = '#f43f5e';
         statusEl.innerText = '寫入失敗：' + error.message;
       } else {
-        statusEl.style.color = '#10b981';
-        statusEl.innerText = `✓ 已成功整合並發布 ${entries.length} 筆成績（本場班均：${avg} 分），全班排名已即時更新！`;
         await refreshScoresData();
+        resetEntryFormAfterSubmit();
+        statusEl.style.color = '#10b981';
+        statusEl.innerText = `✓ 已成功整合並發布「${subject} - ${examName}」共 ${entries.length} 筆成績（班均：${avg} 分），畫面已自動清空可繼續登錄下一場！`;
       }
     }
 
