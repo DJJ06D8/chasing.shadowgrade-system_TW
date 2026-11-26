@@ -6,6 +6,7 @@
   <title>NEXUS GRADE // 管理指揮終端</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
       --bg-base: #060913;
@@ -183,6 +184,23 @@
       gap: 1rem;
     }
 
+    .section-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--td-border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .section-header-bar h3 {
+      margin: 0;
+      border: none;
+      padding: 0;
+    }
+
     .role-tag {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.72rem;
@@ -238,6 +256,27 @@
       border-radius: 50%;
       background: var(--accent-primary);
       box-shadow: 0 0 8px var(--accent-primary);
+    }
+
+    .excel-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .excel-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
     }
 
     .logout-btn {
@@ -627,7 +666,10 @@
 
   <!-- 區塊二：全班各科平均與總平均總排名總覽（僅統計已上架成績） -->
   <div class="container" id="adminRankSection" style="display: none;">
-    <h3>📊 全班各科均分與總平均排名矩陣（已上架正式成績） <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:normal;">(💡 點擊學生姓名可查看個人成績趨勢圖)</span></h3>
+    <div class="section-header-bar">
+      <h3>📊 全班各科均分與總平均排名矩陣（已上架正式成績） <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span></h3>
+      <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel 成績單 (.xlsx)</button>
+    </div>
     <div class="summary-grid" id="classSubjectSummary"></div>
     <div style="overflow-x: auto;">
       <table>
@@ -748,6 +790,7 @@
 
         topBtnGroup.innerHTML = `
           ${themeBtnHtml}
+          <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel</button>
           <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
           <button class="logout-btn" onclick="logout()">登出終端</button>
         `;
@@ -791,6 +834,155 @@
       }
 
       await refreshScoresData();
+    }
+
+    // 匯出完整多工作表 Excel (.xlsx)
+    function exportToExcel() {
+      if (typeof XLSX === 'undefined') {
+        alert('Excel 元件尚未載入完成，請稍候再試！');
+        return;
+      }
+
+      const publishedScores = allScoresCache.filter(s => s.is_published !== false);
+      if (publishedScores.length === 0) {
+        alert('目前尚無已審核上架的成績可匯出！');
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+      const subjects = [...new Set(publishedScores.map(s => s.subject))];
+
+      // ==========================================
+      // 工作表 1：全班總排名矩陣
+      // ==========================================
+      const studentStats = students.map(st => {
+        const stScores = publishedScores.filter(s => s.student_id === st.id);
+        const subAvgs = {};
+        let validSubCount = 0;
+        let sumOfSubAvgs = 0;
+
+        subjects.forEach(sub => {
+          const items = stScores.filter(s => s.subject === sub);
+          if (items.length > 0) {
+            const avg = items.reduce((sum, x) => sum + x.score, 0) / items.length;
+            subAvgs[sub] = Math.round(avg * 10) / 10;
+            sumOfSubAvgs += subAvgs[sub];
+            validSubCount++;
+          } else {
+            subAvgs[sub] = '';
+          }
+        });
+
+        const totalAvg = validSubCount > 0 ? Math.round((sumOfSubAvgs / validSubCount) * 10) / 10 : '';
+        return { ...st, subAvgs, totalAvg };
+      });
+
+      const validTotals = studentStats.filter(s => s.totalAvg !== '');
+      const sortedTotals = [...validTotals].sort((a, b) => b.totalAvg - a.totalAvg);
+      studentStats.forEach(st => {
+        st.overallRank = st.totalAvg === '' ? '-' : sortedTotals.findIndex(x => x.totalAvg === st.totalAvg) + 1;
+      });
+
+      const rankSortedStudents = [...studentStats].sort((a, b) => {
+        const va = a.totalAvg === '' ? -1 : a.totalAvg;
+        const vb = b.totalAvg === '' ? -1 : b.totalAvg;
+        return vb - va;
+      });
+
+      const sheet1Headers = ['總排名', '座號', '姓名', ...subjects.map(s => `${s}科平均`), '跨科總平均'];
+      const sheet1Rows = rankSortedStudents.map(st => [
+        st.overallRank,
+        st.seat_number ?? '',
+        st.name,
+        ...subjects.map(sub => st.subAvgs[sub]),
+        st.totalAvg
+      ]);
+
+      // 加入班級平均總結列
+      const classSubAverages = subjects.map(sub => {
+        const subItems = publishedScores.filter(s => s.subject === sub);
+        return subItems.length > 0
+          ? Math.round((subItems.reduce((sum, x) => sum + x.score, 0) / subItems.length) * 10) / 10
+          : '';
+      });
+      const classOverallAvg = validTotals.length > 0
+        ? Math.round((validTotals.reduce((sum, s) => sum + s.totalAvg, 0) / validTotals.length) * 10) / 10
+        : '';
+      sheet1Rows.push(['班級平均', '', '', ...classSubAverages, classOverallAvg]);
+
+      const ws1 = XLSX.utils.aoa_to_sheet([sheet1Headers, ...sheet1Rows]);
+      ws1['!cols'] = [{ wch: 10 }, { wch: 8 }, { wch: 12 }, ...subjects.map(() => ({ wch: 12 })), { wch: 14 }];
+      XLSX.utils.book_append_sheet(wb, ws1, '全班總排名矩陣');
+
+      // ==========================================
+      // 工作表 2：單場測驗橫向總表（依座號排序）
+      // ==========================================
+      const examGroupsMap = new Map();
+      [...publishedScores].reverse().forEach(s => {
+        const sem = s.semester || '115學年度第1學期';
+        const stage = s.exam_stage || '第一次段考';
+        const name = s.exam_name || '平時考';
+        const sub = s.subject || '其他';
+        const date = s.exam_date || '';
+        const key = `${sem}||${stage}||${name}||${sub}||${date}`;
+        if (!examGroupsMap.has(key)) {
+          examGroupsMap.set(key, {
+            key,
+            label: `[${sub}] ${name} (${stage}/${date})`,
+            scoresByStudent: new Map(),
+            avg: s.class_avg ?? ''
+          });
+        }
+        examGroupsMap.get(key).scoresByStudent.set(s.student_id, s.score);
+      });
+
+      const examCols = Array.from(examGroupsMap.values());
+      const sheet2Headers = ['座號', '姓名', ...examCols.map(c => c.label)];
+      const seatSortedStudents = [...students].sort((a, b) => (a.seat_number ?? 999) - (b.seat_number ?? 999));
+
+      const sheet2Rows = seatSortedStudents.map(st => [
+        st.seat_number ?? '',
+        st.name,
+        ...examCols.map(c => c.scoresByStudent.has(st.id) ? c.scoresByStudent.get(st.id) : '')
+      ]);
+      sheet2Rows.push(['單場班均', '', ...examCols.map(c => c.avg)]);
+
+      const ws2 = XLSX.utils.aoa_to_sheet([sheet2Headers, ...sheet2Rows]);
+      ws2['!cols'] = [{ wch: 8 }, { wch: 12 }, ...examCols.map(() => ({ wch: 24 }))];
+      XLSX.utils.book_append_sheet(wb, ws2, '單場測驗橫向總表');
+
+      // ==========================================
+      // 工作表 3：雲端原始明細
+      // ==========================================
+      const studentInfoMap = {};
+      students.forEach(s => { studentInfoMap[s.id] = s; });
+
+      const detailHeaders = ['學期', '大考階段', '測驗名稱', '科目', '考試日期', '座號', '學生姓名', '分數', '單科班均', '單科名次'];
+      const detailRows = publishedScores.map(r => {
+        const st = studentInfoMap[r.student_id] || {};
+        return [
+          r.semester || '',
+          r.exam_stage || '',
+          r.exam_name || '',
+          r.subject || '',
+          r.exam_date || '',
+          st.seat_number ?? '',
+          st.name || '未知學生',
+          r.score,
+          r.class_avg ?? '',
+          r.rank ?? ''
+        ];
+      });
+
+      const ws3 = XLSX.utils.aoa_to_sheet([detailHeaders, ...detailRows]);
+      ws3['!cols'] = [
+        { wch: 16 }, { wch: 12 }, { wch: 18 }, { wch: 10 },
+        { wch: 12 }, { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 10 }
+      ];
+      XLSX.utils.book_append_sheet(wb, ws3, '雲端原始明細');
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, `國二2_小考成績總表_${todayStr}.xlsx`);
     }
 
     async function changeMyPassword() {
@@ -904,7 +1096,6 @@
       renderAdminHistory();
     }
 
-    // 老師專屬：渲染「待審核上架佇列」
     function renderPendingApprovals() {
       const pendingRecords = allScoresCache.filter(s => s.is_published === false);
       const pendingBox = document.getElementById('pendingApprovalSection');
@@ -1115,7 +1306,6 @@
       const avg = Math.round((entries.reduce((sum, e) => sum + e.score, 0) / entries.length) * 10) / 10;
       const sortedScores = [...entries].map(e => e.score).sort((a, b) => b - a);
 
-      // 小老師送出為 false（待老師審核）；老師親自送出則直接為 true（正式上架）
       const shouldPublishImmediately = (currentRole === 'admin');
 
       let delQuery = supabaseClient.from('scores').delete()
@@ -1161,7 +1351,6 @@
     }
 
     function renderAdminRankOverview() {
-      // 全班排名矩陣僅統計「已審核上架」的成績，與學生端完全一致
       const publishedScores = allScoresCache.filter(s => s.is_published !== false);
       const subjects = [...new Set(publishedScores.map(s => s.subject))];
       const summaryEl = document.getElementById('classSubjectSummary');
