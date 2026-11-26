@@ -34,8 +34,11 @@
       --badge-border: rgba(0, 240, 255, 0.3);
       --toggle-bg: rgba(15, 23, 42, 0.75);
       --toggle-border: rgba(0, 240, 255, 0.35);
-      --toggle-text: #e2e8f0;
       --bar-track: rgba(148, 163, 184, 0.14);
+      --pill-bg: rgba(2, 6, 23, 0.85);
+      --pill-border: rgba(0, 240, 255, 0.4);
+      --pill-knob: linear-gradient(135deg, #00f0ff, #38bdf8);
+      --pill-knob-shadow: 0 0 10px rgba(0, 240, 255, 0.75);
     }
 
     [data-theme="light"] {
@@ -66,8 +69,11 @@
       --badge-border: rgba(2, 132, 199, 0.28);
       --toggle-bg: rgba(255, 255, 255, 0.9);
       --toggle-border: rgba(2, 132, 199, 0.3);
-      --toggle-text: #0f172a;
       --bar-track: rgba(148, 163, 184, 0.22);
+      --pill-bg: #e2e8f0;
+      --pill-border: rgba(2, 132, 199, 0.38);
+      --pill-knob: linear-gradient(135deg, #f59e0b, #fbbf24);
+      --pill-knob-shadow: 0 0 10px rgba(245, 158, 11, 0.65);
     }
 
     * { box-sizing: border-box; }
@@ -85,6 +91,7 @@
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       padding: 1.5rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .container {
@@ -129,24 +136,81 @@
 
     h3 { margin-top: 0; color: var(--text-heading); font-size: 1.02rem; margin-bottom: 1rem; }
 
-    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .btn-group { display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center; }
 
-    .theme-btn {
+    /* 滑動膠囊明暗切換條 */
+    .theme-switch {
+      position: relative;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      background: var(--toggle-bg);
-      color: var(--toggle-text);
-      border: 1px solid var(--toggle-border);
-      padding: 0.5rem 0.9rem;
-      border-radius: 8px;
+      width: 78px;
+      height: 32px;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--pill-bg);
+      border: 1px solid var(--pill-border);
       cursor: pointer;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.78rem;
-      font-weight: 700;
+      user-select: none;
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
 
-    .theme-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-primary); }
+    .theme-switch-knob {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--pill-knob);
+      box-shadow: var(--pill-knob-shadow);
+      transform: translateX(0);
+      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    [data-theme="light"] .theme-switch-knob {
+      transform: translateX(46px);
+    }
+
+    .theme-switch-label {
+      position: absolute;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .label-dark { right: 9px; opacity: 1; color: var(--accent-primary); }
+    .label-light { left: 9px; opacity: 0; color: #b45309; }
+
+    [data-theme="light"] .label-dark { opacity: 0; }
+    [data-theme="light"] .label-light { opacity: 1; }
+
+    .chat-portal-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
+      color: #020617;
+      border: none;
+      padding: 0.48rem 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 14px rgba(0, 240, 255, 0.28);
+    }
+
+    .unread-dot {
+      display: none;
+      background: #f43f5e;
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 999px;
+      margin-left: 2px;
+    }
 
     .pw-edit-btn {
       background: rgba(2, 132, 199, 0.12);
@@ -361,6 +425,14 @@
     }
 
     .reported-tag { font-size: 0.78rem; color: var(--accent-gold); font-weight: 700; }
+
+    @media (max-width: 768px) {
+      body { padding: 0.85rem; }
+      .container { padding: 1.25rem 1rem; border-radius: 14px; }
+      h2 { font-size: 1.15rem; }
+      .dist-section-grid { grid-template-columns: 1fr; }
+      th, td { padding: 0.55rem 0.45rem; font-size: 0.86rem; }
+    }
   </style>
 </head>
 <body>
@@ -371,10 +443,14 @@
         <h2 id="studentHeaderTitle">載入學生資料中...</h2>
       </div>
       <div class="btn-group">
-        <button class="theme-btn" onclick="toggleTheme()">
-          <span class="theme-dot"></span>
-          <span id="themeText">LIGHT</span>
+        <button class="chat-portal-btn" onclick="window.location.href='chat.html'">
+          💬 班級聊天室 <span class="unread-dot" id="chatUnreadDot">0</span>
         </button>
+        <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
+          <span class="theme-switch-label label-light">LIGHT</span>
+          <div class="theme-switch-knob"></div>
+          <span class="theme-switch-label label-dark">DARK</span>
+        </div>
         <button class="pw-edit-btn" onclick="changeMyPassword()">修改密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
@@ -432,13 +508,10 @@
 
   <script>
     function applyTheme(theme) {
-      const toggleText = document.getElementById('themeText');
       if (theme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-        if (toggleText) toggleText.innerText = 'DARK';
       } else {
         document.documentElement.removeAttribute('data-theme');
-        if (toggleText) toggleText.innerText = 'LIGHT';
       }
     }
     function toggleTheme() {
@@ -556,6 +629,21 @@
       canvas.addEventListener('touchend', () => { isDrawing = false; });
     }
 
+    async function checkUnreadDms() {
+      const { count } = await supabaseClient
+        .from('chat_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('channel_type', 'dm')
+        .eq('receiver_id', currentUserId)
+        .eq('is_read', false);
+
+      const dot = document.getElementById('chatUnreadDot');
+      if (dot && count && count > 0) {
+        dot.style.display = 'inline-block';
+        dot.innerText = count > 99 ? '99+' : count;
+      }
+    }
+
     async function init() {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
@@ -571,12 +659,12 @@
         .single();
 
       if (!profile) { window.location.href = 'index.html'; return; }
-      if (profile.role === 'admin') { window.location.href = 'admin.html'; return; }
+      if (profile.role === 'admin' || profile.role === 'developer') { window.location.href = 'admin.html'; return; }
       if (profile.role === 'parent') { window.location.href = 'parent.html'; return; }
 
       document.getElementById('studentHeaderTitle').innerText = `[${profile.seat_number ?? '-'}號] ${profile.name} 的成績檔案`;
       initScratchCard();
-      await loadMyScores();
+      await Promise.all([loadMyScores(), checkUnreadDms()]);
     }
 
     async function loadMyScores() {

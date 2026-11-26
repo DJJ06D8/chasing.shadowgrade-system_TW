@@ -2,8 +2,8 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEXUS GRADE // 老師指揮終端</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEXUS GRADE // 老師與系統開發者指揮終端</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -25,6 +25,7 @@
       --accent-blue: #38bdf8;
       --accent-emerald: #10b981;
       --accent-gold: #fbbf24;
+      --accent-purple: #a855f7;
       --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
       --text-main: #f8fafc;
       --text-heading: #e2e8f0;
@@ -73,6 +74,7 @@
       --accent-blue: #0369a1;
       --accent-emerald: #059669;
       --accent-gold: #d97706;
+      --accent-purple: #7e22ce;
       --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
       --text-main: #0f172a;
       --text-heading: #1e293b;
@@ -129,8 +131,25 @@
       backdrop-filter: blur(16px);
       border: 1px solid var(--container-border);
       border-radius: 16px;
-      padding: 2rem;
+      padding: 1.75rem 2rem;
       box-shadow: var(--container-shadow);
+    }
+
+    .dev-container {
+      border-color: rgba(168, 85, 247, 0.45);
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.12);
+    }
+
+    .dev-badge {
+      display: inline-block;
+      background: rgba(168, 85, 247, 0.16);
+      color: var(--accent-purple);
+      border: 1px solid rgba(168, 85, 247, 0.45);
+      padding: 0.15rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      margin-left: 0.4rem;
     }
 
     .alert-box {
@@ -155,9 +174,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--header-border);
-      padding-bottom: 1rem;
-      margin-bottom: 1.5rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
@@ -166,9 +182,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--td-border);
-      padding-bottom: 0.75rem;
-      margin-bottom: 1.25rem;
       flex-wrap: wrap;
       gap: 0.75rem;
     }
@@ -206,6 +219,21 @@
     }
 
     .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+
+    .chat-portal-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
+      color: #020617;
+      border: none;
+      padding: 0.48rem 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 0.84rem;
+      box-shadow: 0 4px 14px rgba(0, 240, 255, 0.28);
+    }
 
     /* 滑動膠囊明暗切換條 */
     .theme-switch {
@@ -261,11 +289,11 @@
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
       border: none;
-      padding: 0.55rem 1.05rem;
+      padding: 0.5rem 0.95rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     }
 
@@ -276,11 +304,11 @@
       background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
       color: #ffffff;
       border: none;
-      padding: 0.55rem 1.05rem;
+      padding: 0.5rem 0.95rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     }
 
@@ -288,7 +316,7 @@
       background: rgba(244, 63, 94, 0.15);
       color: #f43f5e;
       border: 1px solid rgba(244, 63, 94, 0.4);
-      padding: 0.5rem 1.1rem;
+      padding: 0.5rem 1.05rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
@@ -355,7 +383,7 @@
     .form-group { flex: 1; min-width: 200px; }
     label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.45rem; color: var(--text-label); }
 
-    input[type="text"], input[type="number"], input[type="date"], select {
+    input[type="text"], input[type="number"], input[type="date"], select, textarea {
       width: 100%;
       padding: 0.65rem 0.85rem;
       background: var(--input-bg);
@@ -363,9 +391,10 @@
       border-radius: 8px;
       color: var(--input-text);
       font-size: 0.95rem;
+      font-family: inherit;
     }
 
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--accent-primary);
       box-shadow: 0 0 10px var(--bg-glow-1);
@@ -422,6 +451,17 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       cursor: pointer;
+    }
+
+    .edit-btn {
+      background: rgba(245, 158, 11, 0.16);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.82rem;
     }
 
     .del-btn {
@@ -488,6 +528,15 @@
 
     #printOnlyReportSheet { display: none; }
 
+    @media (max-width: 768px) {
+      body { padding: 0.85rem; }
+      .container, .alert-box { padding: 1.25rem 1rem; border-radius: 14px; }
+      h2 { font-size: 1.15rem; }
+      .form-group { min-width: 100%; }
+      input[type="text"], input[type="number"], input[type="date"], select, textarea { font-size: 16px; }
+      th, td { padding: 0.55rem 0.45rem; font-size: 0.86rem; }
+    }
+
     @page {
       size: A4 landscape;
       margin: 0.8cm;
@@ -504,6 +553,7 @@
       #entrySection,
       #adminRankSection,
       #adminHistorySection,
+      #devAnnouncementSection,
       #adminPasswordSection,
       #trendModal,
       .btn-group,
@@ -580,30 +630,33 @@
 
   <div class="alert-box" id="reportAlertSection" style="display: none;">
     <h3>⚠️ 學生成績異常回報警報</h3>
-    <table style="margin-bottom: 0;">
-      <thead>
-        <tr>
-          <th>座號 / 姓名</th>
-          <th>範圍 / 階段</th>
-          <th>科目</th>
-          <th>目前分數</th>
-          <th>異常說明</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody id="reportList"></tbody>
-    </table>
+    <div style="overflow-x: auto;">
+      <table style="margin-bottom: 0;">
+        <thead>
+          <tr>
+            <th>座號 / 姓名</th>
+            <th>範圍 / 階段</th>
+            <th>科目</th>
+            <th>目前分數</th>
+            <th>異常說明</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="reportList"></tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- 區塊一：直列 Excel 匯入與成績登錄控制台（可自由展開/收合） -->
+  <!-- 區塊一：直列 Excel 匯入與成績登錄控制台（預設收合） -->
   <div class="container" id="entrySection">
     <div class="header" id="entryHeader">
       <div>
-        <span class="role-tag">TEACHER COMMAND CENTER // V3.9</span>
-        <h2>國二-2 成績系統指揮中心（老師專用）</h2>
+        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V4.2</span>
+        <h2 id="commandTitle">國二-2 成績系統指揮中心（老師專用）</h2>
       </div>
       <div class="btn-group">
-        <button class="pw-edit-btn" onclick="toggleEntrySection()">📂 展開 / 收合成績登錄區</button>
+        <button class="chat-portal-btn" onclick="window.location.href='chat.html'">💬 班級訊息中心</button>
+        <button class="pw-edit-btn" onclick="toggleSection('entryCollapsibleBody', 'entryHeader', '1.5rem')">📂 展開 / 收合成績登錄區</button>
         <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
           <span class="theme-switch-label label-light">LIGHT</span>
           <div class="theme-switch-knob"></div>
@@ -614,7 +667,7 @@
       </div>
     </div>
 
-    <div id="entryCollapsibleBody">
+    <div id="entryCollapsibleBody" style="display: none;">
       <div class="excel-dropzone" id="excelDropzone">
         <div class="dropzone-info">
           <strong>📥 直接匯入小老師打的直列 Excel（免套用範本）</strong>
@@ -700,18 +753,18 @@
     </div>
   </div>
 
-  <!-- 區塊二：全班各科平均與總平均總排名總覽（可自由展開/收合） -->
+  <!-- 區塊二：全班各科平均與總平均總排名總覽（預設收合） -->
   <div class="container" id="adminRankSection">
     <div class="section-header-bar" id="rankHeaderBar">
       <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span></h3>
       <div class="btn-group no-print">
-        <button class="pw-edit-btn" onclick="toggleRankSection()">📂 展開 / 收合排名矩陣</button>
+        <button class="pw-edit-btn" onclick="toggleSection('rankCollapsibleBody', 'rankHeaderBar', '1.25rem')">📂 展開 / 收合排名矩陣</button>
         <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel (.xlsx)</button>
         <button class="pdf-btn" onclick="printRankReport()">🖨️ 列印 / 匯出 PDF（橫向明細表）</button>
       </div>
     </div>
 
-    <div id="rankCollapsibleBody">
+    <div id="rankCollapsibleBody" style="display: none;">
       <div class="summary-grid" id="classSubjectSummary"></div>
       <div style="overflow-x: auto;">
         <table style="margin-bottom: 0;">
@@ -722,7 +775,7 @@
     </div>
   </div>
 
-  <!-- 專屬橫向列印明細表（僅在按列印/PDF 時出現） -->
+  <!-- 專屬橫向列印明細表 -->
   <div id="printOnlyReportSheet">
     <div class="print-sheet-header">
       <h1>國二-2 各場次小考成績明細一覽表（含科目與考試日期）</h1>
@@ -734,24 +787,91 @@
     </table>
   </div>
 
-  <!-- 區塊三：雲端原始紀錄庫（含一鍵清除所有場次） -->
+  <!-- 區塊三：雲端原始紀錄庫（預設收合） -->
   <div class="container" id="adminHistorySection">
-    <div class="section-header-bar">
-      <h3>🗂️ 雲端已整合測驗場次（點擊「展開 / 收合」檢視明細）</h3>
-      <button class="del-btn" onclick="deleteAllExams()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">💥 一鍵清除所有場次</button>
+    <div class="section-header-bar" id="historyHeaderBar">
+      <h3>🗂️ 雲端已整合測驗場次</h3>
+      <div class="btn-group">
+        <button class="pw-edit-btn" onclick="toggleSection('historyCollapsibleBody', 'historyHeaderBar', '1.25rem')">📂 展開 / 收合場次列表</button>
+        <button class="del-btn" onclick="deleteAllExams()" style="padding: 0.45rem 0.9rem; font-size: 0.84rem;">💥 一鍵清除所有場次</button>
+      </div>
     </div>
-    <div id="historyAccordion">
-      <div style="color: var(--text-muted); text-align: center; padding: 1rem;">載入紀錄中...</div>
+    <div id="historyCollapsibleBody" style="display: none;">
+      <div id="historyAccordion">
+        <div style="color: var(--text-muted); text-align: center; padding: 1rem;">載入紀錄中...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 系統開發者專用區塊：首頁公告欄管理（預設收合，支援新增、修改、刪除） -->
+  <div class="container dev-container" id="devAnnouncementSection" style="display: none;">
+    <div class="section-header-bar" id="devAnnHeaderBar">
+      <h3>📢 登入首頁公告欄管理 <span class="dev-badge">系統開發者專用</span></h3>
+      <button class="pw-edit-btn" onclick="toggleSection('devAnnCollapsibleBody', 'devAnnHeaderBar', '1.25rem')">📂 展開 / 收合公告管理</button>
+    </div>
+
+    <div id="devAnnCollapsibleBody" style="display: none;">
+      <div id="annEditingBanner" style="display: none; background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.45); border-radius: 10px; padding: 0.7rem 1rem; margin-bottom: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <span style="color: var(--accent-gold); font-weight: 700; font-size: 0.88rem;">✏️ 正在修改既有公告內容</span>
+        <button type="button" class="del-btn" onclick="cancelEditAnnouncement()">取消編輯</button>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex: 2;">
+          <label for="annTitleInput">公告標題</label>
+          <input type="text" id="annTitleInput" placeholder="例如：第一次段考成績已全數匯入完成">
+        </div>
+        <div class="form-group">
+          <label for="annTagInput">標籤分類</label>
+          <select id="annTagInput">
+            <option value="一般通知">一般通知</option>
+            <option value="重要置頂">重要置頂</option>
+            <option value="考程提醒">考程提醒</option>
+            <option value="系統維護">系統維護</option>
+          </select>
+        </div>
+        <div class="form-group" style="min-width: 140px;">
+          <label for="annPinnedInput">是否置頂顯示</label>
+          <select id="annPinnedInput">
+            <option value="false">一般排序</option>
+            <option value="true">📌 置頂顯示</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label for="annContentInput">公告詳細內容</label>
+        <textarea id="annContentInput" rows="3" placeholder="輸入要顯示在登入首頁的公告說明內容..."></textarea>
+      </div>
+
+      <button class="submit-btn" id="annSubmitBtn" onclick="saveAnnouncement()" style="margin-bottom: 1.5rem;">📤 發布公告至登入首頁</button>
+
+      <div style="overflow-x: auto;">
+        <table style="margin-bottom: 0;">
+          <thead>
+            <tr>
+              <th>狀態 / 標籤</th>
+              <th>公告標題</th>
+              <th>內容摘要</th>
+              <th>發布日期</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="devAnnouncementList">
+            <tr><td colspan="5">載入公告列表中...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- 區塊四：學生與家長帳號密碼管理（預設收合） -->
   <div class="container" id="adminPasswordSection">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-      <h3 style="margin: 0; border: none; padding: 0;">🔑 學生與家長帳號密碼管理</h3>
-      <button class="pw-edit-btn" onclick="togglePasswordSection()">📂 展開 / 收合帳號密碼管理</button>
+    <div class="section-header-bar" id="pwHeaderBar">
+      <h3>🔑 學生與家長帳號密碼管理</h3>
+      <button class="pw-edit-btn" onclick="toggleSection('passwordBody', 'pwHeaderBar', '1.25rem')">📂 展開 / 收合帳號密碼管理</button>
     </div>
-    <div id="passwordBody" style="display: none; margin-top: 1.25rem; border-top: 1px solid var(--td-border); padding-top: 1rem;">
+    <div id="passwordBody" style="display: none;">
       <p class="hint" style="margin-bottom: 1rem;">學生或家長若忘記密碼，老師可直接在此為其設定新密碼（預設皆為 123456）。</p>
       <div style="overflow-x: auto;">
         <table style="margin-bottom: 0;">
@@ -787,24 +907,17 @@
     }
     applyTheme(localStorage.getItem('nexus-theme') || 'dark');
 
-    function toggleEntrySection() {
-      const bodyEl = document.getElementById('entryCollapsibleBody');
-      const headerEl = document.getElementById('entryHeader');
+    // 通用展開 / 收合控制器
+    function toggleSection(bodyId, headerId, openMargin = '1.25rem') {
+      const bodyEl = document.getElementById(bodyId);
+      const headerEl = document.getElementById(headerId);
       const isHidden = bodyEl.style.display === 'none';
       bodyEl.style.display = isHidden ? 'block' : 'none';
-      headerEl.style.borderBottom = isHidden ? '1px solid var(--header-border)' : 'none';
-      headerEl.style.paddingBottom = isHidden ? '1rem' : '0';
-      headerEl.style.marginBottom = isHidden ? '1.5rem' : '0';
-    }
-
-    function toggleRankSection() {
-      const bodyEl = document.getElementById('rankCollapsibleBody');
-      const headerEl = document.getElementById('rankHeaderBar');
-      const isHidden = bodyEl.style.display === 'none';
-      bodyEl.style.display = isHidden ? 'block' : 'none';
-      headerEl.style.borderBottom = isHidden ? '1px solid var(--td-border)' : 'none';
-      headerEl.style.paddingBottom = isHidden ? '0.75rem' : '0';
-      headerEl.style.marginBottom = isHidden ? '1.25rem' : '0';
+      if (headerEl) {
+        headerEl.style.borderBottom = isHidden ? '1px solid var(--td-border)' : 'none';
+        headerEl.style.paddingBottom = isHidden ? '0.85rem' : '0';
+        headerEl.style.marginBottom = isHidden ? openMargin : '0';
+      }
     }
 
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
@@ -814,8 +927,11 @@
     let students = [];
     let parentAccountsList = [];
     let allScoresCache = [];
+    let announcementsCache = [];
+    let editingAnnId = null;
     let myChart = null;
     let parsedExcelState = null;
+    let isDeveloperUser = false;
 
     document.getElementById('examDate').valueAsDate = new Date();
 
@@ -839,16 +955,29 @@
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) { window.location.href = 'index.html'; return; }
 
+      const sessionEmail = (session.user.email || '').toLowerCase();
       const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('role')
+        .select('role, email')
         .eq('id', session.user.id)
         .single();
 
-      if (!profile || profile.role !== 'admin') {
-        alert('僅限老師最高權限帳號存取！');
+      isDeveloperUser = sessionEmail === '202020@cysh.khc.edu.tw' || (profile && profile.role === 'developer');
+
+      if (!isDeveloperUser && (!profile || profile.role !== 'admin')) {
+        alert('僅限老師或系統開發者權限帳號存取！');
         window.location.href = 'index.html';
         return;
+      }
+
+      if (isDeveloperUser) {
+        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V4.2';
+        document.getElementById('commandTitle').innerText = '國二-2 智慧成績系統（系統開發者）';
+        document.getElementById('devAnnouncementSection').style.display = 'block';
+        await loadDevAnnouncements();
+      } else {
+        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V4.2';
+        document.getElementById('commandTitle').innerText = '國二-2 成績系統指揮中心（老師專用）';
       }
 
       const { data, error } = await supabaseClient
@@ -878,6 +1007,125 @@
 
       renderStudentAccounts();
       await refreshScoresData();
+    }
+
+    // 系統開發者專用：首頁公告欄管理（載入、新增、修改、刪除）
+    async function loadDevAnnouncements() {
+      const tbody = document.getElementById('devAnnouncementList');
+      const { data, error } = await supabaseClient
+        .from('announcements')
+        .select('id, title, content, tag, is_pinned, created_at')
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="5">讀取失敗：${error.message}</td></tr>`;
+        return;
+      }
+
+      announcementsCache = data || [];
+
+      if (announcementsCache.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="color:var(--text-muted);">目前尚無公告</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = announcementsCache.map(item => {
+        const dt = new Date(item.created_at);
+        const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
+        return `
+          <tr>
+            <td><span class="badge">${item.is_pinned ? '📌 ' : ''}${item.tag}</span></td>
+            <td><strong>${item.title}</strong></td>
+            <td style="max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.content}</td>
+            <td>${dateStr}</td>
+            <td>
+              <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                <button class="edit-btn" onclick="startEditAnnouncement(${item.id})">✏️ 編輯</button>
+                <button class="del-btn" onclick="deleteAnnouncement(${item.id})">刪除</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function startEditAnnouncement(annId) {
+      const item = announcementsCache.find(a => a.id === annId);
+      if (!item) return;
+
+      editingAnnId = annId;
+      document.getElementById('annTitleInput').value = item.title || '';
+      document.getElementById('annTagInput').value = item.tag || '一般通知';
+      document.getElementById('annPinnedInput').value = item.is_pinned ? 'true' : 'false';
+      document.getElementById('annContentInput').value = item.content || '';
+
+      document.getElementById('annEditingBanner').style.display = 'flex';
+      document.getElementById('annSubmitBtn').innerText = '💾 儲存修改公告';
+      document.getElementById('devAnnouncementSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelEditAnnouncement() {
+      editingAnnId = null;
+      document.getElementById('annTitleInput').value = '';
+      document.getElementById('annTagInput').value = '一般通知';
+      document.getElementById('annPinnedInput').value = 'false';
+      document.getElementById('annContentInput').value = '';
+
+      document.getElementById('annEditingBanner').style.display = 'none';
+      document.getElementById('annSubmitBtn').innerText = '📤 發布公告至登入首頁';
+    }
+
+    async function saveAnnouncement() {
+      if (!isDeveloperUser) return;
+      const title = document.getElementById('annTitleInput').value.trim();
+      const tag = document.getElementById('annTagInput').value;
+      const isPinned = document.getElementById('annPinnedInput').value === 'true';
+      const content = document.getElementById('annContentInput').value.trim();
+
+      if (!title || !content) {
+        alert('請填寫公告標題與詳細內容！');
+        return;
+      }
+
+      if (editingAnnId !== null) {
+        const { error } = await supabaseClient
+          .from('announcements')
+          .update({ title, tag, is_pinned: isPinned, content })
+          .eq('id', editingAnnId);
+
+        if (error) {
+          alert('修改公告失敗：' + error.message);
+        } else {
+          cancelEditAnnouncement();
+          alert('✓ 公告內容已成功更新！');
+          await loadDevAnnouncements();
+        }
+      } else {
+        const { error } = await supabaseClient
+          .from('announcements')
+          .insert([{ title, tag, is_pinned: isPinned, content }]);
+
+        if (error) {
+          alert('發布公告失敗：' + error.message);
+        } else {
+          cancelEditAnnouncement();
+          alert('✓ 公告已成功發布至登入首頁！');
+          await loadDevAnnouncements();
+        }
+      }
+    }
+
+    async function deleteAnnouncement(annId) {
+      if (!isDeveloperUser) return;
+      if (!confirm('確定要從登入首頁移除這則公告嗎？')) return;
+      const { error } = await supabaseClient.from('announcements').delete().eq('id', annId);
+      if (error) {
+        alert('刪除失敗：' + error.message);
+      } else {
+        if (editingAnnId === annId) cancelEditAnnouncement();
+        await loadDevAnnouncements();
+      }
     }
 
     function handleExcelUpload(event) {
@@ -1245,11 +1493,6 @@
       else alert('✓ 您的登入密碼已成功修改！下次登入請使用新密碼。');
     }
 
-    function togglePasswordSection() {
-      const el = document.getElementById('passwordBody');
-      el.style.display = el.style.display === 'none' ? 'block' : 'none';
-    }
-
     function renderStudentAccounts() {
       const accountTbody = document.getElementById('studentAccountList');
       accountTbody.innerHTML = students.map(u => {
@@ -1356,13 +1599,11 @@
     }
 
     function resetEntryFormAfterSubmit() {
-      // 清空所有學生的分數欄
       students.forEach(s => {
         const inputEl = document.getElementById(`score_${s.id}`);
         if (inputEl) inputEl.value = '';
       });
 
-      // 重置上方表單並解除唯讀鎖定，方便直接輸入下一場考試
       const examSelect = document.getElementById('examSelect');
       const semSelect = document.getElementById('semesterSelect');
       const stageSelect = document.getElementById('examStage');
@@ -1378,7 +1619,6 @@
       subSelect.disabled = false;
       dateInput.readOnly = false;
 
-      // 清除 Excel 匯入殘留提示與多欄選擇器
       parsedExcelState = null;
       document.getElementById('excelColumnPicker').style.display = 'none';
       const msgEl = document.getElementById('excelImportMsg');

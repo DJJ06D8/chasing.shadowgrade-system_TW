@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NEXUS GRADE // 國二-2 智慧成績系統</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -17,6 +17,7 @@
       --accent-primary: #00f0ff;
       --accent-blue: #38bdf8;
       --accent-emerald: #10b981;
+      --accent-gold: #fbbf24;
       --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
       --text-main: #f8fafc;
       --text-label: #cbd5e1;
@@ -30,6 +31,8 @@
       --pill-border: rgba(0, 240, 255, 0.4);
       --pill-knob: linear-gradient(135deg, #00f0ff, #38bdf8);
       --pill-knob-shadow: 0 0 10px rgba(0, 240, 255, 0.75);
+      --ann-item-bg: rgba(2, 6, 23, 0.6);
+      --ann-item-border: rgba(148, 163, 184, 0.2);
     }
 
     [data-theme="light"] {
@@ -43,6 +46,7 @@
       --accent-primary: #0284c7;
       --accent-blue: #0369a1;
       --accent-emerald: #059669;
+      --accent-gold: #d97706;
       --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
       --text-main: #0f172a;
       --text-label: #334155;
@@ -56,6 +60,8 @@
       --pill-border: rgba(2, 132, 199, 0.38);
       --pill-knob: linear-gradient(135deg, #f59e0b, #fbbf24);
       --pill-knob-shadow: 0 0 10px rgba(245, 158, 11, 0.65);
+      --ann-item-bg: rgba(248, 250, 252, 0.95);
+      --ann-item-border: rgba(148, 163, 184, 0.3);
     }
 
     * { box-sizing: border-box; }
@@ -75,12 +81,11 @@
         linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
-      padding: 1.5rem;
+      padding: 1.25rem;
       transition: background-color 0.35s ease, color 0.35s ease;
       overflow-x: hidden;
     }
 
-    /* 開啟網址時的科技感啟動過場動畫 */
     #bootSplash {
       position: fixed;
       inset: 0;
@@ -95,7 +100,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.55s ease;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
     }
 
     #bootSplash.fade-out {
@@ -107,7 +112,6 @@
     .splash-core {
       text-align: center;
       padding: 1.5rem;
-      animation: splashPop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .splash-ring {
@@ -119,7 +123,6 @@
       border-top-color: var(--accent-primary);
       border-right-color: var(--accent-emerald);
       animation: spinRing 0.9s linear infinite;
-      box-shadow: 0 0 22px var(--bg-glow-1);
     }
 
     .splash-tag {
@@ -154,42 +157,54 @@
       width: 0%;
       background: linear-gradient(90deg, var(--accent-primary), var(--accent-emerald));
       border-radius: 999px;
-      animation: loadBar 0.95s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation: loadBar 0.7s ease forwards;
     }
 
-    @keyframes spinRing {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    @keyframes loadBar { to { width: 100%; } }
 
-    @keyframes splashPop {
-      from { opacity: 0; transform: translateY(10px) scale(0.96); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes loadBar {
-      0% { width: 0%; }
-      60% { width: 78%; }
-      100% { width: 100%; }
-    }
-
-    /* 登入主卡片進場動態 */
-    .login-card {
+    .portal-wrapper {
       width: 100%;
-      max-width: 430px;
+      max-width: 960px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.95fr;
+      gap: 1.75rem;
+      align-items: stretch;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    @media (max-width: 820px) {
+      body {
+        align-items: flex-start;
+        padding: 1rem 0.85rem 2rem 0.85rem;
+      }
+      .portal-wrapper {
+        display: flex;
+        flex-direction: column-reverse;
+        max-width: 480px;
+        gap: 1.25rem;
+      }
+      .panel-card { padding: 1.5rem 1.25rem !important; }
+      h1, h2 { font-size: 1.32rem !important; }
+      .ann-list { max-height: 300px !important; }
+    }
+
+    .portal-wrapper.card-ready {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .panel-card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: 18px;
-      padding: 2.25rem;
+      padding: 2rem;
       box-shadow: var(--card-shadow);
-      opacity: 0;
-      transform: translateY(16px) scale(0.98);
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s ease;
-    }
-
-    .login-card.card-ready {
-      opacity: 1;
-      transform: translateY(0) scale(1);
+      display: flex;
+      flex-direction: column;
     }
 
     .top-bar {
@@ -197,6 +212,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
+      gap: 0.5rem;
     }
 
     .sys-tag {
@@ -207,7 +223,6 @@
       font-weight: 700;
     }
 
-    /* 滑動膠囊明暗切換條 */
     .theme-switch {
       position: relative;
       display: inline-flex;
@@ -220,7 +235,7 @@
       border: 1px solid var(--pill-border);
       cursor: pointer;
       user-select: none;
-      transition: background 0.3s ease, border-color 0.3s ease;
+      flex-shrink: 0;
     }
 
     .theme-switch-knob {
@@ -230,47 +245,106 @@
       background: var(--pill-knob);
       box-shadow: var(--pill-knob-shadow);
       transform: translateX(0);
-      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+      transition: transform 0.3s ease;
       flex-shrink: 0;
     }
 
-    [data-theme="light"] .theme-switch-knob {
-      transform: translateX(48px);
-    }
+    [data-theme="light"] .theme-switch-knob { transform: translateX(48px); }
 
     .theme-switch-label {
       position: absolute;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.66rem;
       font-weight: 800;
-      letter-spacing: 0.04em;
-      color: var(--text-muted);
-      transition: opacity 0.25s ease;
       pointer-events: none;
     }
 
     .label-dark { right: 9px; opacity: 1; color: var(--accent-primary); }
     .label-light { left: 9px; opacity: 0; color: #b45309; }
-
     [data-theme="light"] .label-dark { opacity: 0; }
     [data-theme="light"] .label-light { opacity: 1; }
 
-    h1 {
+    h1, h2 {
       margin: 0 0 0.45rem 0;
-      font-size: 1.55rem;
+      font-size: 1.48rem;
       background: var(--title-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .subtitle {
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.35rem;
       line-height: 1.5;
     }
 
-    .form-group { margin-bottom: 1.25rem; }
+    .ann-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      max-height: 410px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .ann-item {
+      background: var(--ann-item-bg);
+      border: 1px solid var(--ann-item-border);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+    }
+
+    .ann-item.pinned {
+      border-color: rgba(251, 191, 36, 0.55);
+    }
+
+    .ann-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.45rem;
+      gap: 0.5rem;
+    }
+
+    .ann-badge {
+      display: inline-block;
+      padding: 0.16rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: rgba(0, 240, 255, 0.12);
+      color: var(--accent-primary);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+
+    .ann-item.pinned .ann-badge {
+      background: rgba(245, 158, 11, 0.18);
+      color: var(--accent-gold);
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    .ann-date {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .ann-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    .ann-body {
+      font-size: 0.85rem;
+      color: var(--text-label);
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .form-group { margin-bottom: 1.15rem; }
     label {
       display: block;
       font-size: 0.85rem;
@@ -281,13 +355,12 @@
 
     input {
       width: 100%;
-      padding: 0.75rem 0.95rem;
+      padding: 0.78rem 0.95rem;
       background: var(--input-bg);
       border: 1px solid var(--input-border);
       border-radius: 10px;
       color: var(--input-text);
-      font-size: 0.98rem;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      font-size: 16px;
     }
 
     input:focus {
@@ -310,7 +383,7 @@
 
     .login-btn {
       width: 100%;
-      padding: 0.9rem;
+      padding: 0.92rem;
       background: var(--btn-grad);
       color: var(--btn-text);
       border: none;
@@ -319,12 +392,6 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.25s ease;
-    }
-
-    .login-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 22px var(--bg-glow-1);
     }
 
     #msg {
@@ -337,7 +404,6 @@
   </style>
 </head>
 <body>
-  <!-- 開啟網址啟動過場動畫 -->
   <div id="bootSplash">
     <div class="splash-core">
       <div class="splash-ring"></div>
@@ -349,46 +415,56 @@
     </div>
   </div>
 
-  <div class="login-card" id="loginCard">
-    <div class="top-bar">
-      <span class="sys-tag">NEXUS GRADE // ACCESS PORTAL</span>
-      <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
-        <span class="theme-switch-label label-light">LIGHT</span>
-        <div class="theme-switch-knob"></div>
-        <span class="theme-switch-label label-dark">DARK</span>
+  <div class="portal-wrapper" id="portalWrapper">
+    <div class="panel-card">
+      <div class="top-bar">
+        <span class="sys-tag">BULLETIN BOARD // 班級與系統公告欄</span>
+      </div>
+      <h2>📢 最新公告事項</h2>
+      <p class="subtitle">重要考程通知、成績發布動態與系統更新公告</p>
+      <div class="ann-list" id="announcementList">
+        <div style="color: var(--text-muted); font-size: 0.88rem;">正在載入最新公告...</div>
       </div>
     </div>
 
-    <h1>國二-2 智慧成績系統</h1>
-    <p class="subtitle">請輸入專屬帳號與密碼登入查看學習數據與全班組距分布</p>
+    <div class="panel-card">
+      <div class="top-bar">
+        <span class="sys-tag">NEXUS GRADE // ACCESS PORTAL</span>
+        <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
+          <span class="theme-switch-label label-light">LIGHT</span>
+          <div class="theme-switch-knob"></div>
+          <span class="theme-switch-label label-dark">DARK</span>
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label for="accountInput">登入帳號（學號 / 家長帳號 / 老師帳號）</label>
-      <input type="text" id="accountInput" placeholder="學生填學號；家長填 F＋學號" autocomplete="username">
+      <h1>國二-2 智慧成績系統</h1>
+      <p class="subtitle">請輸入專屬帳號與密碼登入查看學習數據與全班組距分布</p>
+
+      <div class="form-group">
+        <label for="accountInput">登入帳號（學號 / 家長帳號 / 老師帳號）</label>
+        <input type="text" id="accountInput" placeholder="學生填學號；家長填 F＋學號" autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <label for="passwordInput">登入密碼</label>
+        <input type="password" id="passwordInput" placeholder="預設密碼為 123456" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()">
+      </div>
+
+      <div class="hint-box">
+        • <strong>學生登入：</strong>直接輸入學號（例如 <code>1410101</code>）<br>
+        • <strong>家長登入：</strong>輸入 <code>F</code> ＋ 孩子學號（例如 <code>F1410101</code>，大小寫皆可）<br>
+        • 首次登入預設密碼皆為 <code>123456</code>，登入後可自行修改
+      </div>
+
+      <button class="login-btn" id="loginBtn" onclick="handleLogin()">登入系統終端</button>
+      <div id="msg"></div>
     </div>
-
-    <div class="form-group">
-      <label for="passwordInput">登入密碼</label>
-      <input type="password" id="passwordInput" placeholder="預設密碼為 123456" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()">
-    </div>
-
-    <div class="hint-box">
-      • <strong>學生登入：</strong>直接輸入學號（例如 <code>1410101</code>）<br>
-      • <strong>家長登入：</strong>輸入 <code>F</code> ＋ 孩子學號（例如 <code>F1410101</code>，大小寫皆可）<br>
-      • 首次登入預設密碼皆為 <code>123456</code>，登入後可自行修改
-    </div>
-
-    <button class="login-btn" id="loginBtn" onclick="handleLogin()">登入系統終端</button>
-    <div id="msg"></div>
   </div>
 
   <script>
     function applyTheme(theme) {
-      if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
+      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      else document.documentElement.removeAttribute('data-theme');
     }
     function toggleTheme() {
       const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
@@ -397,38 +473,97 @@
     }
     applyTheme(localStorage.getItem('nexus-theme') || 'dark');
 
-    // 啟動動畫控制
     window.addEventListener('DOMContentLoaded', () => {
       const splash = document.getElementById('bootSplash');
-      const card = document.getElementById('loginCard');
+      const wrapper = document.getElementById('portalWrapper');
       setTimeout(() => {
         if (splash) splash.classList.add('fade-out');
-        if (card) card.classList.add('card-ready');
-      }, 950);
+        if (wrapper) wrapper.classList.add('card-ready');
+      }, 650);
     });
 
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     const SCHOOL_DOMAIN = 'cysh.khc.edu.tw';
 
-    async function redirectByRole(userId) {
+    async function loadAnnouncements() {
+      const listEl = document.getElementById('announcementList');
+      try {
+        const { data, error } = await supabaseClient
+          .from('announcements')
+          .select('id, title, content, tag, is_pinned, created_at')
+          .order('is_pinned', { ascending: false })
+          .order('created_at', { ascending: false });
+
+        if (error || !data || data.length === 0) {
+          listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 0.88rem; padding: 1rem 0;">目前尚無公告事項</div>';
+          return;
+        }
+
+        listEl.innerHTML = data.map(item => {
+          const dt = new Date(item.created_at);
+          const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
+          return `
+            <div class="ann-item ${item.is_pinned ? 'pinned' : ''}">
+              <div class="ann-meta">
+                <span class="ann-badge">${item.is_pinned ? '📌 ' : ''}${item.tag || '一般通知'}</span>
+                <span class="ann-date">${dateStr}</span>
+              </div>
+              <div class="ann-title">${item.title}</div>
+              <div class="ann-body">${item.content}</div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 0.88rem; padding: 1rem 0;">目前尚無公告事項</div>';
+      }
+    }
+
+    async function redirectByRole(user) {
+      const userEmail = (user.email || '').toLowerCase();
+      const accountPrefix = userEmail.split('@')[0];
+
+      // 1. 開發者帳號直接秒進 admin.html
+      if (userEmail === '202020@cysh.khc.edu.tw') {
+        window.location.replace('admin.html');
+        return;
+      }
+
+      // 2. 優先查詢 profiles 角色設定
       const { data: profile } = await supabaseClient
         .from('profiles')
         .select('role')
-        .eq('id', userId)
-        .single();
+        .eq('id', user.id)
+        .maybeSingle();
 
-      if (!profile) return;
-      if (profile.role === 'admin') window.location.href = 'admin.html';
-      else if (profile.role === 'parent') window.location.href = 'parent.html';
-      else window.location.href = 'student.html';
+      if (profile && (profile.role === 'admin' || profile.role === 'developer')) {
+        window.location.replace('admin.html');
+        return;
+      }
+      if (profile && profile.role === 'parent') {
+        window.location.replace('parent.html');
+        return;
+      }
+      if (profile && profile.role === 'student') {
+        window.location.replace('student.html');
+        return;
+      }
+
+      // 3. 資料庫查詢受阻或尚未建立時，自動依帳號前綴分流（F 開頭為家長，其餘學號為學生）
+      if (/^f\d+$/i.test(accountPrefix)) {
+        window.location.replace('parent.html');
+      } else {
+        window.location.replace('student.html');
+      }
     }
 
     (async () => {
+      loadAnnouncements();
+      // 若是被內頁踢回來的（帶有 ?error=1），暫停自動跳轉，避免無限迴圈
+      if (window.location.search.includes('error=1')) return;
       const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) await redirectByRole(session.user.id);
+      if (session && session.user) await redirectByRole(session.user);
     })();
 
     async function handleLogin() {
@@ -466,7 +601,7 @@
 
       msgEl.style.color = '#10b981';
       msgEl.innerText = '✓ 驗證成功，正在進入專屬終端...';
-      await redirectByRole(data.user.id);
+      await redirectByRole(data.user);
     }
   </script>
 </body>
