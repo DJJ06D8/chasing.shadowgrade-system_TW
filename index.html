@@ -3,38 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEXUS GRADE // 國二-2小考成績系統</title>
+  <title>NEXUS GRADE // 國二-2 智慧成績系統</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg-base: #060913;
-      --bg-glow-1: rgba(0, 240, 255, 0.11);
-      --bg-glow-2: rgba(16, 185, 129, 0.11);
+      --bg-glow-1: rgba(0, 240, 255, 0.12);
+      --bg-glow-2: rgba(16, 185, 129, 0.12);
       --grid-line: rgba(0, 240, 255, 0.035);
-      --card-bg: rgba(15, 23, 42, 0.82);
-      --card-border: rgba(0, 240, 255, 0.28);
-      --card-shadow: 0 0 45px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --card-border: rgba(0, 240, 255, 0.25);
+      --card-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
       --accent-primary: #00f0ff;
-      --accent-secondary: #10b981;
-      --tag-bg: rgba(0, 240, 255, 0.1);
-      --tag-border: rgba(0, 240, 255, 0.28);
+      --accent-blue: #38bdf8;
       --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
       --text-main: #f8fafc;
       --text-label: #cbd5e1;
       --text-muted: #94a3b8;
-      --text-note: #64748b;
-      --input-bg: rgba(2, 6, 23, 0.8);
-      --input-border: rgba(148, 163, 184, 0.3);
+      --input-bg: rgba(2, 6, 23, 0.78);
+      --input-border: rgba(148, 163, 184, 0.35);
       --input-text: #ffffff;
-      --input-focus-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
       --btn-grad: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
       --btn-text: #020617;
-      --btn-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
-      --btn-hover-shadow: 0 0 28px rgba(0, 240, 255, 0.5);
       --toggle-bg: rgba(15, 23, 42, 0.75);
       --toggle-border: rgba(0, 240, 255, 0.35);
       --toggle-text: #e2e8f0;
-      --error-color: #fb7185;
     }
 
     [data-theme="light"] {
@@ -42,30 +35,23 @@
       --bg-glow-1: rgba(2, 132, 199, 0.12);
       --bg-glow-2: rgba(16, 185, 129, 0.1);
       --grid-line: rgba(14, 116, 144, 0.065);
-      --card-bg: rgba(255, 255, 255, 0.84);
+      --card-bg: rgba(255, 255, 255, 0.9);
       --card-border: rgba(2, 132, 199, 0.25);
-      --card-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      --card-shadow: 0 20px 50px rgba(15, 23, 42, 0.09);
       --accent-primary: #0284c7;
-      --accent-secondary: #059669;
-      --tag-bg: rgba(2, 132, 199, 0.08);
-      --tag-border: rgba(2, 132, 199, 0.25);
+      --accent-blue: #0369a1;
       --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
       --text-main: #0f172a;
       --text-label: #334155;
       --text-muted: #475569;
-      --text-note: #64748b;
-      --input-bg: rgba(248, 250, 252, 0.92);
+      --input-bg: #f8fafc;
       --input-border: rgba(148, 163, 184, 0.45);
       --input-text: #0f172a;
-      --input-focus-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18);
       --btn-grad: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
       --btn-text: #ffffff;
-      --btn-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
-      --btn-hover-shadow: 0 10px 26px rgba(2, 132, 199, 0.38);
-      --toggle-bg: rgba(255, 255, 255, 0.85);
+      --toggle-bg: rgba(255, 255, 255, 0.9);
       --toggle-border: rgba(2, 132, 199, 0.3);
       --toggle-text: #0f172a;
-      --error-color: #e11d48;
     }
 
     * { box-sizing: border-box; }
@@ -79,132 +65,108 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg-base);
       background-image: 
-        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 42%),
-        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 46%),
+        radial-gradient(circle at 15% 20%, var(--bg-glow-1) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, var(--bg-glow-2) 0%, transparent 45%),
         linear-gradient(var(--grid-line) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       padding: 1.5rem;
-      transition: background-color 0.35s ease, color 0.35s ease;
-    }
-
-    .theme-toggle {
-      position: fixed;
-      top: 1.25rem;
-      right: 1.25rem;
-      z-index: 100;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.5rem 0.95rem;
-      border-radius: 999px;
-      background: var(--toggle-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--toggle-border);
-      color: var(--toggle-text);
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-      transition: all 0.25s ease;
-    }
-
-    .theme-toggle:hover {
-      transform: translateY(-1px);
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 16px var(--bg-glow-1);
-    }
-
-    .theme-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent-primary);
-      box-shadow: 0 0 8px var(--accent-primary);
     }
 
     .login-card {
       width: 100%;
-      max-width: 440px;
+      max-width: 430px;
       background: var(--card-bg);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 2.5rem;
+      border-radius: 18px;
+      padding: 2.25rem;
       box-shadow: var(--card-shadow);
-      text-align: center;
-      position: relative;
-      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     }
 
-    .portal-tag {
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .sys-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      color: var(--accent-primary);
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+
+    .theme-btn {
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.75rem;
-      color: var(--accent-primary);
-      letter-spacing: 0.15em;
-      margin-bottom: 0.75rem;
-      display: inline-block;
-      background: var(--tag-bg);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      border: 1px solid var(--tag-border);
+      font-weight: 700;
     }
 
-    h2 {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.5rem;
+    h1 {
+      margin: 0 0 0.45rem 0;
+      font-size: 1.55rem;
       background: var(--title-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .subtitle {
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       color: var(--text-muted);
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
+      line-height: 1.5;
     }
 
-    .form-group {
-      text-align: left;
-      margin-bottom: 1.25rem;
-    }
-
+    .form-group { margin-bottom: 1.25rem; }
     label {
       display: block;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
       color: var(--text-label);
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      margin-bottom: 0.45rem;
     }
 
     input {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 0.95rem;
       background: var(--input-bg);
       border: 1px solid var(--input-border);
       border-radius: 10px;
       color: var(--input-text);
-      font-size: 0.95rem;
-      transition: all 0.2s;
+      font-size: 0.98rem;
     }
 
     input:focus {
       outline: none;
       border-color: var(--accent-primary);
-      box-shadow: var(--input-focus-shadow);
+      box-shadow: 0 0 12px var(--bg-glow-1);
     }
+
+    .hint-box {
+      background: rgba(2, 132, 199, 0.08);
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      border-radius: 10px;
+      padding: 0.75rem 0.95rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.35rem;
+      line-height: 1.55;
+    }
+    .hint-box strong { color: var(--accent-primary); }
 
     .login-btn {
       width: 100%;
-      padding: 0.85rem;
-      margin-top: 1rem;
+      padding: 0.9rem;
       background: var(--btn-grad);
       color: var(--btn-text);
       border: none;
@@ -213,169 +175,127 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       cursor: pointer;
-      box-shadow: var(--btn-shadow);
-      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
     }
 
-    .login-btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: var(--btn-hover-shadow);
-    }
-
-    .login-btn:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-    }
-
-    .links {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-      font-size: 0.85rem;
-    }
-
-    .links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .links a:hover {
-      color: var(--accent-primary);
-    }
-
-    .role-note {
-      color: var(--text-note);
-      font-size: 0.8rem;
-    }
-
-    #errorMsg {
+    #msg {
       margin-top: 1rem;
-      font-size: 0.85rem;
-      color: var(--error-color);
+      text-align: center;
+      font-size: 0.88rem;
       font-weight: 600;
-      min-height: 1.2rem;
+      min-height: 1.25rem;
     }
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="切換明暗科技主題">
-    <span class="theme-dot"></span>
-    <span id="themeText">LIGHT MODE</span>
-  </button>
-
   <div class="login-card">
-    <div class="portal-tag">NEXUS ACCESS PORTAL // V2.6</div>
-    <h2>國二-2小考成績系統</h2>
-    <div class="subtitle">請輸入學號（或教師帳號）與密碼登入</div>
+    <div class="top-bar">
+      <span class="sys-tag">NEXUS GRADE // ACCESS PORTAL</span>
+      <button class="theme-btn" onclick="toggleTheme()">
+        <span id="themeText">LIGHT</span>
+      </button>
+    </div>
+
+    <h1>國二-2 智慧成績系統</h1>
+    <p class="subtitle">請輸入專屬帳號與密碼登入查看學習數據與全班組距分布</p>
 
     <div class="form-group">
-      <label for="studentId">ACCOUNT ID // 學號或帳號</label>
-      <input type="text" id="studentId" placeholder="請輸入學號 (例如：1410101)" autocomplete="username">
+      <label for="accountInput">登入帳號（學號 / 家長帳號 / 老師帳號）</label>
+      <input type="text" id="accountInput" placeholder="學生填學號；家長填 F＋學號" autocomplete="username">
     </div>
 
     <div class="form-group">
-      <label for="password">ACCESS KEY // 密碼</label>
-      <input type="password" id="password" placeholder="預設密碼：123456" autocomplete="current-password">
+      <label for="passwordInput">登入密碼</label>
+      <input type="password" id="passwordInput" placeholder="預設密碼為 123456" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()">
     </div>
 
-    <button class="login-btn" id="loginBtn" onclick="login()">啟動連線 // LOGIN</button>
-    <div id="errorMsg"></div>
-
-    <div class="links">
-      <a href="#" onclick="event.preventDefault(); alert('若忘記密碼，請直接聯繫老師協助重設為預設密碼！')">忘記密碼？</a>
-      <span class="role-note">🔒 老師 / 小老師請直接輸入帳號密碼，系統將自動導向管理終端</span>
+    <div class="hint-box">
+      • <strong>學生登入：</strong>直接輸入學號（例如 <code>1410101</code>）<br>
+      • <strong>家長登入：</strong>輸入 <code>F</code> ＋ 孩子學號（例如 <code>F1410101</code>，大小寫皆可）<br>
+      • 首次登入預設密碼皆為 <code>123456</code>，登入後可自行修改
     </div>
+
+    <button class="login-btn" id="loginBtn" onclick="handleLogin()">登入系統終端</button>
+    <div id="msg"></div>
   </div>
 
   <script>
-    // 初始化與切換明暗主題
     function applyTheme(theme) {
       const toggleText = document.getElementById('themeText');
       if (theme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-        toggleText.innerText = 'DARK MODE';
+        if (toggleText) toggleText.innerText = 'DARK';
       } else {
         document.documentElement.removeAttribute('data-theme');
-        toggleText.innerText = 'LIGHT MODE';
+        if (toggleText) toggleText.innerText = 'LIGHT';
       }
     }
-
     function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       localStorage.setItem('nexus-theme', next);
       applyTheme(next);
     }
-
-    // 載入時套用先前儲存的偏好（預設暗黑科技模式）
     applyTheme(localStorage.getItem('nexus-theme') || 'dark');
 
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 支援按 Enter 鍵直接登入
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') login();
-    });
+    const SCHOOL_DOMAIN = 'cysh.khc.edu.tw';
 
-    async function login() {
-      const idInput = document.getElementById('studentId').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const errorMsg = document.getElementById('errorMsg');
-      const loginBtn = document.getElementById('loginBtn');
-      errorMsg.innerText = '';
-
-      if (!idInput || !password) {
-        errorMsg.innerText = '請完整輸入帳號與密碼！';
-        return;
-      }
-
-      loginBtn.disabled = true;
-      loginBtn.innerText = '身份驗證中...';
-
-      // 若未包含 @ 則自動補上學校網域，若有包含 @ 則直接使用完整信箱
-      const email = idInput.includes('@') ? idInput : `${idInput}@cysh.khc.edu.tw`;
-
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
-
-      if (error) {
-        errorMsg.innerText = '登入失敗：帳號或密碼錯誤';
-        loginBtn.disabled = false;
-        loginBtn.innerText = '啟動連線 // LOGIN';
-        return;
-      }
-
-      const { data: profile, error: profileError } = await supabaseClient
+    async function redirectByRole(userId) {
+      const { data: profile } = await supabaseClient
         .from('profiles')
         .select('role')
-        .eq('id', data.user.id)
+        .eq('id', userId)
         .single();
 
-      if (profileError || !profile) {
-        errorMsg.innerText = '無法讀取帳號權限資料，請聯繫管理員！';
-        await supabaseClient.auth.signOut();
-        loginBtn.disabled = false;
-        loginBtn.innerText = '啟動連線 // LOGIN';
+      if (!profile) return;
+      if (profile.role === 'admin') window.location.href = 'admin.html';
+      else if (profile.role === 'parent') window.location.href = 'parent.html';
+      else window.location.href = 'student.html';
+    }
+
+    (async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) await redirectByRole(session.user.id);
+    })();
+
+    async function handleLogin() {
+      const rawAccount = document.getElementById('accountInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
+      const msgEl = document.getElementById('msg');
+      const btn = document.getElementById('loginBtn');
+
+      if (!rawAccount || !password) {
+        msgEl.style.color = '#f43f5e';
+        msgEl.innerText = '請輸入帳號與密碼！';
         return;
       }
 
-      // 依據資料庫角色自動分流
-      if (profile.role === 'student') {
-        window.location.href = 'student.html';
-      } else if (profile.role === 'admin' || profile.role === 'grader') {
-        window.location.href = 'admin.html';
-      } else {
-        errorMsg.innerText = '此帳號尚未設定有效權限！';
-        await supabaseClient.auth.signOut();
-        loginBtn.disabled = false;
-        loginBtn.innerText = '啟動連線 // LOGIN';
+      const email = rawAccount.includes('@')
+        ? rawAccount.toLowerCase()
+        : `${rawAccount.toLowerCase()}@${SCHOOL_DOMAIN}`;
+
+      btn.disabled = true;
+      msgEl.style.color = 'var(--accent-blue)';
+      msgEl.innerText = '正在驗證身分權限...';
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      btn.disabled = false;
+
+      if (error) {
+        msgEl.style.color = '#f43f5e';
+        msgEl.innerText = '帳號或密碼錯誤，請重新確認！';
+        return;
       }
+
+      msgEl.style.color = '#10b981';
+      msgEl.innerText = '✓ 驗證成功，正在進入專屬終端...';
+      await redirectByRole(data.user.id);
     }
   </script>
 </body>

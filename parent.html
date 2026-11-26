@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS GRADE // 家長關懷終端</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg-base: #060913;
+      --bg-glow-1: rgba(0, 240, 255, 0.1);
+      --bg-glow-2: rgba(16, 185, 129, 0.1);
+      --grid-line: rgba(0, 240, 255, 0.03);
+      --container-bg: rgba(15, 23, 42, 0.82);
+      --container-border: rgba(0, 240, 255, 0.22);
+      --container-shadow: 0 0 35px rgba(0, 0, 0, 0.65);
+      --header-border: rgba(0, 240, 255, 0.18);
+      --accent-primary: #00f0ff;
+      --accent-blue: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-gold: #fbbf24;
+      --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
+      --text-main: #f8fafc;
+      --text-heading: #e2e8f0;
+      --text-muted: #94a3b8;
+      --th-bg: rgba(2, 6, 23, 0.6);
+      --td-border: rgba(148, 163, 184, 0.15);
+      --tr-hover: rgba(0, 240, 255, 0.03);
+      --card-bg: rgba(2, 6, 23, 0.65);
+      --card-border: rgba(148, 163, 184, 0.2);
+      --card-hi-bg: rgba(8, 47, 73, 0.45);
+      --card-hi-border: rgba(0, 240, 255, 0.45);
+      --badge-bg: rgba(0, 240, 255, 0.12);
+      --badge-border: rgba(0, 240, 255, 0.3);
+      --toggle-bg: rgba(15, 23, 42, 0.75);
+      --toggle-border: rgba(0, 240, 255, 0.35);
+      --toggle-text: #e2e8f0;
+      --bar-track: rgba(148, 163, 184, 0.14);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #eef3f9;
+      --bg-glow-1: rgba(2, 132, 199, 0.11);
+      --bg-glow-2: rgba(16, 185, 129, 0.09);
+      --grid-line: rgba(14, 116, 144, 0.065);
+      --container-bg: rgba(255, 255, 255, 0.88);
+      --container-border: rgba(2, 132, 199, 0.24);
+      --container-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      --header-border: rgba(2, 132, 199, 0.18);
+      --accent-primary: #0284c7;
+      --accent-blue: #0369a1;
+      --accent-emerald: #059669;
+      --accent-gold: #d97706;
+      --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
+      --text-main: #0f172a;
+      --text-heading: #1e293b;
+      --text-muted: #475569;
+      --th-bg: rgba(241, 245, 249, 0.92);
+      --td-border: rgba(148, 163, 184, 0.24);
+      --tr-hover: rgba(2, 132, 199, 0.045);
+      --card-bg: rgba(248, 250, 252, 0.92);
+      --card-border: rgba(148, 163, 184, 0.32);
+      --card-hi-bg: rgba(224, 242, 254, 0.85);
+      --card-hi-border: rgba(2, 132, 199, 0.45);
+      --badge-bg: rgba(2, 132, 199, 0.1);
+      --badge-border: rgba(2, 132, 199, 0.28);
+      --toggle-bg: rgba(255, 255, 255, 0.9);
+      --toggle-border: rgba(2, 132, 199, 0.3);
+      --toggle-text: #0f172a;
+      --bar-track: rgba(148, 163, 184, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 40%),
+        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 45%),
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+      color: var(--text-main);
+      padding: 1.5rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto 2rem auto;
+      background: var(--container-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--container-border);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--container-shadow);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--header-border);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .role-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      color: var(--accent-emerald);
+      letter-spacing: 0.12em;
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      background: var(--title-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h3 { margin-top: 0; color: var(--text-heading); font-size: 1.02rem; margin-bottom: 1rem; }
+
+    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+
+    .theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      border: 1px solid var(--toggle-border);
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .theme-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-primary); }
+
+    .pw-edit-btn {
+      background: rgba(2, 132, 199, 0.12);
+      color: var(--accent-primary);
+      border: 1px solid rgba(2, 132, 199, 0.4);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.84rem;
+    }
+
+    .logout-btn {
+      background: rgba(244, 63, 94, 0.15);
+      color: #f43f5e;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+    .summary-card {
+      flex: 1;
+      min-width: 145px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .summary-card .sub-title { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; font-weight: 600; }
+    .summary-card .sub-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+    .summary-card .sub-avg { font-size: 0.78rem; color: var(--text-muted); }
+
+    .rank-direct-card {
+      width: 220px;
+      height: 118px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(69, 26, 3, 0.85), rgba(30, 27, 15, 0.92));
+      border: 1.5px solid rgba(251, 191, 36, 0.65);
+      box-shadow: 0 0 28px rgba(251, 191, 36, 0.22);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1.75rem;
+      text-align: center;
+    }
+
+    .rank-reveal-label { font-size: 0.82rem; color: #fbbf24; font-weight: 700; margin-bottom: 0.3rem; }
+    .rank-reveal-num {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #fde047;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.45);
+      line-height: 1.15;
+    }
+    .rank-reveal-sub { font-size: 0.78rem; color: #fcd34d; margin-top: 0.25rem; }
+
+    .dist-section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .dist-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+    }
+
+    .dist-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .dist-card-title { font-weight: 700; font-size: 0.95rem; color: var(--accent-primary); }
+
+    .dist-select {
+      background: var(--toggle-bg);
+      color: var(--text-main);
+      border: 1px solid var(--toggle-border);
+      border-radius: 8px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .dist-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.82rem;
+    }
+
+    .dist-label {
+      width: 68px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .dist-bar-bg {
+      flex: 1;
+      height: 18px;
+      background: var(--bar-track);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .dist-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-emerald));
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+
+    .dist-row.is-me .dist-label { color: var(--accent-gold); }
+    .dist-row.is-me .dist-bar-fill {
+      background: linear-gradient(90deg, #f59e0b, #fde047);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+    }
+
+    .dist-count { width: 88px; font-weight: 700; color: var(--text-main); font-size: 0.8rem; flex-shrink: 0; }
+
+    .me-pill {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      border-radius: 4px;
+      padding: 0 4px;
+      font-size: 0.72rem;
+      margin-left: 3px;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.85rem 0.75rem; text-align: center; border-bottom: 1px solid var(--td-border); }
+    th {
+      background: var(--th-bg);
+      color: var(--accent-primary);
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+    tr:hover td { background: var(--tr-hover); }
+
+    .badge {
+      display: inline-block;
+      background: var(--badge-bg);
+      color: var(--accent-primary);
+      border: 1px solid var(--badge-border);
+      padding: 0.22rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .date-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .score-num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+    }
+
+    .reported-tag { font-size: 0.78rem; color: var(--accent-gold); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <span class="role-tag">PARENT GUARDIAN PORTAL // 家長專用終端</span>
+        <h2 id="parentHeaderTitle">載入家長與學生資料中...</h2>
+      </div>
+      <div class="btn-group">
+        <button class="theme-btn" onclick="toggleTheme()">
+          <span class="theme-dot"></span>
+          <span id="themeText">LIGHT</span>
+        </button>
+        <button class="pw-edit-btn" onclick="changeMyPassword()">修改家長密碼</button>
+        <button class="logout-btn" onclick="logout()">登出終端</button>
+      </div>
+    </div>
+
+    <h3>⚡ 孩子各科數據與全班總排名</h3>
+    <div class="summary-grid" id="subjectSummaryGrid"></div>
+
+    <div class="rank-direct-card">
+      <div class="rank-reveal-label">🏆 全班總排名</div>
+      <div class="rank-reveal-num" id="overallRankText">第 - 名</div>
+      <div class="rank-reveal-sub" id="totalParticipantsText">共 - 人參與</div>
+    </div>
+
+    <h3>📊 全班成績組距分布（了解班級整體落點）</h3>
+    <div class="dist-section-grid">
+      <div class="dist-card">
+        <div class="dist-card-header">
+          <span class="dist-card-title">📚 單科全班組距分布</span>
+          <select id="subjectDistSelect" class="dist-select" onchange="renderSubjectDistribution()"></select>
+        </div>
+        <div id="subjectDistBars"></div>
+      </div>
+
+      <div class="dist-card">
+        <div class="dist-card-header">
+          <span class="dist-card-title">🏆 全班總平均組距分布</span>
+          <span style="font-size:0.78rem; color:var(--text-muted);">跨科總均落點</span>
+        </div>
+        <div id="overallDistBars"></div>
+      </div>
+    </div>
+
+    <h3>📜 孩子歷次小考單科明細</h3>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>考試日期</th>
+            <th>科目</th>
+            <th>測驗名稱</th>
+            <th>孩子分數</th>
+            <th>單科班均</th>
+            <th>單科名次</th>
+            <th>回報狀態</th>
+          </tr>
+        </thead>
+        <tbody id="scoreDetailBody">
+          <tr><td colspan="7">載入成績明細中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function applyTheme(theme) {
+      const toggleText = document.getElementById('themeText');
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (toggleText) toggleText.innerText = 'DARK';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (toggleText) toggleText.innerText = 'LIGHT';
+      }
+    }
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      localStorage.setItem('nexus-theme', next);
+      applyTheme(next);
+    }
+    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+
+    const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let targetStudentId = null;
+    let publishedScoresCache = [];
+    let studentTotalsCache = [];
+
+    const SCORE_BINS = [
+      { label: '100 分', min: 100, max: 100.99 },
+      { label: '90-99', min: 90, max: 99.99 },
+      { label: '80-89', min: 80, max: 89.99 },
+      { label: '70-79', min: 70, max: 79.99 },
+      { label: '60-69', min: 60, max: 69.99 },
+      { label: '59 以下', min: -1, max: 59.99 }
+    ];
+
+    function buildDistributionHtml(values, childVal) {
+      const total = values.length || 1;
+      return SCORE_BINS.map(bin => {
+        const count = values.filter(v => v >= bin.min && v <= bin.max).length;
+        const pct = Math.round((count / total) * 100);
+        const isChild = childVal !== null && childVal !== undefined && childVal >= bin.min && childVal <= bin.max;
+        return `
+          <div class="dist-row ${isChild ? 'is-me' : ''}">
+            <div class="dist-label">${bin.label}</div>
+            <div class="dist-bar-bg">
+              <div class="dist-bar-fill" style="width: ${pct}%;"></div>
+            </div>
+            <div class="dist-count">${count} 人${isChild ? '<span class="me-pill">孩子</span>' : ''}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function init() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const { data: parentProfile, error: profErr } = await supabaseClient
+        .from('profiles')
+        .select('id, seat_number, name, email, role, parent_of_student_id')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profErr || !parentProfile) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      if (parentProfile.role === 'admin') { window.location.href = 'admin.html'; return; }
+      if (parentProfile.role === 'student') { window.location.href = 'student.html'; return; }
+
+      targetStudentId = parentProfile.parent_of_student_id;
+
+      if (!targetStudentId && parentProfile.email) {
+        const pCode = parentProfile.email.split('@')[0].toLowerCase();
+        if (pCode.startsWith('f')) {
+          const stEmail = `${pCode.slice(1)}@cysh.khc.edu.tw`;
+          const { data: childData } = await supabaseClient
+            .from('profiles')
+            .select('id, seat_number, name')
+            .eq('email', stEmail)
+            .single();
+          if (childData) targetStudentId = childData.id;
+        }
+      }
+
+      if (!targetStudentId) {
+        alert('找不到對應的學生資料，請聯繫導師確認帳號綁定！');
+        return;
+      }
+
+      const { data: childProfile } = await supabaseClient
+        .from('profiles')
+        .select('seat_number, name')
+        .eq('id', targetStudentId)
+        .single();
+
+      const childSeat = childProfile?.seat_number ?? parentProfile.seat_number ?? '-';
+      const childName = childProfile?.name ?? parentProfile.name.replace(' 家長', '');
+      document.getElementById('parentHeaderTitle').innerText = `[${childSeat}號] ${childName} 的家長終端`;
+
+      await loadChildScores();
+    }
+
+    async function loadChildScores() {
+      const { data: allScores, error } = await supabaseClient
+        .from('scores')
+        .select('id, semester, exam_stage, exam_name, subject, exam_date, score, class_avg, rank, student_id, report_note, is_published')
+        .order('exam_date', { ascending: false })
+        .order('id', { ascending: false });
+
+      if (error) {
+        document.getElementById('scoreDetailBody').innerHTML = `<tr><td colspan="7">讀取失敗：${error.message}</td></tr>`;
+        return;
+      }
+
+      publishedScoresCache = (allScores || []).filter(s => s.is_published !== false);
+      const childScores = publishedScoresCache.filter(s => s.student_id === targetStudentId);
+
+      renderSummaryAndRank(publishedScoresCache, childScores);
+      renderScoreDetailTable(childScores);
+    }
+
+    function renderSummaryAndRank(publishedScores, childScores) {
+      const summaryGrid = document.getElementById('subjectSummaryGrid');
+      const subjects = [...new Set(publishedScores.map(s => s.subject))];
+
+      if (subjects.length === 0) {
+        summaryGrid.innerHTML = '<div style="color:var(--text-muted);">目前尚無已發布的成績資料</div>';
+        return;
+      }
+
+      const cardsHtml = subjects.map(sub => {
+        const childSubItems = childScores.filter(s => s.subject === sub);
+        const classSubItems = publishedScores.filter(s => s.subject === sub);
+
+        const childAvg = childSubItems.length > 0
+          ? Math.round((childSubItems.reduce((sum, x) => sum + x.score, 0) / childSubItems.length) * 10) / 10
+          : '-';
+        const classAvg = classSubItems.length > 0
+          ? (classSubItems.reduce((sum, x) => sum + x.score, 0) / classSubItems.length).toFixed(1)
+          : '-';
+
+        return `
+          <div class="summary-card">
+            <div class="sub-title">${sub} 科平均</div>
+            <div class="sub-val">${childAvg}</div>
+            <div class="sub-avg">班均 ${classAvg}</div>
+          </div>
+        `;
+      });
+
+      const studentIds = [...new Set(publishedScores.map(s => s.student_id))];
+      studentTotalsCache = studentIds.map(sid => {
+        const sItems = publishedScores.filter(s => s.student_id === sid);
+        let subCount = 0;
+        let subSum = 0;
+        subjects.forEach(sub => {
+          const items = sItems.filter(x => x.subject === sub);
+          if (items.length > 0) {
+            subSum += Math.round((items.reduce((a, b) => a + b.score, 0) / items.length) * 10) / 10;
+            subCount++;
+          }
+        });
+        return {
+          student_id: sid,
+          totalAvg: subCount > 0 ? Math.round((subSum / subCount) * 10) / 10 : null
+        };
+      }).filter(x => x.totalAvg !== null);
+
+      const classOverallAvg = studentTotalsCache.length > 0
+        ? (studentTotalsCache.reduce((sum, x) => sum + x.totalAvg, 0) / studentTotalsCache.length).toFixed(1)
+        : '-';
+
+      const childTotalObj = studentTotalsCache.find(x => x.student_id === targetStudentId);
+      const childOverallAvg = childTotalObj ? childTotalObj.totalAvg : '-';
+
+      cardsHtml.push(`
+        <div class="summary-card" style="border-color: var(--card-hi-border); background: var(--card-hi-bg);">
+          <div class="sub-title" style="color: var(--accent-blue);">跨科總平均</div>
+          <div class="sub-val" style="color: var(--accent-blue);">${childOverallAvg}</div>
+          <div class="sub-avg">全班總均 ${classOverallAvg}</div>
+        </div>
+      `);
+
+      summaryGrid.innerHTML = cardsHtml.join('');
+
+      const sortedTotals = [...studentTotalsCache].sort((a, b) => b.totalAvg - a.totalAvg);
+      const childRank = childTotalObj
+        ? sortedTotals.findIndex(x => x.totalAvg === childTotalObj.totalAvg) + 1
+        : '-';
+
+      document.getElementById('overallRankText').innerText = childRank === '-' ? '第 - 名' : `第 ${childRank} 名`;
+      document.getElementById('totalParticipantsText').innerText = `共 ${studentTotalsCache.length} 人參與`;
+
+      const subSelect = document.getElementById('subjectDistSelect');
+      subSelect.innerHTML = subjects.map(sub => `<option value="${sub}">${sub}科組距</option>`).join('');
+      renderSubjectDistribution();
+
+      const allOverallVals = studentTotalsCache.map(x => x.totalAvg);
+      document.getElementById('overallDistBars').innerHTML = buildDistributionHtml(
+        allOverallVals,
+        childTotalObj ? childTotalObj.totalAvg : null
+      );
+    }
+
+    function renderSubjectDistribution() {
+      const targetSub = document.getElementById('subjectDistSelect').value;
+      if (!targetSub) return;
+
+      const subScores = publishedScoresCache.filter(s => s.subject === targetSub);
+      const studentIds = [...new Set(subScores.map(s => s.student_id))];
+
+      const perStudentAvgs = [];
+      let childSubAvg = null;
+
+      studentIds.forEach(sid => {
+        const items = subScores.filter(s => s.student_id === sid);
+        if (items.length > 0) {
+          const avg = Math.round((items.reduce((sum, x) => sum + x.score, 0) / items.length) * 10) / 10;
+          perStudentAvgs.push(avg);
+          if (sid === targetStudentId) childSubAvg = avg;
+        }
+      });
+
+      document.getElementById('subjectDistBars').innerHTML = buildDistributionHtml(perStudentAvgs, childSubAvg);
+    }
+
+    function renderScoreDetailTable(childScores) {
+      const tbody = document.getElementById('scoreDetailBody');
+      if (childScores.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">目前尚無小考紀錄</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = childScores.map(item => `
+        <tr>
+          <td><span class="date-tag">${item.exam_date || '未填日期'}</span></td>
+          <td><span class="badge">${item.subject}</span></td>
+          <td><strong>${item.exam_name || '平時考'}</strong></td>
+          <td><span class="score-num">${item.score}</span></td>
+          <td>${item.class_avg ?? '-'}</td>
+          <td>第 ${item.rank ?? '-'} 名</td>
+          <td>
+            ${item.report_note
+              ? `<span class="reported-tag">⏳ 孩子已回報：${item.report_note}</span>`
+              : `<span style="color:var(--text-muted); font-size:0.8rem;">正常</span>`
+            }
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function changeMyPassword() {
+      const newPassword = prompt('請輸入新的家長登入密碼（至少 6 個字元）：');
+      if (newPassword === null) return;
+      const trimmed = newPassword.trim();
+      if (trimmed.length < 6) { alert('密碼長度至少需要 6 個字元！'); return; }
+
+      const { error } = await supabaseClient.auth.updateUser({ password: trimmed });
+      if (error) alert('密碼修改失敗：' + error.message);
+      else alert('✓ 家長登入密碼已成功修改！');
+    }
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    init();
+  </script>
+</body>
+</html>

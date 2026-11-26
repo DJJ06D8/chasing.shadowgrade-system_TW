@@ -3,93 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEXUS GRADE // 學生數據終端</title>
+  <title>NEXUS GRADE // 學生學習終端</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg-base: #060913;
-      --bg-glow-1: rgba(0, 240, 255, 0.12);
-      --bg-glow-2: rgba(168, 85, 247, 0.14);
+      --bg-glow-1: rgba(0, 240, 255, 0.1);
+      --bg-glow-2: rgba(16, 185, 129, 0.1);
       --grid-line: rgba(0, 240, 255, 0.03);
       --container-bg: rgba(15, 23, 42, 0.82);
       --container-border: rgba(0, 240, 255, 0.22);
-      --container-shadow: 0 0 35px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.03);
+      --container-shadow: 0 0 35px rgba(0, 0, 0, 0.65);
       --header-border: rgba(0, 240, 255, 0.18);
       --accent-primary: #00f0ff;
       --accent-blue: #38bdf8;
+      --accent-emerald: #10b981;
       --accent-gold: #fbbf24;
-      --gold-sub: #fde68a;
       --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
       --text-main: #f8fafc;
-      --text-heading: #cbd5e1;
+      --text-heading: #e2e8f0;
       --text-muted: #94a3b8;
-      --text-sub: #64748b;
-      --card-bg: rgba(2, 6, 23, 0.65);
-      --card-border: rgba(148, 163, 184, 0.2);
-      --card-hover-border: rgba(0, 240, 255, 0.45);
-      --card-hi-bg: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(8, 47, 73, 0.45));
-      --card-hi-border: rgba(0, 240, 255, 0.4);
-      --card-val-color: #ffffff;
-      --card-val-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
-      --scratch-bg: linear-gradient(145deg, rgba(30, 27, 75, 0.85), rgba(69, 26, 3, 0.35));
-      --scratch-border: rgba(251, 191, 36, 0.55);
-      --scratch-shadow: 0 0 20px rgba(251, 191, 36, 0.15);
       --th-bg: rgba(2, 6, 23, 0.6);
       --td-border: rgba(148, 163, 184, 0.15);
-      --tr-hover: rgba(0, 240, 255, 0.04);
+      --tr-hover: rgba(0, 240, 255, 0.03);
+      --card-bg: rgba(2, 6, 23, 0.65);
+      --card-border: rgba(148, 163, 184, 0.2);
+      --card-hi-bg: rgba(8, 47, 73, 0.45);
+      --card-hi-border: rgba(0, 240, 255, 0.45);
       --badge-bg: rgba(0, 240, 255, 0.12);
       --badge-border: rgba(0, 240, 255, 0.3);
-      --modal-bg: #0f172a;
-      --modal-border: rgba(0, 240, 255, 0.35);
-      --input-bg: rgba(2, 6, 23, 0.8);
-      --input-border: rgba(148, 163, 184, 0.28);
-      --input-text: #ffffff;
       --toggle-bg: rgba(15, 23, 42, 0.75);
       --toggle-border: rgba(0, 240, 255, 0.35);
       --toggle-text: #e2e8f0;
+      --bar-track: rgba(148, 163, 184, 0.14);
     }
 
     [data-theme="light"] {
       --bg-base: #eef3f9;
       --bg-glow-1: rgba(2, 132, 199, 0.11);
-      --bg-glow-2: rgba(99, 102, 241, 0.09);
+      --bg-glow-2: rgba(16, 185, 129, 0.09);
       --grid-line: rgba(14, 116, 144, 0.065);
-      --container-bg: rgba(255, 255, 255, 0.86);
+      --container-bg: rgba(255, 255, 255, 0.88);
       --container-border: rgba(2, 132, 199, 0.24);
       --container-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
       --header-border: rgba(2, 132, 199, 0.18);
       --accent-primary: #0284c7;
       --accent-blue: #0369a1;
+      --accent-emerald: #059669;
       --accent-gold: #d97706;
-      --gold-sub: #b45309;
       --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
       --text-main: #0f172a;
-      --text-heading: #334155;
+      --text-heading: #1e293b;
       --text-muted: #475569;
-      --text-sub: #64748b;
+      --th-bg: rgba(241, 245, 249, 0.92);
+      --td-border: rgba(148, 163, 184, 0.24);
+      --tr-hover: rgba(2, 132, 199, 0.045);
       --card-bg: rgba(248, 250, 252, 0.92);
       --card-border: rgba(148, 163, 184, 0.32);
-      --card-hover-border: rgba(2, 132, 199, 0.5);
-      --card-hi-bg: linear-gradient(145deg, rgba(240, 249, 255, 0.95), rgba(224, 242, 254, 0.85));
+      --card-hi-bg: rgba(224, 242, 254, 0.85);
       --card-hi-border: rgba(2, 132, 199, 0.45);
-      --card-val-color: #0f172a;
-      --card-val-shadow: none;
-      --scratch-bg: linear-gradient(145deg, rgba(254, 243, 199, 0.85), rgba(253, 230, 138, 0.55));
-      --scratch-border: rgba(217, 119, 6, 0.55);
-      --scratch-shadow: 0 8px 20px rgba(217, 119, 6, 0.14);
-      --th-bg: rgba(241, 245, 249, 0.9);
-      --td-border: rgba(148, 163, 184, 0.25);
-      --tr-hover: rgba(2, 132, 199, 0.05);
       --badge-bg: rgba(2, 132, 199, 0.1);
       --badge-border: rgba(2, 132, 199, 0.28);
-      --modal-bg: #ffffff;
-      --modal-border: rgba(2, 132, 199, 0.35);
-      --input-bg: #f8fafc;
-      --input-border: rgba(148, 163, 184, 0.45);
-      --input-text: #0f172a;
       --toggle-bg: rgba(255, 255, 255, 0.9);
       --toggle-border: rgba(2, 132, 199, 0.3);
       --toggle-text: #0f172a;
+      --bar-track: rgba(148, 163, 184, 0.22);
     }
 
     * { box-sizing: border-box; }
@@ -100,27 +78,24 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg-base);
       background-image: 
-        radial-gradient(circle at 10% 15%, var(--bg-glow-1) 0%, transparent 40%),
-        radial-gradient(circle at 90% 85%, var(--bg-glow-2) 0%, transparent 45%),
+        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 40%),
+        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 45%),
         linear-gradient(var(--grid-line) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       padding: 1.5rem;
-      transition: background-color 0.35s ease, color 0.35s ease;
     }
 
     .container {
-      max-width: 880px;
+      max-width: 900px;
       margin: 0 auto 2rem auto;
       background: var(--container-bg);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--container-border);
       border-radius: 16px;
       padding: 2rem;
       box-shadow: var(--container-shadow);
-      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
     }
 
     .header {
@@ -128,13 +103,13 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--header-border);
-      padding-bottom: 1.1rem;
-      margin-bottom: 1.6rem;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
 
-    .user-info .tag {
+    .role-tag {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.72rem;
       color: var(--accent-primary);
@@ -146,28 +121,15 @@
 
     h2 {
       margin: 0;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       background: var(--title-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    h3 {
-      margin: 0 0 1rem 0;
-      font-size: 1rem;
-      letter-spacing: 0.06em;
-      color: var(--text-heading);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+    h3 { margin-top: 0; color: var(--text-heading); font-size: 1.02rem; margin-bottom: 1rem; }
 
-    .header-actions {
-      display: flex;
-      gap: 0.6rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
 
     .theme-btn {
       display: inline-flex;
@@ -182,339 +144,289 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.78rem;
       font-weight: 700;
-      transition: all 0.2s;
     }
 
-    .theme-btn:hover {
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 12px var(--bg-glow-1);
-    }
+    .theme-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-primary); }
 
-    .theme-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--accent-primary);
-      box-shadow: 0 0 8px var(--accent-primary);
-    }
-
-    .pw-btn {
+    .pw-edit-btn {
       background: rgba(2, 132, 199, 0.12);
       color: var(--accent-primary);
       border: 1px solid rgba(2, 132, 199, 0.4);
-      padding: 0.5rem 1.05rem;
+      padding: 0.45rem 0.85rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.2s;
-    }
-
-    .pw-btn:hover {
-      background: rgba(2, 132, 199, 0.22);
-      box-shadow: 0 0 12px var(--bg-glow-1);
+      font-size: 0.84rem;
     }
 
     .logout-btn {
-      background: rgba(244, 63, 94, 0.14);
+      background: rgba(244, 63, 94, 0.15);
       color: #f43f5e;
       border: 1px solid rgba(244, 63, 94, 0.4);
-      padding: 0.5rem 1.05rem;
+      padding: 0.5rem 1.1rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.2s;
     }
 
-    .logout-btn:hover {
-      background: rgba(244, 63, 94, 0.25);
-      box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
-    }
+    .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, 0.75);
-      backdrop-filter: blur(8px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      padding: 1rem;
-    }
-    .modal-overlay.active { display: flex; }
-    .modal-box {
-      width: 100%;
-      max-width: 390px;
-      background: var(--modal-bg);
-      border: 1px solid var(--modal-border);
-      border-radius: 14px;
-      padding: 1.8rem;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
-    }
-    .modal-box h4 {
-      margin: 0 0 0.4rem 0;
-      font-size: 1.15rem;
-      color: var(--accent-primary);
-    }
-    .modal-box p {
-      margin: 0 0 1.2rem 0;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-    .modal-group { margin-bottom: 1rem; }
-    .modal-group label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--text-heading);
-      margin-bottom: 0.4rem;
-      font-weight: 600;
-    }
-    .modal-group input {
-      width: 100%;
-      padding: 0.7rem 0.9rem;
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: 8px;
-      color: var(--input-text);
-      font-size: 0.95rem;
-    }
-    .modal-group input:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 12px var(--bg-glow-1);
-    }
-    .modal-actions {
-      display: flex;
-      gap: 0.6rem;
-      margin-top: 1.25rem;
-    }
-    .modal-submit {
+    .summary-card {
       flex: 1;
-      padding: 0.7rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      color: #ffffff;
-      background: linear-gradient(135deg, #0284c7, #0ea5e9);
-      cursor: pointer;
-    }
-    .modal-cancel {
-      padding: 0.7rem 1rem;
-      border: 1px solid var(--input-border);
-      border-radius: 8px;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-    #pwModalMsg {
-      margin-top: 0.85rem;
-      font-size: 0.85rem;
-      text-align: center;
-      min-height: 1.1rem;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .card {
+      min-width: 145px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 1.1rem 1rem;
+      padding: 1rem;
       text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s, background 0.35s ease;
-    }
-    .card:hover {
-      border-color: var(--card-hover-border);
-      transform: translateY(-2px);
-    }
-    .card-highlight {
-      border-color: var(--card-hi-border);
-      background: var(--card-hi-bg);
-    }
-    .card-title {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      margin-bottom: 0.4rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .card-val {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 1.65rem;
-      font-weight: 800;
-      color: var(--card-val-color);
-      text-shadow: var(--card-val-shadow);
-    }
-    .card-sub {
-      font-size: 0.78rem;
-      color: var(--text-sub);
-      margin-top: 0.3rem;
     }
 
-    .scratch-card {
-      border: 1px solid var(--scratch-border);
-      background: var(--scratch-bg);
-      box-shadow: var(--scratch-shadow);
-      min-height: 118px;
+    .summary-card .sub-title { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; font-weight: 600; }
+    .summary-card .sub-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+    .summary-card .sub-avg { font-size: 0.78rem; color: var(--text-muted); }
+
+    .scratch-box-wrapper {
+      position: relative;
+      width: 220px;
+      height: 118px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(69, 26, 3, 0.85), rgba(30, 27, 15, 0.92));
+      border: 1.5px solid rgba(251, 191, 36, 0.65);
+      box-shadow: 0 0 28px rgba(251, 191, 36, 0.22);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      margin-bottom: 1.75rem;
       user-select: none;
     }
-    .scratch-card.revealed {
-      animation: rankGlow 1.2s ease-out;
-      box-shadow: 0 0 28px rgba(251, 191, 36, 0.45);
+
+    .rank-reveal-label { font-size: 0.82rem; color: #fbbf24; font-weight: 700; margin-bottom: 0.3rem; }
+    .rank-reveal-num {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #fde047;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.45);
+      line-height: 1.15;
     }
-    @keyframes rankGlow {
-      0% { transform: scale(0.96); box-shadow: 0 0 5px rgba(251, 191, 36, 0.2); }
-      50% { transform: scale(1.04); box-shadow: 0 0 38px rgba(251, 191, 36, 0.85); }
-      100% { transform: scale(1); box-shadow: 0 0 25px rgba(251, 191, 36, 0.4); }
-    }
+    .rank-reveal-sub { font-size: 0.78rem; color: #fcd34d; margin-top: 0.25rem; }
+
     #scratchCanvas {
       position: absolute;
       top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       cursor: crosshair;
       touch-action: none;
-      border-radius: 11px;
-      z-index: 5;
       transition: opacity 0.45s ease;
     }
 
-    .table-wrap { overflow-x: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0.5rem;
+    .dist-section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
     }
-    th, td {
-      padding: 0.9rem 0.75rem;
-      text-align: center;
-      border-bottom: 1px solid var(--td-border);
+
+    .dist-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem;
     }
+
+    .dist-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .dist-card-title { font-weight: 700; font-size: 0.95rem; color: var(--accent-primary); }
+
+    .dist-select {
+      background: var(--toggle-bg);
+      color: var(--text-main);
+      border: 1px solid var(--toggle-border);
+      border-radius: 8px;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .dist-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.82rem;
+    }
+
+    .dist-label {
+      width: 68px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .dist-bar-bg {
+      flex: 1;
+      height: 18px;
+      background: var(--bar-track);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .dist-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--accent-emerald));
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+
+    .dist-row.is-me .dist-label { color: var(--accent-gold); }
+    .dist-row.is-me .dist-bar-fill {
+      background: linear-gradient(90deg, #f59e0b, #fde047);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+    }
+
+    .dist-count { width: 88px; font-weight: 700; color: var(--text-main); font-size: 0.8rem; flex-shrink: 0; }
+
+    .me-pill {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      border-radius: 4px;
+      padding: 0 4px;
+      font-size: 0.72rem;
+      margin-left: 3px;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.85rem 0.75rem; text-align: center; border-bottom: 1px solid var(--td-border); }
     th {
       background: var(--th-bg);
       color: var(--accent-primary);
       font-size: 0.82rem;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       font-weight: 700;
     }
-    td:nth-child(2), th:nth-child(2) { text-align: left; }
     tr:hover td { background: var(--tr-hover); }
+
     .badge {
       display: inline-block;
       background: var(--badge-bg);
       color: var(--accent-primary);
       border: 1px solid var(--badge-border);
-      padding: 0.2rem 0.6rem;
+      padding: 0.22rem 0.6rem;
       border-radius: 6px;
       font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .date-tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.84rem;
+      color: var(--text-muted);
       font-weight: 600;
     }
-    .score-highlight {
+
+    .score-num {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1.05rem;
       font-weight: 800;
       color: var(--accent-blue);
-      font-size: 1.15rem;
     }
-    .empty-msg { text-align: center; color: var(--text-muted); padding: 2rem 0; }
+
     .report-btn {
       background: rgba(245, 158, 11, 0.14);
       color: var(--accent-gold);
       border: 1px solid rgba(245, 158, 11, 0.45);
-      padding: 0.35rem 0.75rem;
+      padding: 0.3rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 600;
-      transition: all 0.2s;
-    }
-    .report-btn:hover {
-      background: rgba(245, 158, 11, 0.26);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
-    }
-    .reported-badge {
-      display: inline-block;
-      background: rgba(244, 63, 94, 0.15);
-      color: #f43f5e;
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      padding: 0.3rem 0.65rem;
-      border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
     }
+
+    .reported-tag { font-size: 0.78rem; color: var(--accent-gold); font-weight: 700; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="user-info">
-        <span class="tag">STUDENT ANALYTICS TERMINAL</span>
-        <h2 id="welcomeMsg">同步個人檔案中...</h2>
+      <div>
+        <span class="role-tag">STUDENT ANALYTICS PORTAL // V3.6</span>
+        <h2 id="studentHeaderTitle">載入學生資料中...</h2>
       </div>
-      <div class="header-actions">
-        <button class="theme-btn" onclick="toggleTheme()" aria-label="切換明暗科技主題">
+      <div class="btn-group">
+        <button class="theme-btn" onclick="toggleTheme()">
           <span class="theme-dot"></span>
           <span id="themeText">LIGHT</span>
         </button>
-        <button class="pw-btn" onclick="openPwModal()">修改密碼</button>
+        <button class="pw-edit-btn" onclick="changeMyPassword()">修改密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
     </div>
 
-    <h3>⚡ 各科數據與總排名（刮開金色卡片揭曉名次）</h3>
-    <div class="summary-grid" id="subjectSummaryCards">
-      <div class="card"><div class="card-title">數據運算中...</div></div>
+    <h3>⚡ 各科與總平均數據總覽</h3>
+    <div class="summary-grid" id="subjectSummaryGrid"></div>
+
+    <div class="scratch-box-wrapper" id="scratchWrapper">
+      <div class="rank-reveal-label">🏆 全班總排名</div>
+      <div class="rank-reveal-num" id="overallRankText">第 - 名</div>
+      <div class="rank-reveal-sub" id="totalParticipantsText">共 - 人參與</div>
+      <canvas id="scratchCanvas" width="220" height="118"></canvas>
     </div>
 
-    <h3>📡 歷次小考單科明細</h3>
-    <div class="table-wrap">
+    <h3>📊 全班成績組距分布（了解自己在全班的落點區間）</h3>
+    <div class="dist-section-grid">
+      <div class="dist-card">
+        <div class="dist-card-header">
+          <span class="dist-card-title">📚 單科全班組距分布</span>
+          <select id="subjectDistSelect" class="dist-select" onchange="renderSubjectDistribution()"></select>
+        </div>
+        <div id="subjectDistBars"></div>
+      </div>
+
+      <div class="dist-card">
+        <div class="dist-card-header">
+          <span class="dist-card-title">🏆 全班總平均組距分布</span>
+          <span style="font-size:0.78rem; color:var(--text-muted);">跨科總均落點</span>
+        </div>
+        <div id="overallDistBars"></div>
+      </div>
+    </div>
+
+    <h3>📜 歷次小考單科明細</h3>
+    <div style="overflow-x: auto;">
       <table>
         <thead>
           <tr>
+            <th>考試日期</th>
             <th>科目</th>
             <th>測驗名稱</th>
             <th>我的分數</th>
             <th>單科班均</th>
             <th>單科名次</th>
-            <th>異常回報</th>
+            <th>分數異常回報</th>
           </tr>
         </thead>
-        <tbody id="scoreList">
-          <tr><td colspan="6" class="empty-msg">讀取雲端成績中...</td></tr>
+        <tbody id="scoreDetailBody">
+          <tr><td colspan="7">載入成績明細中...</td></tr>
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <!-- 修改密碼彈窗 -->
-  <div class="modal-overlay" id="pwModal" onclick="if(event.target === this) closePwModal()">
-    <div class="modal-box">
-      <h4>🔐 變更登入密碼</h4>
-      <p>設定專屬新密碼以保護個人成績資料</p>
-      <form id="updatePwForm" onsubmit="submitNewPassword(event)">
-        <div class="modal-group">
-          <label for="newPw">新密碼（至少 6 個字元）</label>
-          <input type="password" id="newPw" placeholder="請輸入新密碼" minlength="6" required>
-        </div>
-        <div class="modal-group">
-          <label for="confirmPw">確認新密碼</label>
-          <input type="password" id="confirmPw" placeholder="請再次輸入新密碼" minlength="6" required>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="modal-cancel" onclick="closePwModal()">取消</button>
-          <button type="submit" class="modal-submit" id="savePwBtn">確認更新</button>
-        </div>
-      </form>
-      <div id="pwModalMsg"></div>
     </div>
   </div>
 
@@ -529,66 +441,119 @@
         if (toggleText) toggleText.innerText = 'LIGHT';
       }
     }
-
     function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       localStorage.setItem('nexus-theme', next);
       applyTheme(next);
-      const canvas = document.getElementById('scratchCanvas');
-      if (canvas) initScratchCard();
     }
-
     applyTheme(localStorage.getItem('nexus-theme') || 'dark');
 
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let currentUserId = '';
+    let currentUserId = null;
+    let publishedScoresCache = [];
+    let studentTotalsCache = [];
 
-    function openPwModal() {
-      document.getElementById('updatePwForm').reset();
-      document.getElementById('pwModalMsg').innerText = '';
-      document.getElementById('pwModal').classList.add('active');
+    const SCORE_BINS = [
+      { label: '100 分', min: 100, max: 100.99 },
+      { label: '90-99', min: 90, max: 99.99 },
+      { label: '80-89', min: 80, max: 89.99 },
+      { label: '70-79', min: 70, max: 79.99 },
+      { label: '60-69', min: 60, max: 69.99 },
+      { label: '59 以下', min: -1, max: 59.99 }
+    ];
+
+    function buildDistributionHtml(values, myVal) {
+      const total = values.length || 1;
+      return SCORE_BINS.map(bin => {
+        const count = values.filter(v => v >= bin.min && v <= bin.max).length;
+        const pct = Math.round((count / total) * 100);
+        const isMe = myVal !== null && myVal !== undefined && myVal >= bin.min && myVal <= bin.max;
+        return `
+          <div class="dist-row ${isMe ? 'is-me' : ''}">
+            <div class="dist-label">${bin.label}</div>
+            <div class="dist-bar-bg">
+              <div class="dist-bar-fill" style="width: ${pct}%;"></div>
+            </div>
+            <div class="dist-count">${count} 人${isMe ? '<span class="me-pill">我</span>' : ''}</div>
+          </div>
+        `;
+      }).join('');
     }
 
-    function closePwModal() {
-      document.getElementById('pwModal').classList.remove('active');
-    }
+    function initScratchCard() {
+      const canvas = document.getElementById('scratchCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
 
-    async function submitNewPassword(e) {
-      e.preventDefault();
-      const newPassword = document.getElementById('newPw').value;
-      const confirmPassword = document.getElementById('confirmPw').value;
-      const msgEl = document.getElementById('pwModalMsg');
-      const btn = document.getElementById('savePwBtn');
+      const grad = ctx.createLinearGradient(0, 0, w, h);
+      grad.addColorStop(0, '#f59e0b');
+      grad.addColorStop(0.5, '#fbbf24');
+      grad.addColorStop(1, '#d97706');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
 
-      if (newPassword !== confirmPassword) {
-        msgEl.style.color = '#f43f5e';
-        msgEl.innerText = '兩次輸入的新密碼不一致！';
-        return;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 2;
+      for (let i = -h; i < w + h; i += 14) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + h, h);
+        ctx.stroke();
       }
 
-      btn.innerText = '更新中...';
-      btn.disabled = true;
-      msgEl.innerText = '';
+      ctx.fillStyle = '#451a03';
+      ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('✨ 刮開查看總排名 ✨', w / 2, h / 2);
 
-      const { error } = await supabaseClient.auth.updateUser({
-        password: newPassword
-      });
+      let isDrawing = false;
+      let isRevealed = false;
 
-      btn.innerText = '確認更新';
-      btn.disabled = false;
-
-      if (error) {
-        msgEl.style.color = '#f43f5e';
-        msgEl.innerText = '更新失敗：' + error.message;
-      } else {
-        msgEl.style.color = '#10b981';
-        msgEl.innerText = '密碼已成功修改！下次請使用新密碼登入。';
-        setTimeout(() => closePwModal(), 1400);
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
       }
+
+      function scratch(e) {
+        if (!isDrawing || isRevealed) return;
+        e.preventDefault();
+        const { x, y } = getPos(e);
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(x, y, 22, 0, Math.PI * 2);
+        ctx.fill();
+        checkScratchProgress();
+      }
+
+      function checkScratchProgress() {
+        const imageData = ctx.getImageData(0, 0, w, h).data;
+        let clearPixels = 0;
+        const totalPixels = w * h;
+        for (let i = 3; i < imageData.length; i += 16) {
+          if (imageData[i] === 0) clearPixels++;
+        }
+        if ((clearPixels / (totalPixels / 4)) > 0.35) {
+          isRevealed = true;
+          canvas.style.opacity = '0';
+          setTimeout(() => { canvas.style.display = 'none'; }, 450);
+        }
+      }
+
+      canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e); });
+      window.addEventListener('mousemove', scratch);
+      window.addEventListener('mouseup', () => { isDrawing = false; });
+
+      canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, { passive: false });
+      canvas.addEventListener('touchmove', scratch, { passive: false });
+      canvas.addEventListener('touchend', () => { isDrawing = false; });
     }
 
     async function init() {
@@ -597,225 +562,199 @@
         window.location.href = 'index.html';
         return;
       }
-      currentUserId = session.user.id;
 
+      currentUserId = session.user.id;
       const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('seat_number, name')
+        .select('seat_number, name, role')
         .eq('id', currentUserId)
         .single();
 
-      if (profile) {
-        const seatText = profile.seat_number ? `[${profile.seat_number}號] ` : '';
-        document.getElementById('welcomeMsg').innerText = `${seatText}${profile.name}`;
-      }
+      if (!profile) { window.location.href = 'index.html'; return; }
+      if (profile.role === 'admin') { window.location.href = 'admin.html'; return; }
+      if (profile.role === 'parent') { window.location.href = 'parent.html'; return; }
 
-      await loadAllAnalytics();
+      document.getElementById('studentHeaderTitle').innerText = `[${profile.seat_number ?? '-'}號] ${profile.name} 的成績檔案`;
+      initScratchCard();
+      await loadMyScores();
     }
 
-    async function loadAllAnalytics() {
-      // 僅讀取老師已審核上架（is_published = true）的成績
+    async function loadMyScores() {
       const { data: allScores, error } = await supabaseClient
         .from('scores')
-        .select('id, subject, exam_name, score, class_avg, rank, student_id, report_note, is_published')
-        .eq('is_published', true)
+        .select('id, semester, exam_stage, exam_name, subject, exam_date, score, class_avg, rank, student_id, report_note, is_published')
+        .order('exam_date', { ascending: false })
         .order('id', { ascending: false });
 
-      const cardsEl = document.getElementById('subjectSummaryCards');
-      const tbody = document.getElementById('scoreList');
-
       if (error) {
-        cardsEl.innerHTML = '';
-        tbody.innerHTML = `<tr><td colspan="6" class="empty-msg">讀取失敗：${error.message}</td></tr>`;
+        document.getElementById('scoreDetailBody').innerHTML = `<tr><td colspan="7">讀取失敗：${error.message}</td></tr>`;
         return;
       }
 
-      const myScores = (allScores || []).filter(s => s.student_id === currentUserId);
-      if (myScores.length === 0) {
-        cardsEl.innerHTML = '<div class="card"><div class="card-title">尚無已上架的測驗數據</div></div>';
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">目前尚無已發布的小考成績紀錄</td></tr>';
+      publishedScoresCache = (allScores || []).filter(s => s.is_published !== false);
+      const myScores = publishedScoresCache.filter(s => s.student_id === currentUserId);
+
+      renderSummaryAndRank(publishedScoresCache, myScores);
+      renderScoreDetailTable(myScores);
+    }
+
+    function renderSummaryAndRank(publishedScores, myScores) {
+      const summaryGrid = document.getElementById('subjectSummaryGrid');
+      const subjects = [...new Set(publishedScores.map(s => s.subject))];
+
+      if (subjects.length === 0) {
+        summaryGrid.innerHTML = '<div style="color:var(--text-muted);">目前尚無已發布的成績資料</div>';
         return;
       }
 
-      const mySubjects = [...new Set(myScores.map(s => s.subject))];
-      let mySumOfSubAvgs = 0;
-
-      const cardsHtml = mySubjects.map(sub => {
+      const cardsHtml = subjects.map(sub => {
         const mySubItems = myScores.filter(s => s.subject === sub);
-        const mySubAvg = Math.round((mySubItems.reduce((sum, x) => sum + x.score, 0) / mySubItems.length) * 10) / 10;
-        mySumOfSubAvgs += mySubAvg;
+        const classSubItems = publishedScores.filter(s => s.subject === sub);
 
-        const classSubItems = allScores.filter(s => s.subject === sub);
-        const classSubAvg = (classSubItems.reduce((sum, x) => sum + x.score, 0) / classSubItems.length).toFixed(1);
+        const myAvg = mySubItems.length > 0
+          ? Math.round((mySubItems.reduce((sum, x) => sum + x.score, 0) / mySubItems.length) * 10) / 10
+          : '-';
+        const classAvg = classSubItems.length > 0
+          ? (classSubItems.reduce((sum, x) => sum + x.score, 0) / classSubItems.length).toFixed(1)
+          : '-';
 
         return `
-          <div class="card">
-            <div class="card-title">${sub} 科平均</div>
-            <div class="card-val">${mySubAvg}</div>
-            <div class="card-sub">班均 ${classSubAvg}</div>
+          <div class="summary-card">
+            <div class="sub-title">${sub} 科平均</div>
+            <div class="sub-val">${myAvg}</div>
+            <div class="sub-avg">班均 ${classAvg}</div>
           </div>
         `;
       });
 
-      const myTotalAvg = Math.round((mySumOfSubAvgs / mySubjects.length) * 10) / 10;
+      const studentIds = [...new Set(publishedScores.map(s => s.student_id))];
+      studentTotalsCache = studentIds.map(sid => {
+        const sItems = publishedScores.filter(s => s.student_id === sid);
+        let subCount = 0;
+        let subSum = 0;
+        subjects.forEach(sub => {
+          const items = sItems.filter(x => x.subject === sub);
+          if (items.length > 0) {
+            subSum += Math.round((items.reduce((a, b) => a + b.score, 0) / items.length) * 10) / 10;
+            subCount++;
+          }
+        });
+        return {
+          student_id: sid,
+          totalAvg: subCount > 0 ? Math.round((subSum / subCount) * 10) / 10 : null
+        };
+      }).filter(x => x.totalAvg !== null);
 
-      const allStudentIds = [...new Set(allScores.map(s => s.student_id))];
-      const allTotalAvgs = allStudentIds.map(uid => {
-        const uScores = allScores.filter(s => s.student_id === uid);
-        const uSubs = [...new Set(uScores.map(s => s.subject))];
-        const sumAvgs = uSubs.reduce((acc, sub) => {
-          const items = uScores.filter(s => s.subject === sub);
-          return acc + (items.reduce((s, x) => s + x.score, 0) / items.length);
-        }, 0);
-        return Math.round((sumAvgs / uSubs.length) * 10) / 10;
-      }).sort((a, b) => b - a);
+      const classOverallAvg = studentTotalsCache.length > 0
+        ? (studentTotalsCache.reduce((sum, x) => sum + x.totalAvg, 0) / studentTotalsCache.length).toFixed(1)
+        : '-';
 
-      const myOverallRank = allTotalAvgs.indexOf(myTotalAvg) + 1;
-      const classOverallAvg = (allTotalAvgs.reduce((a, b) => a + b, 0) / allTotalAvgs.length).toFixed(1);
+      const myTotalObj = studentTotalsCache.find(x => x.student_id === currentUserId);
+      const myOverallAvg = myTotalObj ? myTotalObj.totalAvg : '-';
 
       cardsHtml.push(`
-        <div class="card card-highlight">
-          <div class="card-title" style="color:var(--accent-blue);">跨科總平均</div>
-          <div class="card-val" style="color:var(--accent-blue);">${myTotalAvg}</div>
-          <div class="card-sub">全班總均 ${classOverallAvg}</div>
-        </div>
-        <div class="card scratch-card" id="rankScratchCard">
-          <div class="card-title" style="color:var(--accent-gold);">🏆 全班總排名</div>
-          <div class="card-val" style="color:var(--accent-gold);">第 ${myOverallRank} 名</div>
-          <div class="card-sub" style="color:var(--gold-sub);">共 ${allTotalAvgs.length} 人參與</div>
-          <canvas id="scratchCanvas"></canvas>
+        <div class="summary-card" style="border-color: var(--card-hi-border); background: var(--card-hi-bg);">
+          <div class="sub-title" style="color: var(--accent-blue);">個人總平均</div>
+          <div class="sub-val" style="color: var(--accent-blue);">${myOverallAvg}</div>
+          <div class="sub-avg">全班總均 ${classOverallAvg}</div>
         </div>
       `);
 
-      cardsEl.innerHTML = cardsHtml.join('');
-      initScratchCard();
+      summaryGrid.innerHTML = cardsHtml.join('');
+
+      const sortedTotals = [...studentTotalsCache].sort((a, b) => b.totalAvg - a.totalAvg);
+      const myRank = myTotalObj
+        ? sortedTotals.findIndex(x => x.totalAvg === myTotalObj.totalAvg) + 1
+        : '-';
+
+      document.getElementById('overallRankText').innerText = myRank === '-' ? '第 - 名' : `第 ${myRank} 名`;
+      document.getElementById('totalParticipantsText').innerText = `共 ${studentTotalsCache.length} 人參與`;
+
+      const subSelect = document.getElementById('subjectDistSelect');
+      subSelect.innerHTML = subjects.map(sub => `<option value="${sub}">${sub}科組距</option>`).join('');
+      renderSubjectDistribution();
+
+      const allOverallVals = studentTotalsCache.map(x => x.totalAvg);
+      document.getElementById('overallDistBars').innerHTML = buildDistributionHtml(
+        allOverallVals,
+        myTotalObj ? myTotalObj.totalAvg : null
+      );
+    }
+
+    function renderSubjectDistribution() {
+      const targetSub = document.getElementById('subjectDistSelect').value;
+      if (!targetSub) return;
+
+      const subScores = publishedScoresCache.filter(s => s.subject === targetSub);
+      const studentIds = [...new Set(subScores.map(s => s.student_id))];
+
+      const perStudentAvgs = [];
+      let mySubAvg = null;
+
+      studentIds.forEach(sid => {
+        const items = subScores.filter(s => s.student_id === sid);
+        if (items.length > 0) {
+          const avg = Math.round((items.reduce((sum, x) => sum + x.score, 0) / items.length) * 10) / 10;
+          perStudentAvgs.push(avg);
+          if (sid === currentUserId) mySubAvg = avg;
+        }
+      });
+
+      document.getElementById('subjectDistBars').innerHTML = buildDistributionHtml(perStudentAvgs, mySubAvg);
+    }
+
+    function renderScoreDetailTable(myScores) {
+      const tbody = document.getElementById('scoreDetailBody');
+      if (myScores.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">目前尚無小考紀錄</td></tr>';
+        return;
+      }
 
       tbody.innerHTML = myScores.map(item => `
         <tr>
+          <td><span class="date-tag">${item.exam_date || '未填日期'}</span></td>
           <td><span class="badge">${item.subject}</span></td>
-          <td>${item.exam_name}</td>
-          <td class="score-highlight">${item.score}</td>
-          <td style="color:var(--text-muted);">${item.class_avg ?? '-'}</td>
+          <td><strong>${item.exam_name || '平時考'}</strong></td>
+          <td><span class="score-num">${item.score}</span></td>
+          <td>${item.class_avg ?? '-'}</td>
           <td>第 ${item.rank ?? '-'} 名</td>
           <td>
-            ${item.report_note 
-              ? `<span class="reported-badge" title="${item.report_note}">已回報待核對</span>` 
-              : `<button class="report-btn" onclick="reportError(${item.id}, '[${item.subject}]${item.exam_name}')">錯誤回報</button>`
+            ${item.report_note
+              ? `<span class="reported-tag">⏳ 異常審核中（${item.report_note}）</span>`
+              : `<button class="report-btn" onclick="reportScoreError(${item.id}, '${item.subject}', '${item.exam_name || '平時考'}', ${item.score})">⚠️ 申請核對</button>`
             }
           </td>
         </tr>
       `).join('');
     }
 
-    function initScratchCard() {
-      const card = document.getElementById('rankScratchCard');
-      const canvas = document.getElementById('scratchCanvas');
-      if (!card || !canvas) return;
-
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const ctx = canvas.getContext('2d');
-      const rect = card.getBoundingClientRect();
-      canvas.width = rect.width || 180;
-      canvas.height = rect.height || 118;
-
-      ctx.globalCompositeOperation = 'source-over';
-      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      if (isLight) {
-        grad.addColorStop(0, '#e2e8f0');
-        grad.addColorStop(0.5, '#cbd5e1');
-        grad.addColorStop(1, '#94a3b8');
-      } else {
-        grad.addColorStop(0, '#1e293b');
-        grad.addColorStop(0.5, '#334155');
-        grad.addColorStop(1, '#0f172a');
-      }
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.35)' : 'rgba(251, 191, 36, 0.25)';
-      ctx.lineWidth = 2;
-      for (let i = -canvas.height; i < canvas.width; i += 14) {
-        ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i + canvas.height, canvas.height);
-        ctx.stroke();
-      }
-
-      ctx.fillStyle = isLight ? '#b45309' : '#fbbf24';
-      ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('✦ 刮開揭曉排名 ✦', canvas.width / 2, canvas.height / 2 - 8);
-
-      ctx.fillStyle = isLight ? '#475569' : '#94a3b8';
-      ctx.font = '11px ui-monospace, monospace';
-      ctx.fillText('SCRATCH TO REVEAL', canvas.width / 2, canvas.height / 2 + 12);
-
-      let isDrawing = false;
-      let isRevealed = false;
-
-      function getPos(e) {
-        const r = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-          x: (clientX - r.left) * (canvas.width / r.width),
-          y: (clientY - r.top) * (canvas.height / r.height)
-        };
-      }
-
-      function scratch(e) {
-        if (!isDrawing || isRevealed) return;
-        e.preventDefault();
-        const pos = getPos(e);
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.beginPath();
-        ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
-        ctx.fill();
-        checkRevealProgress();
-      }
-
-      function checkRevealProgress() {
-        if (isRevealed) return;
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-        let transparentPixels = 0;
-        const totalPixels = imgData.length / 4;
-        for (let i = 3; i < imgData.length; i += 16) {
-          if (imgData[i] < 128) transparentPixels++;
-        }
-        if (transparentPixels / (totalPixels / 4) > 0.42) {
-          isRevealed = true;
-          canvas.style.opacity = '0';
-          card.classList.add('revealed');
-          setTimeout(() => canvas.remove(), 450);
-        }
-      }
-
-      canvas.onmousedown = (e) => { isDrawing = true; scratch(e); };
-      window.addEventListener('mousemove', scratch);
-      window.addEventListener('mouseup', () => { isDrawing = false; });
-
-      canvas.ontouchstart = (e) => { isDrawing = true; scratch(e); };
-      canvas.ontouchmove = (e) => { scratch(e); };
-      canvas.ontouchend = () => { isDrawing = false; };
-    }
-
-    async function reportError(scoreId, examTitle) {
-      const reason = prompt(`請輸入「${examTitle}」成績異常說明（例如：考卷分數應為 95 分）：`);
+    async function reportScoreError(scoreId, subject, examName, currentScore) {
+      const reason = prompt(`您正在回報【${subject} - ${examName}】（目前分數：${currentScore} 分）的登錄異常，請簡述原因（例如：考卷實際為 92 分）：`);
       if (reason === null) return;
-      const trimmed = reason.trim() || '學生回報成績有誤（未填寫詳細說明）';
+      const trimmed = reason.trim();
+      if (!trimmed) { alert('請填寫異常原因！'); return; }
 
       const { error } = await supabaseClient
         .from('scores')
         .update({ report_note: trimmed })
         .eq('id', scoreId);
 
-      if (error) {
-        alert('回報失敗：' + error.message);
-      } else {
-        alert('異常回報已傳送至教師終端！');
-        await loadAllAnalytics();
+      if (error) alert('回報送出失敗：' + error.message);
+      else {
+        alert('✓ 已成功送出異常回報，老師將於後台核對處理！');
+        await loadMyScores();
       }
+    }
+
+    async function changeMyPassword() {
+      const newPassword = prompt('請輸入您的新登入密碼（至少 6 個字元）：');
+      if (newPassword === null) return;
+      const trimmed = newPassword.trim();
+      if (trimmed.length < 6) { alert('密碼長度至少需要 6 個字元！'); return; }
+
+      const { error } = await supabaseClient.auth.updateUser({ password: trimmed });
+      if (error) alert('密碼修改失敗：' + error.message);
+      else alert('✓ 您的登入密碼已成功修改！');
     }
 
     async function logout() {

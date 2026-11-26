@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEXUS GRADE // 管理指揮終端</title>
+  <title>NEXUS GRADE // 老師指揮終端</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -20,9 +20,6 @@
       --alert-border: rgba(245, 158, 11, 0.65);
       --alert-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
       --alert-title: #fbbf24;
-      --pending-bg: rgba(8, 47, 73, 0.72);
-      --pending-border: rgba(0, 240, 255, 0.65);
-      --pending-shadow: 0 0 28px rgba(0, 240, 255, 0.2);
       --header-border: rgba(0, 240, 255, 0.18);
       --accent-primary: #00f0ff;
       --accent-blue: #38bdf8;
@@ -54,6 +51,8 @@
       --toggle-bg: rgba(15, 23, 42, 0.75);
       --toggle-border: rgba(0, 240, 255, 0.35);
       --toggle-text: #e2e8f0;
+      --dropzone-bg: rgba(2, 6, 23, 0.55);
+      --dropzone-border: rgba(0, 240, 255, 0.45);
     }
 
     [data-theme="light"] {
@@ -68,9 +67,6 @@
       --alert-border: rgba(217, 119, 6, 0.55);
       --alert-shadow: 0 12px 30px rgba(217, 119, 6, 0.12);
       --alert-title: #b45309;
-      --pending-bg: rgba(240, 249, 255, 0.96);
-      --pending-border: rgba(2, 132, 199, 0.55);
-      --pending-shadow: 0 12px 32px rgba(2, 132, 199, 0.14);
       --header-border: rgba(2, 132, 199, 0.18);
       --accent-primary: #0284c7;
       --accent-blue: #0369a1;
@@ -102,6 +98,8 @@
       --toggle-bg: rgba(255, 255, 255, 0.9);
       --toggle-border: rgba(2, 132, 199, 0.3);
       --toggle-text: #0f172a;
+      --dropzone-bg: rgba(240, 249, 255, 0.85);
+      --dropzone-border: rgba(2, 132, 199, 0.45);
     }
 
     * { box-sizing: border-box; }
@@ -119,43 +117,22 @@
       background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
       color: var(--text-main);
       padding: 1.5rem;
-      transition: background-color 0.35s ease, color 0.35s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto 2rem auto;
       background: var(--container-bg);
       backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--container-border);
       border-radius: 16px;
       padding: 2rem;
       box-shadow: var(--container-shadow);
-      transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-    }
-
-    .pending-box {
-      max-width: 900px;
-      margin: 0 auto 2rem auto;
-      background: var(--pending-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--pending-border);
-      padding: 1.5rem 2rem;
-      border-radius: 16px;
-      box-shadow: var(--pending-shadow);
-      transition: background 0.35s ease, border-color 0.35s ease;
-    }
-
-    .pending-box h3 {
-      margin-top: 0;
-      color: var(--accent-primary);
-      border-bottom: 1px solid var(--header-border);
-      padding-bottom: 0.6rem;
     }
 
     .alert-box {
-      max-width: 900px;
+      max-width: 920px;
       margin: 0 auto 2rem auto;
       background: var(--alert-bg);
       backdrop-filter: blur(16px);
@@ -163,7 +140,6 @@
       padding: 1.5rem 2rem;
       border-radius: 16px;
       box-shadow: var(--alert-shadow);
-      transition: background 0.35s ease, border-color 0.35s ease;
     }
 
     .alert-box h3 {
@@ -242,12 +218,7 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.78rem;
       font-weight: 700;
-      transition: all 0.2s;
-    }
-
-    .theme-btn:hover {
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 12px var(--bg-glow-1);
+      letter-spacing: 0.05em;
     }
 
     .theme-dot {
@@ -255,7 +226,6 @@
       height: 7px;
       border-radius: 50%;
       background: var(--accent-primary);
-      box-shadow: 0 0 8px var(--accent-primary);
     }
 
     .excel-btn {
@@ -265,18 +235,27 @@
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 0.55rem 1.05rem;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
       font-size: 0.85rem;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
-      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     }
 
-    .excel-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+    .pdf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.55rem 1.05rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     }
 
     .logout-btn {
@@ -289,7 +268,62 @@
       font-weight: 600;
     }
 
-    .logout-btn:hover { background: rgba(244, 63, 94, 0.26); }
+    .excel-dropzone {
+      background: var(--dropzone-bg);
+      border: 2px dashed var(--dropzone-border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .excel-dropzone.dragover {
+      border-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    .dropzone-info strong {
+      color: var(--accent-primary);
+      font-size: 1rem;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .dropzone-info span {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+    }
+
+    .dropzone-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    #excelColumnPicker {
+      width: 100%;
+      margin-top: 0.65rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--td-border);
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    #excelImportMsg {
+      width: 100%;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 0.35rem;
+      display: none;
+    }
 
     .form-row { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
     .form-group { flex: 1; min-width: 200px; }
@@ -303,14 +337,15 @@
       border-radius: 8px;
       color: var(--input-text);
       font-size: 0.95rem;
-      transition: all 0.2s;
     }
 
     input:focus, select:focus {
       outline: none;
       border-color: var(--accent-primary);
-      box-shadow: 0 0 12px var(--bg-glow-1);
+      box-shadow: 0 0 10px var(--bg-glow-1);
     }
+
+    select option { background: var(--modal-bg); color: var(--text-main); }
 
     .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
@@ -324,23 +359,14 @@
     }
     tr:hover td { background: var(--tr-hover); }
 
-    .student-link {
-      color: var(--accent-blue);
-      cursor: pointer;
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .student-link:hover { color: var(--accent-primary); }
-    
+    .student-link { color: var(--accent-blue); cursor: pointer; font-weight: 700; text-decoration: underline; }
+
     .modal {
       display: none;
       position: fixed;
       z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
       background: rgba(2, 6, 23, 0.78);
       backdrop-filter: blur(8px);
       justify-content: center;
@@ -354,18 +380,10 @@
       width: 100%;
       max-width: 650px;
       padding: 2rem;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
       position: relative;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
     }
-    .close-modal {
-      position: absolute;
-      top: 1rem;
-      right: 1.25rem;
-      font-size: 1.5rem;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-    .close-modal:hover { color: var(--text-main); }
+    .close-modal { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
 
     .submit-btn {
       width: 100%;
@@ -378,29 +396,6 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       cursor: pointer;
-      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
-      transition: transform 0.15s, box-shadow 0.2s;
-    }
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 26px rgba(2, 132, 199, 0.38);
-    }
-
-    .approve-btn {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #ffffff;
-      border: none;
-      padding: 0.42rem 0.85rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-      transition: transform 0.15s, box-shadow 0.2s;
-    }
-    .approve-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
     }
 
     .del-btn {
@@ -413,22 +408,16 @@
       font-weight: 600;
       font-size: 0.82rem;
     }
-    .del-btn:hover { background: rgba(244, 63, 94, 0.28); }
 
     .pw-edit-btn {
       background: rgba(2, 132, 199, 0.12);
       color: var(--accent-primary);
       border: 1px solid rgba(2, 132, 199, 0.4);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.82rem;
-      transition: all 0.2s;
-    }
-    .pw-edit-btn:hover {
-      background: rgba(2, 132, 199, 0.22);
-      box-shadow: 0 0 10px var(--bg-glow-1);
+      font-size: 0.84rem;
     }
 
     .resolve-btn {
@@ -453,39 +442,6 @@
       font-weight: 600;
     }
 
-    .badge-grader {
-      display: inline-block;
-      background: rgba(245, 158, 11, 0.16);
-      color: var(--accent-gold);
-      border: 1px solid rgba(245, 158, 11, 0.5);
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      font-size: 0.82rem;
-      font-weight: 700;
-    }
-
-    .badge-published {
-      display: inline-block;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--accent-emerald);
-      border: 1px solid rgba(16, 185, 129, 0.45);
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-    }
-
-    .badge-pending {
-      display: inline-block;
-      background: rgba(245, 158, 11, 0.18);
-      color: var(--accent-gold);
-      border: 1px solid rgba(245, 158, 11, 0.55);
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-    }
-
     .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
     .summary-card {
       flex: 1;
@@ -495,39 +451,97 @@
       border-radius: 10px;
       padding: 1rem;
       text-align: center;
-      transition: background 0.35s ease, border-color 0.35s ease;
     }
     .summary-card .sub-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 600; }
-    .summary-card .sub-val {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 1.45rem;
-      font-weight: 800;
-      color: var(--text-main);
-    }
+    .summary-card .sub-val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.45rem; font-weight: 800; color: var(--text-main); }
 
-    .acc-item {
-      background: var(--acc-item-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      margin-bottom: 0.75rem;
-      overflow: hidden;
-      transition: background 0.35s ease;
-    }
-    .acc-head {
-      padding: 0.85rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      background: var(--acc-head-bg);
-    }
+    .acc-item { background: var(--acc-item-bg); border: 1px solid var(--card-border); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden; }
+    .acc-head { padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: var(--acc-head-bg); }
 
     #status { margin-top: 1rem; text-align: center; font-weight: 600; }
+
+    #printOnlyReportSheet { display: none; }
+
+    @page {
+      size: A4 landscape;
+      margin: 0.8cm;
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      #reportAlertSection,
+      #entrySection,
+      #adminRankSection,
+      #adminHistorySection,
+      #adminPasswordSection,
+      #trendModal,
+      .btn-group,
+      .no-print {
+        display: none !important;
+      }
+      #printOnlyReportSheet {
+        display: block !important;
+        width: 100% !important;
+      }
+      .print-sheet-header {
+        text-align: center;
+        border-bottom: 2px solid #000000;
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+      }
+      .print-sheet-header h1 {
+        margin: 0 0 3px 0;
+        font-size: 15pt;
+        color: #000000;
+      }
+      .print-sheet-header p {
+        margin: 0;
+        font-size: 9pt;
+        color: #333333;
+      }
+      table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 8.8pt !important;
+      }
+      th, td {
+        border: 1px solid #475569 !important;
+        padding: 3px 5px !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+      }
+      th {
+        background: #e2e8f0 !important;
+        font-weight: 700 !important;
+      }
+      .exam-th-sub {
+        display: block;
+        font-size: 9pt;
+        font-weight: 800;
+        color: #000000;
+      }
+      .exam-th-name {
+        display: block;
+        font-size: 8pt;
+        font-weight: 600;
+        color: #1e293b;
+      }
+      .exam-th-date {
+        display: block;
+        font-size: 7.5pt;
+        font-weight: 500;
+        color: #334155;
+        margin-top: 1px;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- 成績趨勢圖彈跳視窗 -->
   <div class="modal" id="trendModal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeTrendModal()">&times;</span>
@@ -538,27 +552,6 @@
     </div>
   </div>
 
-  <!-- 老師專屬：待審核成績上架佇列 -->
-  <div class="pending-box" id="pendingApprovalSection" style="display: none;">
-    <h3>📋 待老師審核上架佇列（小老師已登錄，確認無誤後點擊上架才對學生公開）</h3>
-    <div style="overflow-x: auto;">
-      <table style="margin-bottom: 0;">
-        <thead>
-          <tr>
-            <th>學期 / 階段</th>
-            <th>測驗名稱</th>
-            <th>科目</th>
-            <th>考試日期</th>
-            <th>筆數 / 班均</th>
-            <th>審核操作</th>
-          </tr>
-        </thead>
-        <tbody id="pendingExamList"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- 異常回報通知區塊 -->
   <div class="alert-box" id="reportAlertSection" style="display: none;">
     <h3>⚠️ 學生成績異常回報警報</h3>
     <table style="margin-bottom: 0;">
@@ -576,138 +569,176 @@
     </table>
   </div>
 
-  <!-- 區塊一：登錄與管理成績 -->
-  <div class="container">
-    <div class="header">
+  <!-- 區塊一：直列 Excel 匯入與成績登錄控制台（可自由展開/收合） -->
+  <div class="container" id="entrySection">
+    <div class="header" id="entryHeader">
       <div>
-        <span class="role-tag" id="roleTag">COMMAND CENTER</span>
-        <h2 id="pageTitle">成績系統控制台</h2>
+        <span class="role-tag">TEACHER COMMAND CENTER // V3.8</span>
+        <h2>國二-2 成績系統指揮中心（老師專用）</h2>
       </div>
-      <div class="btn-group" id="topBtnGroup">
-        <button class="theme-btn" onclick="toggleTheme()" aria-label="切換明暗科技主題">
+      <div class="btn-group">
+        <button class="pw-edit-btn" onclick="toggleEntrySection()">📂 展開 / 收合成績登錄區</button>
+        <button class="theme-btn" onclick="toggleTheme()">
           <span class="theme-dot"></span>
           <span id="themeText">LIGHT</span>
         </button>
+        <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label for="examSelect">📂 調閱或修改歷史測驗</label>
-        <select id="examSelect" onchange="loadExamForEdit()">
-          <option value="">＋ 建立全新測驗場次</option>
-        </select>
-        <div class="hint" id="editHint">選擇現有場次可直接修改該場成績</div>
+    <div id="entryCollapsibleBody">
+      <div class="excel-dropzone" id="excelDropzone">
+        <div class="dropzone-info">
+          <strong>📥 直接匯入小老師打的直列 Excel（免套用範本）</strong>
+          <span>支援現有「直列座號 / 姓名 ＋ 單欄或多欄小考成績」的 .xlsx / .xls / .csv 檔，直接拖曳至此即可自動比對帶入</span>
+        </div>
+        <div class="dropzone-actions">
+          <button type="button" class="excel-btn" onclick="document.getElementById('excelFileInput').click()">📂 選擇 Excel 檔案直接匯入</button>
+          <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleExcelUpload(event)">
+        </div>
+        <div id="excelColumnPicker">
+          <label for="excelScoreColSelect" style="margin:0; white-space:nowrap; color:var(--accent-primary);">📑 偵測到多欄成績，請選擇要帶入哪一欄：</label>
+          <select id="excelScoreColSelect" style="width:auto; min-width:220px;" onchange="applySelectedExcelColumn()"></select>
+        </div>
+        <div id="excelImportMsg"></div>
       </div>
 
-      <div class="form-group">
-        <label for="semesterSelect">學期選擇</label>
-        <select id="semesterSelect">
-          <option value="115學年度第1學期">115學年度 第1學期</option>
-          <option value="115學年度第2學期">115學年度 第2學期</option>
-          <option value="116學年度第1學期">116學年度 第1學期</option>
-          <option value="116學年度第2學期">116學年度 第2學期</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="examStage">大考範圍 / 階段分類</label>
-        <select id="examStage">
-          <option value="第一次段考">第一次段考範圍</option>
-          <option value="第二次段考">第二次段考範圍</option>
-          <option value="第三次段考">第三次段考範圍</option>
-        </select>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="examSelect">📂 調閱或修改歷史測驗</label>
+          <select id="examSelect" onchange="loadExamForEdit()">
+            <option value="">＋ 建立全新測驗場次</option>
+          </select>
+          <div class="hint">選擇現有場次可直接覆蓋修改該場成績</div>
+        </div>
+        <div class="form-group">
+          <label for="semesterSelect">學期選擇</label>
+          <select id="semesterSelect">
+            <option value="115學年度第1學期">115學年度 第1學期</option>
+            <option value="115學年度第2學期">115學年度 第2學期</option>
+            <option value="116學年度第1學期">116學年度 第1學期</option>
+            <option value="116學年度第2學期">116學年度 第2學期</option>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="examName">測驗細項名稱 (例如：第1次平時考)</label>
-        <input type="text" id="examName" placeholder="例如：第1次平時考 / 單字小考" required>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="examStage">大考範圍 / 階段分類</label>
+          <select id="examStage">
+            <option value="第一次段考">第一次段考範圍</option>
+            <option value="第二次段考">第二次段考範圍</option>
+            <option value="第三次段考">第三次段考範圍</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="examName">測驗細項名稱 (例如：第1次平時考)</label>
+          <input type="text" id="examName" placeholder="例如：第1次平時考 / 單字小考" required>
+        </div>
+        <div class="form-group">
+          <label for="subjectSelect">測驗科目</label>
+          <select id="subjectSelect">
+            <option value="國文">國文</option>
+            <option value="英文">英文</option>
+            <option value="數學">數學</option>
+            <option value="理化">理化</option>
+            <option value="歷史">歷史</option>
+            <option value="地理">地理</option>
+            <option value="公民">公民</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="examDate">考試日期</label>
+          <input type="date" id="examDate" required>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="subjectSelect">測驗科目</label>
-        <select id="subjectSelect">
-          <option value="國文">國文</option>
-          <option value="英文">英文</option>
-          <option value="數學">數學</option>
-          <option value="理化">理化</option>
-          <option value="歷史">歷史</option>
-          <option value="地理">地理</option>
-          <option value="公民">公民</option>
-          <option value="其他">其他</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="examDate">考試日期</label>
-        <input type="date" id="examDate" required>
-      </div>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>座號</th>
-          <th>學生姓名</th>
-          <th>分數 (0-100)</th>
-        </tr>
-      </thead>
-      <tbody id="studentList">
-        <tr><td colspan="3">載入學生名單中...</td></tr>
-      </tbody>
-    </table>
-
-    <button class="submit-btn" id="submitBtn" onclick="submitScores()">寫入雲端並即時運算平均與排名</button>
-    <div id="status"></div>
-  </div>
-
-  <!-- 區塊二：全班各科平均與總平均總排名總覽（僅統計已上架成績） -->
-  <div class="container" id="adminRankSection" style="display: none;">
-    <div class="section-header-bar">
-      <h3>📊 全班各科均分與總平均排名矩陣（已上架正式成績） <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span></h3>
-      <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel 成績單 (.xlsx)</button>
-    </div>
-    <div class="summary-grid" id="classSubjectSummary"></div>
-    <div style="overflow-x: auto;">
       <table>
-        <thead id="rankTableHead"></thead>
-        <tbody id="rankTableBody"></tbody>
+        <thead>
+          <tr>
+            <th>座號</th>
+            <th>學生姓名</th>
+            <th>分數 (0-100)</th>
+          </tr>
+        </thead>
+        <tbody id="studentList">
+          <tr><td colspan="3">載入學生名單中...</td></tr>
+        </tbody>
       </table>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitScores()">確認無誤，一鍵整合寫入雲端並正式發布</button>
+      <div id="status"></div>
     </div>
   </div>
 
-  <!-- 區塊三：已發布與待審核明細管理（折疊式檢視） -->
-  <div class="container" id="adminHistorySection" style="display: none;">
-    <h3 style="margin-bottom: 1rem;">🗂️ 雲端測驗紀錄庫（點擊「展開 / 收合」檢視各場次明細與審核狀態）</h3>
+  <!-- 區塊二：全班各科平均與總平均總排名總覽（可自由展開/收合） -->
+  <div class="container" id="adminRankSection">
+    <div class="section-header-bar" id="rankHeaderBar">
+      <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span></h3>
+      <div class="btn-group no-print">
+        <button class="pw-edit-btn" onclick="toggleRankSection()">📂 展開 / 收合排名矩陣</button>
+        <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel (.xlsx)</button>
+        <button class="pdf-btn" onclick="printRankReport()">🖨️ 列印 / 匯出 PDF（橫向明細表）</button>
+      </div>
+    </div>
+
+    <div id="rankCollapsibleBody">
+      <div class="summary-grid" id="classSubjectSummary"></div>
+      <div style="overflow-x: auto;">
+        <table style="margin-bottom: 0;">
+          <thead id="rankTableHead"></thead>
+          <tbody id="rankTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 專屬橫向列印明細表（僅在按列印/PDF 時出現） -->
+  <div id="printOnlyReportSheet">
+    <div class="print-sheet-header">
+      <h1>國二-2 各場次小考成績明細一覽表（含科目與考試日期）</h1>
+      <p id="printDetailTimestamp"></p>
+    </div>
+    <table>
+      <thead id="printDetailHead"></thead>
+      <tbody id="printDetailBody"></tbody>
+    </table>
+  </div>
+
+  <!-- 區塊三：雲端原始紀錄庫（含一鍵清除所有場次） -->
+  <div class="container" id="adminHistorySection">
+    <div class="section-header-bar">
+      <h3>🗂️ 雲端已整合測驗場次（點擊「展開 / 收合」檢視明細）</h3>
+      <button class="del-btn" onclick="deleteAllExams()" style="padding: 0.5rem 1rem; font-size: 0.85rem;">💥 一鍵清除所有場次</button>
+    </div>
     <div id="historyAccordion">
       <div style="color: var(--text-muted); text-align: center; padding: 1rem;">載入紀錄中...</div>
     </div>
   </div>
 
-  <!-- 區塊四：小老師與學生帳號密碼管理（預設收合） -->
-  <div class="container" id="adminPasswordSection" style="display: none;">
+  <!-- 區塊四：學生與家長帳號密碼管理（預設收合） -->
+  <div class="container" id="adminPasswordSection">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-      <h3 style="margin: 0; border: none; padding: 0;">🔑 小老師與學生帳號密碼管理（最高權限）</h3>
-      <button class="pw-edit-btn" onclick="togglePasswordSection()">📂 展開 / 收合帳號管理</button>
+      <h3 style="margin: 0; border: none; padding: 0;">🔑 學生與家長帳號密碼管理</h3>
+      <button class="pw-edit-btn" onclick="togglePasswordSection()">📂 展開 / 收合帳號密碼管理</button>
     </div>
     <div id="passwordBody" style="display: none; margin-top: 1.25rem; border-top: 1px solid var(--td-border); padding-top: 1rem;">
-      <p class="hint" style="margin-bottom: 1rem;">小老師或學生若忘記密碼，老師可直接在此為其設定新密碼（或重設為 123456）。</p>
+      <p class="hint" style="margin-bottom: 1rem;">學生或家長若忘記密碼，老師可直接在此為其設定新密碼（預設皆為 123456）。</p>
       <div style="overflow-x: auto;">
         <table style="margin-bottom: 0;">
           <thead>
             <tr>
-              <th>身分 / 座號</th>
-              <th>姓名</th>
-              <th>登入帳號</th>
-              <th>學校信箱</th>
+              <th>座號</th>
+              <th>學生姓名</th>
+              <th>學生學號</th>
+              <th>家長帳號 (F+學號)</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody id="studentAccountList">
-            <tr><td colspan="5">載入帳號名單中...</td></tr>
+            <tr><td colspan="5">載入名單中...</td></tr>
           </tbody>
         </table>
       </div>
@@ -725,34 +756,64 @@
         if (toggleText) toggleText.innerText = 'LIGHT';
       }
     }
-
     function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'light' ? 'dark' : 'light';
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       localStorage.setItem('nexus-theme', next);
       applyTheme(next);
     }
-
     applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+
+    function toggleEntrySection() {
+      const bodyEl = document.getElementById('entryCollapsibleBody');
+      const headerEl = document.getElementById('entryHeader');
+      const isHidden = bodyEl.style.display === 'none';
+      bodyEl.style.display = isHidden ? 'block' : 'none';
+      headerEl.style.borderBottom = isHidden ? '1px solid var(--header-border)' : 'none';
+      headerEl.style.paddingBottom = isHidden ? '1rem' : '0';
+      headerEl.style.marginBottom = isHidden ? '1.5rem' : '0';
+    }
+
+    function toggleRankSection() {
+      const bodyEl = document.getElementById('rankCollapsibleBody');
+      const headerEl = document.getElementById('rankHeaderBar');
+      const isHidden = bodyEl.style.display === 'none';
+      bodyEl.style.display = isHidden ? 'block' : 'none';
+      headerEl.style.borderBottom = isHidden ? '1px solid var(--td-border)' : 'none';
+      headerEl.style.paddingBottom = isHidden ? '0.75rem' : '0';
+      headerEl.style.marginBottom = isHidden ? '1.25rem' : '0';
+    }
 
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let students = [];
-    let graders = [];
-    let currentRole = '';
+    let parentAccountsList = [];
     let allScoresCache = [];
     let myChart = null;
+    let parsedExcelState = null;
 
     document.getElementById('examDate').valueAsDate = new Date();
 
+    const dropzone = document.getElementById('excelDropzone');
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.classList.remove('dragover');
+    });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processExcelFile(e.dataTransfer.files[0]);
+      }
+    });
+
     async function init() {
       const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        window.location.href = 'index.html';
-        return;
-      }
+      if (!session) { window.location.href = 'index.html'; return; }
 
       const { data: profile } = await supabaseClient
         .from('profiles')
@@ -760,66 +821,28 @@
         .eq('id', session.user.id)
         .single();
 
-      if (!profile || (profile.role !== 'admin' && profile.role !== 'grader')) {
-        alert('權限不足');
+      if (!profile || profile.role !== 'admin') {
+        alert('僅限老師最高權限帳號存取！');
         window.location.href = 'index.html';
         return;
       }
 
-      currentRole = profile.role;
-      const titleEl = document.getElementById('pageTitle');
-      const roleTag = document.getElementById('roleTag');
-      const topBtnGroup = document.getElementById('topBtnGroup');
-      const submitBtn = document.getElementById('submitBtn');
-      const currentThemeLabel = document.documentElement.getAttribute('data-theme') === 'light' ? 'DARK' : 'LIGHT';
-      const themeBtnHtml = `
-        <button class="theme-btn" onclick="toggleTheme()" aria-label="切換明暗科技主題">
-          <span class="theme-dot"></span>
-          <span id="themeText">${currentThemeLabel}</span>
-        </button>
-      `;
-      
-      if (currentRole === 'admin') {
-        roleTag.innerText = 'ROOT ADMIN // 老師最高權限模式';
-        titleEl.innerText = '成績系統指揮中心（老師）';
-        document.getElementById('editHint').innerText = '最高權限：可審核小老師草稿、隨時建立或修改任何學期段考';
-        submitBtn.innerText = '寫入雲端並直接正式上架（學生立即可見）';
-        document.getElementById('adminRankSection').style.display = 'block';
-        document.getElementById('adminHistorySection').style.display = 'block';
-        document.getElementById('adminPasswordSection').style.display = 'block';
-
-        topBtnGroup.innerHTML = `
-          ${themeBtnHtml}
-          <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel</button>
-          <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
-          <button class="logout-btn" onclick="logout()">登出終端</button>
-        `;
-      } else {
-        roleTag.innerText = 'GRADER NODE // 小老師登錄專用';
-        titleEl.innerText = '成績登錄控制台（小老師）';
-        document.getElementById('editHint').innerText = '登錄後將送交老師端審核，審核通過後學生端才會正式顯示';
-        submitBtn.innerText = '送出成績至老師端審核（草稿暫存）';
-        document.getElementById('adminHistorySection').style.display = 'block';
-        topBtnGroup.innerHTML = `
-          ${themeBtnHtml}
-          <button class="logout-btn" onclick="logout()">登出終端</button>
-        `;
-      }
-
       const { data, error } = await supabaseClient
         .from('profiles')
-        .select('id, seat_number, name, email, role')
-        .in('role', ['student', 'grader'])
+        .select('id, seat_number, name, email, role, parent_of_student_id')
+        .in('role', ['student', 'parent'])
         .order('seat_number', { ascending: true });
 
       const tbody = document.getElementById('studentList');
-      if (error || !data || data.length === 0) {
+      const studentOnly = (data || []).filter(u => u.role === 'student');
+      parentAccountsList = (data || []).filter(u => u.role === 'parent');
+
+      if (error || studentOnly.length === 0) {
         tbody.innerHTML = '<tr><td colspan="3">目前沒有學生資料</td></tr>';
         return;
       }
 
-      students = data.filter(u => u.role === 'student');
-      graders = data.filter(u => u.role === 'grader');
+      students = studentOnly;
 
       tbody.innerHTML = students.map(s => `
         <tr>
@@ -829,32 +852,271 @@
         </tr>
       `).join('');
 
-      if (currentRole === 'admin') {
-        renderStudentAccounts();
-      }
-
+      renderStudentAccounts();
       await refreshScoresData();
     }
 
-    // 匯出完整多工作表 Excel (.xlsx)
+    function handleExcelUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        processExcelFile(file);
+        event.target.value = '';
+      }
+    }
+
+    function processExcelFile(file) {
+      if (typeof XLSX === 'undefined') {
+        alert('Excel 解析元件尚未載入完成！');
+        return;
+      }
+
+      const msgEl = document.getElementById('excelImportMsg');
+      const pickerEl = document.getElementById('excelColumnPicker');
+      msgEl.style.display = 'block';
+      msgEl.style.color = 'var(--accent-blue)';
+      msgEl.innerText = `正在智慧解析直列名單「${file.name}」...`;
+      pickerEl.style.display = 'none';
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
+
+          let headerRowIdx = -1;
+          let seatCol = -1;
+          let nameCol = -1;
+
+          for (let r = 0; r < Math.min(rows.length, 12); r++) {
+            const row = rows[r].map(cell => String(cell).trim());
+            const sIdx = row.findIndex(c => /^(座號|號碼|編號|no\.?|seat)$/i.test(c) || c.includes('座號'));
+            const nIdx = row.findIndex(c => /^(姓名|名字|學生|name)$/i.test(c) || c.includes('姓名'));
+            if (sIdx !== -1 || nIdx !== -1) {
+              headerRowIdx = r;
+              seatCol = sIdx;
+              nameCol = nIdx;
+              break;
+            }
+          }
+
+          if (headerRowIdx === -1) {
+            const studentNamesSet = new Set(students.map(s => s.name.trim()));
+            const maxCols = Math.max(...rows.slice(0, 15).map(r => r.length));
+
+            for (let c = 0; c < maxCols; c++) {
+              let nameHits = 0;
+              let seatHits = 0;
+              for (let r = 0; r < Math.min(rows.length, 20); r++) {
+                const val = String(rows[r][c] ?? '').trim();
+                if (studentNamesSet.has(val)) nameHits++;
+                if (/^\d{1,2}$/.test(val) && Number(val) >= 1 && Number(val) <= 60) seatHits++;
+              }
+              if (nameHits >= 2 && nameCol === -1) nameCol = c;
+              else if (seatHits >= 3 && seatCol === -1) seatCol = c;
+            }
+
+            if (seatCol === -1 && nameCol === -1) {
+              seatCol = 0;
+              nameCol = 1;
+            }
+          }
+
+          const startRow = headerRowIdx === -1 ? 0 : headerRowIdx + 1;
+          const maxCols = Math.max(...rows.map(r => r.length));
+          const scoreColumns = [];
+
+          for (let c = 0; c < maxCols; c++) {
+            if (c === seatCol || c === nameCol) continue;
+            const colHeader = headerRowIdx !== -1 ? String(rows[headerRowIdx][c] ?? '').trim() : '';
+            if (/^(學號|排名|名次|總分|平均|備註|class|rank)$/i.test(colHeader)) continue;
+
+            let validNumCount = 0;
+            for (let r = startRow; r < rows.length; r++) {
+              const raw = rows[r][c];
+              if (raw !== '' && raw !== null && raw !== undefined) {
+                const n = Number(raw);
+                if (!isNaN(n) && n >= 0 && n <= 100) validNumCount++;
+              }
+            }
+
+            if (validNumCount >= 1) {
+              const colLetter = XLSX.utils.encode_col(c);
+              const label = colHeader ? `${colHeader} (第 ${colLetter} 欄)` : `第 ${colLetter} 欄成績`;
+              scoreColumns.push({ colIdx: c, headerName: colHeader, label });
+            }
+          }
+
+          if (scoreColumns.length === 0) {
+            msgEl.style.color = '#f43f5e';
+            msgEl.innerText = '⚠️ 未偵測到有效的成績直欄（需包含 0~100 的數字分數）！';
+            return;
+          }
+
+          parsedExcelState = { fileName: file.name, rows, startRow, seatCol, nameCol, scoreColumns };
+
+          const colSelect = document.getElementById('excelScoreColSelect');
+          colSelect.innerHTML = scoreColumns.map((sc, idx) => `<option value="${idx}">${sc.label}</option>`).join('');
+          colSelect.value = String(scoreColumns.length - 1);
+
+          pickerEl.style.display = scoreColumns.length > 1 ? 'flex' : 'none';
+          applySelectedExcelColumn();
+        } catch (err) {
+          msgEl.style.color = '#f43f5e';
+          msgEl.innerText = '❌ 讀取 Excel 發生錯誤：' + err.message;
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function applySelectedExcelColumn() {
+      if (!parsedExcelState) return;
+      const msgEl = document.getElementById('excelImportMsg');
+      const colSelectIdx = Number(document.getElementById('excelScoreColSelect').value || 0);
+      const targetCol = parsedExcelState.scoreColumns[colSelectIdx];
+      if (!targetCol) return;
+
+      const { fileName, rows, startRow, seatCol, nameCol } = parsedExcelState;
+      students.forEach(s => {
+        const el = document.getElementById(`score_${s.id}`);
+        if (el) el.value = '';
+      });
+
+      let matchedCount = 0;
+
+      for (let r = startRow; r < rows.length; r++) {
+        const row = rows[r];
+        if (!row || row.length === 0) continue;
+
+        const rawSeat = seatCol !== -1 ? String(row[seatCol] ?? '').trim() : '';
+        const rawName = nameCol !== -1 ? String(row[nameCol] ?? '').trim() : '';
+        const rawScore = row[targetCol.colIdx];
+
+        if (rawScore === '' || rawScore === null || rawScore === undefined) continue;
+        const numScore = Number(rawScore);
+        if (isNaN(numScore) || numScore < 0 || numScore > 100) continue;
+
+        let targetStudent = null;
+        if (rawSeat !== '' && !isNaN(Number(rawSeat))) {
+          targetStudent = students.find(s => Number(s.seat_number) === Number(rawSeat));
+        }
+        if (!targetStudent && rawName !== '') {
+          targetStudent = students.find(s => s.name.trim() === rawName);
+        }
+
+        if (targetStudent) {
+          const inputEl = document.getElementById(`score_${targetStudent.id}`);
+          if (inputEl) {
+            inputEl.value = numScore;
+            matchedCount++;
+          }
+        }
+      }
+
+      const cleanFileName = fileName.replace(/\.[^/.]+$/, '');
+      const nameInput = document.getElementById('examName');
+      if (targetCol.headerName && !/^(分數|成績|score)$/i.test(targetCol.headerName)) {
+        nameInput.value = targetCol.headerName;
+      } else if (!nameInput.value.trim()) {
+        nameInput.value = cleanFileName;
+      }
+
+      const subjectSelect = document.getElementById('subjectSelect');
+      const hintText = `${targetCol.headerName} ${cleanFileName}`;
+      for (const opt of subjectSelect.options) {
+        if (hintText.includes(opt.value)) {
+          subjectSelect.value = opt.value;
+          break;
+        }
+      }
+
+      if (matchedCount > 0) {
+        msgEl.style.color = '#10b981';
+        msgEl.innerText = `✅ 已從「${fileName}」【${targetCol.label}】自動帶入 ${matchedCount} 位學生的直列成績！請確認上方科目與日期後按「一鍵整合寫入雲端」。`;
+      } else {
+        msgEl.style.color = '#f43f5e';
+        msgEl.innerText = '⚠️ 此欄位未比對到班上學生的有效分數（0~100），請檢查座號或姓名欄位。';
+      }
+    }
+
+    function buildPrintExamDetailTable() {
+      const publishedScores = allScoresCache.filter(s => s.is_published !== false);
+      const theadEl = document.getElementById('printDetailHead');
+      const tbodyEl = document.getElementById('printDetailBody');
+
+      if (publishedScores.length === 0) {
+        theadEl.innerHTML = '';
+        tbodyEl.innerHTML = '<tr><td>尚無測驗明細資料</td></tr>';
+        return;
+      }
+
+      const examGroupsMap = new Map();
+      [...publishedScores].reverse().forEach(s => {
+        const sem = s.semester || '115學年度第1學期';
+        const stage = s.exam_stage || '第一次段考';
+        const name = s.exam_name || '平時考';
+        const sub = s.subject || '其他';
+        const date = s.exam_date || '未填日期';
+        const key = `${sem}||${stage}||${name}||${sub}||${date}`;
+        if (!examGroupsMap.has(key)) {
+          examGroupsMap.set(key, { key, sem, stage, name, sub, date, avg: s.class_avg ?? '-', scoresByStudent: new Map() });
+        }
+        examGroupsMap.get(key).scoresByStudent.set(s.student_id, s.score);
+      });
+
+      const examCols = Array.from(examGroupsMap.values());
+      const seatSortedStudents = [...students].sort((a, b) => (a.seat_number ?? 999) - (b.seat_number ?? 999));
+
+      theadEl.innerHTML = `<tr>
+        <th style="width: 42px; text-align:center;">座號</th>
+        <th style="width: 72px;">姓名</th>
+        ${examCols.map(c => `
+          <th style="text-align:center;">
+            <span class="exam-th-sub">【${c.sub}】</span>
+            <span class="exam-th-name">${c.name}</span>
+            <span class="exam-th-date">📅 ${c.date}</span>
+          </th>
+        `).join('')}
+      </tr>`;
+
+      const studentRowsHtml = seatSortedStudents.map(st => `<tr>
+        <td style="text-align:center;">${st.seat_number ?? '-'}</td>
+        <td><strong>${st.name}</strong></td>
+        ${examCols.map(c => `<td style="text-align:center;">${c.scoresByStudent.has(st.id) ? c.scoresByStudent.get(st.id) : '-'}</td>`).join('')}
+      </tr>`).join('');
+
+      const avgRowHtml = `<tr>
+        <td colspan="2" style="text-align:center; background:#e2e8f0 !important;"><strong>單場班級平均</strong></td>
+        ${examCols.map(c => `<td style="text-align:center; background:#e2e8f0 !important;"><strong>${c.avg}</strong></td>`).join('')}
+      </tr>`;
+
+      tbodyEl.innerHTML = studentRowsHtml + avgRowHtml;
+    }
+
+    function printRankReport() {
+      buildPrintExamDetailTable();
+      const now = new Date();
+      const timeStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      document.getElementById('printDetailTimestamp').innerText = `報表匯出時間：${timeStr} ｜ 國二-2 班級成績管理系統`;
+      window.print();
+    }
+
     function exportToExcel() {
       if (typeof XLSX === 'undefined') {
-        alert('Excel 元件尚未載入完成，請稍候再試！');
+        alert('Excel 匯出元件尚未載入完成，請稍後再試！');
         return;
       }
 
       const publishedScores = allScoresCache.filter(s => s.is_published !== false);
       if (publishedScores.length === 0) {
-        alert('目前尚無已審核上架的成績可匯出！');
+        alert('目前尚無成績資料可匯出！');
         return;
       }
 
       const wb = XLSX.utils.book_new();
       const subjects = [...new Set(publishedScores.map(s => s.subject))];
 
-      // ==========================================
-      // 工作表 1：全班總排名矩陣
-      // ==========================================
       const studentStats = students.map(st => {
         const stScores = publishedScores.filter(s => s.student_id === st.id);
         const subAvgs = {};
@@ -880,15 +1142,11 @@
       const validTotals = studentStats.filter(s => s.totalAvg !== '');
       const sortedTotals = [...validTotals].sort((a, b) => b.totalAvg - a.totalAvg);
       studentStats.forEach(st => {
-        st.overallRank = st.totalAvg === '' ? '-' : sortedTotals.findIndex(x => x.totalAvg === st.totalAvg) + 1;
+        if (st.totalAvg === '') st.overallRank = '-';
+        else st.overallRank = sortedTotals.findIndex(x => x.totalAvg === st.totalAvg) + 1;
       });
 
-      const rankSortedStudents = [...studentStats].sort((a, b) => {
-        const va = a.totalAvg === '' ? -1 : a.totalAvg;
-        const vb = b.totalAvg === '' ? -1 : b.totalAvg;
-        return vb - va;
-      });
-
+      const rankSortedStudents = [...studentStats].sort((a, b) => (b.totalAvg === '' ? -1 : b.totalAvg) - (a.totalAvg === '' ? -1 : a.totalAvg));
       const sheet1Headers = ['總排名', '座號', '姓名', ...subjects.map(s => `${s}科平均`), '跨科總平均'];
       const sheet1Rows = rankSortedStudents.map(st => [
         st.overallRank,
@@ -898,25 +1156,21 @@
         st.totalAvg
       ]);
 
-      // 加入班級平均總結列
-      const classSubAverages = subjects.map(sub => {
-        const subItems = publishedScores.filter(s => s.subject === sub);
-        return subItems.length > 0
-          ? Math.round((subItems.reduce((sum, x) => sum + x.score, 0) / subItems.length) * 10) / 10
-          : '';
+      const classSubAvgsRow = ['', '', '全班平均'];
+      subjects.forEach(sub => {
+        const subScores = publishedScores.filter(s => s.subject === sub);
+        const avg = subScores.length > 0 ? Math.round((subScores.reduce((sum, item) => sum + item.score, 0) / subScores.length) * 10) / 10 : '';
+        classSubAvgsRow.push(avg);
       });
       const classOverallAvg = validTotals.length > 0
         ? Math.round((validTotals.reduce((sum, s) => sum + s.totalAvg, 0) / validTotals.length) * 10) / 10
         : '';
-      sheet1Rows.push(['班級平均', '', '', ...classSubAverages, classOverallAvg]);
+      classSubAvgsRow.push(classOverallAvg);
+      sheet1Rows.push(classSubAvgsRow);
 
       const ws1 = XLSX.utils.aoa_to_sheet([sheet1Headers, ...sheet1Rows]);
-      ws1['!cols'] = [{ wch: 10 }, { wch: 8 }, { wch: 12 }, ...subjects.map(() => ({ wch: 12 })), { wch: 14 }];
       XLSX.utils.book_append_sheet(wb, ws1, '全班總排名矩陣');
 
-      // ==========================================
-      // 工作表 2：單場測驗橫向總表（依座號排序）
-      // ==========================================
       const examGroupsMap = new Map();
       [...publishedScores].reverse().forEach(s => {
         const sem = s.semester || '115學年度第1學期';
@@ -928,58 +1182,26 @@
         if (!examGroupsMap.has(key)) {
           examGroupsMap.set(key, {
             key,
-            label: `[${sub}] ${name} (${stage}/${date})`,
-            scoresByStudent: new Map(),
-            avg: s.class_avg ?? ''
+            label: `${sub}｜${name} (${date})`,
+            avg: s.class_avg ?? '',
+            scoresByStudent: new Map()
           });
         }
         examGroupsMap.get(key).scoresByStudent.set(s.student_id, s.score);
       });
 
       const examCols = Array.from(examGroupsMap.values());
-      const sheet2Headers = ['座號', '姓名', ...examCols.map(c => c.label)];
       const seatSortedStudents = [...students].sort((a, b) => (a.seat_number ?? 999) - (b.seat_number ?? 999));
-
+      const sheet2Headers = ['座號', '姓名', ...examCols.map(c => c.label)];
       const sheet2Rows = seatSortedStudents.map(st => [
         st.seat_number ?? '',
         st.name,
-        ...examCols.map(c => c.scoresByStudent.has(st.id) ? c.scoresByStudent.get(st.id) : '')
+        ...examCols.map(c => (c.scoresByStudent.has(st.id) ? c.scoresByStudent.get(st.id) : ''))
       ]);
-      sheet2Rows.push(['單場班均', '', ...examCols.map(c => c.avg)]);
+      sheet2Rows.push(['', '單場班級平均', ...examCols.map(c => c.avg)]);
 
       const ws2 = XLSX.utils.aoa_to_sheet([sheet2Headers, ...sheet2Rows]);
-      ws2['!cols'] = [{ wch: 8 }, { wch: 12 }, ...examCols.map(() => ({ wch: 24 }))];
-      XLSX.utils.book_append_sheet(wb, ws2, '單場測驗橫向總表');
-
-      // ==========================================
-      // 工作表 3：雲端原始明細
-      // ==========================================
-      const studentInfoMap = {};
-      students.forEach(s => { studentInfoMap[s.id] = s; });
-
-      const detailHeaders = ['學期', '大考階段', '測驗名稱', '科目', '考試日期', '座號', '學生姓名', '分數', '單科班均', '單科名次'];
-      const detailRows = publishedScores.map(r => {
-        const st = studentInfoMap[r.student_id] || {};
-        return [
-          r.semester || '',
-          r.exam_stage || '',
-          r.exam_name || '',
-          r.subject || '',
-          r.exam_date || '',
-          st.seat_number ?? '',
-          st.name || '未知學生',
-          r.score,
-          r.class_avg ?? '',
-          r.rank ?? ''
-        ];
-      });
-
-      const ws3 = XLSX.utils.aoa_to_sheet([detailHeaders, ...detailRows]);
-      ws3['!cols'] = [
-        { wch: 16 }, { wch: 12 }, { wch: 18 }, { wch: 10 },
-        { wch: 12 }, { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 10 }
-      ];
-      XLSX.utils.book_append_sheet(wb, ws3, '雲端原始明細');
+      XLSX.utils.book_append_sheet(wb, ws2, '各場次小考明細');
 
       const todayStr = new Date().toISOString().slice(0, 10);
       XLSX.writeFile(wb, `國二2_小考成績總表_${todayStr}.xlsx`);
@@ -988,7 +1210,6 @@
     async function changeMyPassword() {
       const newPassword = prompt('請輸入您的新登入密碼（至少 6 個字元）：');
       if (newPassword === null) return;
-
       const trimmed = newPassword.trim();
       if (trimmed.length < 6) {
         alert('密碼長度至少需要 6 個字元！');
@@ -996,12 +1217,8 @@
       }
 
       const { error } = await supabaseClient.auth.updateUser({ password: trimmed });
-
-      if (error) {
-        alert('密碼修改失敗：' + error.message);
-      } else {
-        alert('✓ 您的登入密碼已成功修改！');
-      }
+      if (error) alert('密碼修改失敗：' + error.message);
+      else alert('✓ 您的登入密碼已成功修改！下次登入請使用新密碼。');
     }
 
     function togglePasswordSection() {
@@ -1011,34 +1228,32 @@
 
     function renderStudentAccounts() {
       const accountTbody = document.getElementById('studentAccountList');
-      const allAccounts = [...graders, ...students];
-
-      accountTbody.innerHTML = allAccounts.map(u => {
+      accountTbody.innerHTML = students.map(u => {
         const userCode = u.email ? u.email.split('@')[0] : '-';
-        const isGrader = u.role === 'grader';
-        const identityCell = isGrader
-          ? `<span class="badge-grader">👑 小老師</span>`
-          : `${u.seat_number ?? '-'} 號`;
+        const parentObj = parentAccountsList.find(p => p.parent_of_student_id === u.id) ||
+                          parentAccountsList.find(p => p.email && p.email.split('@')[0].toLowerCase() === `f${userCode.toLowerCase()}`);
+        const parentCode = parentObj ? parentObj.email.split('@')[0].toUpperCase() : `F${userCode.toUpperCase()}`;
 
         return `
           <tr>
-            <td>${identityCell}</td>
+            <td>${u.seat_number ?? '-'} 號</td>
             <td><strong>${u.name}</strong></td>
             <td><span class="badge">${userCode}</span></td>
-            <td style="color: var(--text-muted); font-size: 0.88rem;">${u.email ?? '-'}</td>
+            <td><span class="badge" style="color:var(--accent-emerald); border-color:rgba(16,185,129,0.35);">${parentCode}</span></td>
             <td>
-              <button class="pw-edit-btn" onclick="changeUserPassword('${u.id}', '${u.name}', ${isGrader})">修改密碼</button>
+              <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                <button class="pw-edit-btn" onclick="changeUserPassword('${u.id}', '${u.name}')">改學生密碼</button>
+                ${parentObj ? `<button class="pw-edit-btn" style="color:var(--accent-emerald); border-color:rgba(16,185,129,0.4);" onclick="changeUserPassword('${parentObj.id}', '${u.name}的家長')">改家長密碼</button>` : ''}
+              </div>
             </td>
           </tr>
         `;
       }).join('');
     }
 
-    async function changeUserPassword(userId, userName, isGrader) {
-      const roleText = isGrader ? '小老師' : '學生';
-      const newPassword = prompt(`請為${roleText}「${userName}」設定新的登入密碼（至少 6 個字元，預設可填 123456）：`);
+    async function changeUserPassword(userId, userName) {
+      const newPassword = prompt(`請為「${userName}」設定新的登入密碼（至少 6 個字元，預設可填 123456）：`);
       if (newPassword === null) return;
-
       const trimmed = newPassword.trim();
       if (trimmed.length < 6) {
         alert('密碼長度至少需要 6 個字元！');
@@ -1053,7 +1268,7 @@
       if (error) {
         alert('密碼修改失敗：' + error.message);
       } else {
-        alert(`✓ 已成功將${roleText}「${userName}」的密碼修改為：${trimmed}`);
+        alert(`✓ 已成功將「${userName}」的密碼修改為：${trimmed}`);
       }
     }
 
@@ -1066,109 +1281,18 @@
       allScoresCache = scores || [];
       renderReportedAlerts();
 
-      if (currentRole === 'admin') {
-        renderPendingApprovals();
-      }
-
       const examKeys = [...new Set(allScoresCache.map(s => `${s.semester || '115學年度第1學期'}||${s.exam_stage || '第一次段考'}||${s.exam_name}||${s.subject}||${s.exam_date || ''}`))];
       const selectEl = document.getElementById('examSelect');
       const currentVal = selectEl.value;
-      
       selectEl.innerHTML = '<option value="">＋ 建立全新測驗場次</option>' +
         examKeys.map(k => {
           const [sem, stage, name, sub, date] = k.split('||');
-          const sample = allScoresCache.find(r =>
-            (r.semester || '115學年度第1學期') === sem &&
-            (r.exam_stage || '第一次段考') === stage &&
-            r.exam_name === name &&
-            r.subject === sub &&
-            (r.exam_date || '') === date
-          );
-          const statusPrefix = (sample && sample.is_published === false) ? '⏳[待審核] ' : '✅ ';
-          return `<option value="${k}">${statusPrefix}[${sem}] ${stage} > ${name} - ${sub} (${date})</option>`;
+          return `<option value="${k}">[${sem}] ${stage} > ${name} - ${sub} (${date})</option>`;
         }).join('');
-      
       if (examKeys.includes(currentVal)) selectEl.value = currentVal;
 
-      if (currentRole === 'admin') {
-        renderAdminRankOverview();
-      }
+      renderAdminRankOverview();
       renderAdminHistory();
-    }
-
-    function renderPendingApprovals() {
-      const pendingRecords = allScoresCache.filter(s => s.is_published === false);
-      const pendingBox = document.getElementById('pendingApprovalSection');
-      const listEl = document.getElementById('pendingExamList');
-
-      if (pendingRecords.length === 0) {
-        pendingBox.style.display = 'none';
-        return;
-      }
-
-      const groups = {};
-      pendingRecords.forEach(item => {
-        const sem = item.semester || '115學年度第1學期';
-        const stage = item.exam_stage || '第一次段考';
-        const name = item.exam_name || '平時考';
-        const sub = item.subject || '其他';
-        const date = item.exam_date || '';
-        const key = `${sem}||${stage}||${name}||${sub}||${date}`;
-        if (!groups[key]) {
-          groups[key] = { key, sem, stage, name, sub, date, records: [] };
-        }
-        groups[key].records.push(item);
-      });
-
-      pendingBox.style.display = 'block';
-      listEl.innerHTML = Object.values(groups).map(g => {
-        const avg = g.records[0]?.class_avg ?? '-';
-        return `
-          <tr>
-            <td><span class="badge">${g.sem}</span> ${g.stage}</td>
-            <td><strong>${g.name}</strong></td>
-            <td><span class="badge">${g.sub}</span></td>
-            <td>${g.date}</td>
-            <td>${g.records.length} 筆 / 班均 <strong>${avg}</strong></td>
-            <td style="display:flex; gap:0.45rem; flex-wrap:wrap;">
-              <button class="pw-edit-btn" onclick="inspectPendingExam('${g.key}')">🔍 檢視 / 修改分數</button>
-              <button class="approve-btn" onclick="setExamPublishStatus('${g.sem}', '${g.stage}', '${g.name}', '${g.sub}', '${g.date}', true)">✅ 審核通過並上架</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function inspectPendingExam(examKey) {
-      const selectEl = document.getElementById('examSelect');
-      selectEl.value = examKey;
-      loadExamForEdit();
-      selectEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    async function setExamPublishStatus(sem, stage, name, sub, date, publishFlag) {
-      const actionName = publishFlag ? '審核通過並正式上架' : '撤回下架為待審核';
-      if (!confirm(`確定要將「[${sem}] ${stage} > ${name} - ${sub} (${date})」${actionName}嗎？`)) return;
-
-      let query = supabaseClient
-        .from('scores')
-        .update({ is_published: publishFlag })
-        .eq('semester', sem)
-        .eq('exam_stage', stage)
-        .eq('exam_name', name)
-        .eq('subject', sub);
-
-      if (date) {
-        query = query.eq('exam_date', date);
-      }
-
-      const { error } = await query;
-      if (error) {
-        alert(`${actionName}失敗：` + error.message);
-      } else {
-        alert(publishFlag ? '✓ 已審核通過並正式上架！學生端現在可以查看此場成績了。' : '✓ 已撤回為待審核狀態，學生端已暫時隱藏。');
-        await refreshScoresData();
-      }
     }
 
     function renderReportedAlerts() {
@@ -1204,11 +1328,9 @@
         .eq('id', scoreId)
         .select();
 
-      if (error || !data || data.length === 0) {
-        alert('無法結案！');
-      } else {
-        await refreshScoresData();
-      }
+      if (error) alert('資料庫拒絕修改：' + error.message);
+      else if (!data || data.length === 0) alert('無法結案：請確認資料庫權限！');
+      else await refreshScoresData();
     }
 
     function loadExamForEdit() {
@@ -1220,9 +1342,7 @@
       const dateInput = document.getElementById('examDate');
       document.getElementById('status').innerText = '';
 
-      students.forEach(s => {
-        document.getElementById(`score_${s.id}`).value = '';
-      });
+      students.forEach(s => { document.getElementById(`score_${s.id}`).value = ''; });
 
       if (!selectedKey) {
         semSelect.disabled = false;
@@ -1234,22 +1354,17 @@
       }
 
       const [sem, stage, examName, sub, date] = selectedKey.split('||');
-      semSelect.value = sem;
-      semSelect.disabled = true;
-      stageSelect.value = stage;
-      stageSelect.disabled = true;
-      nameInput.value = examName;
-      nameInput.readOnly = true;
-      subSelect.value = sub;
-      subSelect.disabled = true;
-      dateInput.value = date;
-      dateInput.readOnly = true;
+      semSelect.value = sem; semSelect.disabled = true;
+      stageSelect.value = stage; stageSelect.disabled = true;
+      nameInput.value = examName; nameInput.readOnly = true;
+      subSelect.value = sub; subSelect.disabled = true;
+      dateInput.value = date; dateInput.readOnly = true;
 
-      const examRecords = allScoresCache.filter(r => 
-        (r.semester || '115學年度第1學期') === sem && 
+      const examRecords = allScoresCache.filter(r =>
+        (r.semester || '115學年度第1學期') === sem &&
         (r.exam_stage || '第一次段考') === stage &&
-        r.exam_name === examName && 
-        r.subject === sub && 
+        r.exam_name === examName &&
+        r.subject === sub &&
         (r.exam_date || '') === date
       );
 
@@ -1268,16 +1383,8 @@
       const statusEl = document.getElementById('status');
       const submitBtn = document.getElementById('submitBtn');
 
-      if (!examName) {
-        statusEl.style.color = '#f43f5e';
-        statusEl.innerText = '請輸入測驗細項名稱！';
-        return;
-      }
-      if (!examDate) {
-        statusEl.style.color = '#f43f5e';
-        statusEl.innerText = '請選擇考試日期！';
-        return;
-      }
+      if (!examName) { statusEl.style.color = '#f43f5e'; statusEl.innerText = '請輸入測驗細項名稱！'; return; }
+      if (!examDate) { statusEl.style.color = '#f43f5e'; statusEl.innerText = '請選擇考試日期！'; return; }
 
       const entries = [];
       for (const s of students) {
@@ -1293,11 +1400,7 @@
         }
       }
 
-      if (entries.length === 0) {
-        statusEl.style.color = '#f43f5e';
-        statusEl.innerText = '請至少輸入一位學生的分數！';
-        return;
-      }
+      if (entries.length === 0) { statusEl.style.color = '#f43f5e'; statusEl.innerText = '請至少輸入一位學生的分數！'; return; }
 
       submitBtn.disabled = true;
       statusEl.style.color = 'var(--accent-blue)';
@@ -1306,30 +1409,27 @@
       const avg = Math.round((entries.reduce((sum, e) => sum + e.score, 0) / entries.length) * 10) / 10;
       const sortedScores = [...entries].map(e => e.score).sort((a, b) => b - a);
 
-      const shouldPublishImmediately = (currentRole === 'admin');
-
-      let delQuery = supabaseClient.from('scores').delete()
+      let delQuery = supabaseClient
+        .from('scores')
+        .delete()
         .eq('semester', semester)
         .eq('exam_stage', examStage)
         .eq('exam_name', examName)
         .eq('subject', subject);
-      
-      if (examDate) {
-        delQuery = delQuery.eq('exam_date', examDate);
-      }
+      if (examDate) delQuery = delQuery.eq('exam_date', examDate);
       await delQuery;
 
       const rowsToInsert = entries.map(e => ({
-        semester,
+        semester: semester,
         exam_stage: examStage,
         exam_name: examName,
-        subject,
+        subject: subject,
         exam_date: examDate,
         student_id: e.student_id,
         score: e.score,
         class_avg: avg,
         rank: sortedScores.indexOf(e.score) + 1,
-        is_published: shouldPublishImmediately
+        is_published: true
       }));
 
       const { error } = await supabaseClient.from('scores').insert(rowsToInsert);
@@ -1339,13 +1439,8 @@
         statusEl.style.color = '#f43f5e';
         statusEl.innerText = '寫入失敗：' + error.message;
       } else {
-        if (shouldPublishImmediately) {
-          statusEl.style.color = '#10b981';
-          statusEl.innerText = `✓ 已成功寫入並正式上架 ${entries.length} 筆成績（本場班均：${avg} 分）！`;
-        } else {
-          statusEl.style.color = '#f59e0b';
-          statusEl.innerText = `⏳ 已成功送出 ${entries.length} 筆成績至老師端待審核（本場班均：${avg} 分），老師審核通過後學生即可查看！`;
-        }
+        statusEl.style.color = '#10b981';
+        statusEl.innerText = `✓ 已成功整合並發布 ${entries.length} 筆成績（本場班均：${avg} 分），全班排名已即時更新！`;
         await refreshScoresData();
       }
     }
@@ -1360,7 +1455,7 @@
       if (subjects.length === 0) {
         summaryEl.innerHTML = '';
         theadEl.innerHTML = '';
-        tbodyEl.innerHTML = '<tr><td>尚無已審核上架的成績資料可統計</td></tr>';
+        tbodyEl.innerHTML = '<tr><td>尚無成績資料可統計</td></tr>';
         return;
       }
 
@@ -1369,7 +1464,12 @@
         const avg = subScores.length > 0
           ? (subScores.reduce((sum, item) => sum + item.score, 0) / subScores.length).toFixed(1)
           : '-';
-        return `<div class="summary-card"><div class="sub-title">${sub} 科全班均分</div><div class="sub-val">${avg}</div></div>`;
+        return `
+          <div class="summary-card">
+            <div class="sub-title">${sub} 科全班均分</div>
+            <div class="sub-val">${avg}</div>
+          </div>
+        `;
       });
 
       const studentStats = students.map(st => {
@@ -1398,19 +1498,23 @@
       const classOverallAvg = validTotals.length > 0
         ? (validTotals.reduce((sum, s) => sum + s.totalAvg, 0) / validTotals.length).toFixed(1)
         : '-';
-      subjectCards.push(`<div class="summary-card" style="border-color: var(--card-hi-border); background: var(--card-hi-bg);"><div class="sub-title" style="color:var(--accent-blue);">全班跨科總平均</div><div class="sub-val" style="color:var(--accent-blue);">${classOverallAvg}</div></div>`);
+
+      subjectCards.push(`
+        <div class="summary-card" style="border-color: var(--card-hi-border); background: var(--card-hi-bg);">
+          <div class="sub-title" style="color:var(--accent-blue);">全班跨科總平均</div>
+          <div class="sub-val" style="color:var(--accent-blue);">${classOverallAvg}</div>
+        </div>
+      `);
       summaryEl.innerHTML = subjectCards.join('');
 
       const sortedTotals = [...validTotals].sort((a, b) => b.totalAvg - a.totalAvg);
       studentStats.forEach(st => {
-        if (st.totalAvg === null) {
-          st.overallRank = '-';
-        } else {
-          st.overallRank = sortedTotals.findIndex(x => x.totalAvg === st.totalAvg) + 1;
-        }
+        if (st.totalAvg === null) st.overallRank = '-';
+        else st.overallRank = sortedTotals.findIndex(x => x.totalAvg === st.totalAvg) + 1;
       });
 
       const displayList = [...studentStats].sort((a, b) => (b.totalAvg ?? -1) - (a.totalAvg ?? -1));
+
       theadEl.innerHTML = `<tr>
         <th>總排名</th>
         <th>座號</th>
@@ -1433,9 +1537,6 @@
       document.getElementById('trendModal').style.display = 'flex';
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const primaryColor = isLight ? '#0284c7' : '#00f0ff';
-      const fillColor = isLight ? 'rgba(2, 132, 199, 0.12)' : 'rgba(0, 240, 255, 0.1)';
-      const avgColor = isLight ? '#d97706' : '#f59e0b';
       const tickColor = isLight ? '#475569' : '#94a3b8';
       const gridColor = isLight ? 'rgba(148, 163, 184, 0.25)' : 'rgba(148, 163, 184, 0.1)';
       const legendColor = isLight ? '#0f172a' : '#f8fafc';
@@ -1444,13 +1545,11 @@
       stScores.sort((a, b) => new Date(a.exam_date || '2026-01-01') - new Date(b.exam_date || '2026-01-01'));
 
       const labels = stScores.map(s => `${s.exam_stage || ''} - ${s.exam_name} (${s.subject})`);
-      const scores = stScores.map(s => s.score);
-      const averages = stScores.map(s => s.class_avg);
+      const personalData = stScores.map(s => s.score);
+      const classAvgData = stScores.map(s => s.class_avg);
 
       const ctx = document.getElementById('trendChart').getContext('2d');
-      if (myChart) {
-        myChart.destroy();
-      }
+      if (myChart) myChart.destroy();
 
       myChart = new Chart(ctx, {
         type: 'line',
@@ -1459,23 +1558,21 @@
           datasets: [
             {
               label: '個人分數',
-              data: scores,
-              borderColor: primaryColor,
-              backgroundColor: fillColor,
+              data: personalData,
+              borderColor: isLight ? '#0284c7' : '#00f0ff',
+              backgroundColor: isLight ? 'rgba(2, 132, 199, 0.15)' : 'rgba(0, 240, 255, 0.15)',
               borderWidth: 3,
-              tension: 0.3,
-              fill: true,
-              pointBackgroundColor: primaryColor,
-              pointRadius: 5
+              pointRadius: 5,
+              tension: 0.3
             },
             {
               label: '班級平均',
-              data: averages,
-              borderColor: avgColor,
+              data: classAvgData,
+              borderColor: isLight ? '#d97706' : '#f59e0b',
               borderWidth: 2,
               borderDash: [5, 5],
-              tension: 0.3,
-              pointRadius: 3
+              pointRadius: 4,
+              tension: 0.3
             }
           ]
         },
@@ -1483,16 +1580,8 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            y: {
-              min: 0,
-              max: 100,
-              grid: { color: gridColor },
-              ticks: { color: tickColor }
-            },
-            x: {
-              grid: { color: gridColor },
-              ticks: { color: tickColor }
-            }
+            y: { min: 0, max: 100, ticks: { color: tickColor }, grid: { color: gridColor } },
+            x: { ticks: { color: tickColor }, grid: { display: false } }
           },
           plugins: {
             legend: { labels: { color: legendColor } }
@@ -1523,10 +1612,7 @@
         const sub = item.subject || '其他';
         const date = item.exam_date || '';
         const key = `${sem}||${stage}||${name}||${sub}||${date}`;
-        
-        if (!groups[key]) {
-          groups[key] = { sem, stage, name, sub, date, records: [] };
-        }
+        if (!groups[key]) groups[key] = { sem, stage, name, sub, date, records: [] };
         groups[key].records.push(item);
       });
 
@@ -1535,29 +1621,15 @@
       for (const key in groups) {
         const g = groups[key];
         const groupId = `history_group_${idx++}`;
-        const isPublished = g.records.every(r => r.is_published !== false);
-
-        const statusBadge = isPublished
-          ? `<span class="badge-published">✅ 已上架公開</span>`
-          : `<span class="badge-pending">⏳ 待老師審核</span>`;
-
-        const adminPublishActionBtn = (currentRole === 'admin')
-          ? (isPublished
-              ? `<button class="pw-edit-btn" onclick="setExamPublishStatus('${g.sem}', '${g.stage}', '${g.name}', '${g.sub}', '${g.date}', false)">⏸️ 撤回下架</button>`
-              : `<button class="approve-btn" onclick="setExamPublishStatus('${g.sem}', '${g.stage}', '${g.name}', '${g.sub}', '${g.date}', true)">✅ 審核上架</button>`)
-          : '';
-
         html += `
           <div class="acc-item">
             <div class="acc-head">
               <div>
-                ${statusBadge}
-                <span class="badge" style="margin-left:0.35rem;">${g.sem}</span> 
+                <span class="badge">${g.sem}</span> 
                 <span style="color: var(--accent-primary); font-weight: 700; margin-left: 0.45rem;">${g.stage} > ${g.name} (${g.sub})</span>
                 <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 0.45rem;">📅 ${g.date} | 👥 記錄數: ${g.records.length}筆</span>
               </div>
               <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
-                ${adminPublishActionBtn}
                 <button class="pw-edit-btn" onclick="toggleGroupBody('${groupId}')">📂 展開 / 收合</button>
                 <button class="del-btn" onclick="deleteExamGroupBatch('${g.sem}', '${g.stage}', '${g.name}', '${g.sub}', '${g.date}')">🗑️ 刪除整場</button>
               </div>
@@ -1601,30 +1673,48 @@
     async function deleteScore(scoreId) {
       if (!confirm('確定要刪除此筆雲端紀錄嗎？')) return;
       const { error } = await supabaseClient.from('scores').delete().eq('id', scoreId);
-      if (error) {
-        alert('刪除失敗：' + error.message);
-      } else {
-        await refreshScoresData();
-      }
+      if (error) alert('刪除失敗：' + error.message);
+      else await refreshScoresData();
     }
 
     async function deleteExamGroupBatch(sem, stage, name, sub, date) {
       if (!confirm(`確定要一鍵刪除「[${sem}] ${stage} > ${name} - ${sub} (${date})」整場考試紀錄嗎？`)) return;
-
-      let query = supabaseClient.from('scores').delete()
+      let query = supabaseClient
+        .from('scores')
+        .delete()
         .eq('semester', sem)
         .eq('exam_stage', stage)
         .eq('exam_name', name)
         .eq('subject', sub);
-
-      if (date) {
-        query = query.eq('exam_date', date);
-      }
+      if (date) query = query.eq('exam_date', date);
 
       const { error } = await query;
+      if (error) alert('刪除整場失敗：' + error.message);
+      else await refreshScoresData();
+    }
+
+    async function deleteAllExams() {
+      if (allScoresCache.length === 0) {
+        alert('目前雲端已經沒有任何測驗成績了！');
+        return;
+      }
+      if (!confirm(`⚠️ 警告：確定要一鍵清空雲端全部 ${allScoresCache.length} 筆測驗成績嗎？\n此動作無法復原（學生與家長帳號會保留）。`)) return;
+
+      const checkText = prompt('為避免誤刪，請輸入「CLEAR」確認一鍵清空所有場次：');
+      if (checkText === null || checkText.trim().toUpperCase() !== 'CLEAR') {
+        alert('驗證文字不符，已取消清除動作。');
+        return;
+      }
+
+      const { error } = await supabaseClient
+        .from('scores')
+        .delete()
+        .gt('id', 0);
+
       if (error) {
-        alert('刪除整場失敗：' + error.message);
+        alert('一鍵清除失敗：' + error.message);
       } else {
+        alert('✓ 已一鍵清空雲端所有測驗場次！');
         await refreshScoresData();
       }
     }
