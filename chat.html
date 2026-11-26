@@ -95,7 +95,7 @@
       border: 1px solid var(--border-color);
       border-radius: 18px;
       display: grid;
-      grid-template-columns: 325px 1fr;
+      grid-template-columns: 340px 1fr;
       overflow: hidden;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
     }
@@ -110,42 +110,56 @@
     }
 
     .sidebar-top {
-      padding: 0.9rem 1rem;
+      padding: 0.85rem 0.9rem;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.35rem;
     }
 
     .back-btn {
       background: rgba(2, 132, 199, 0.14);
       color: var(--accent-primary);
       border: 1px solid var(--border-color);
-      padding: 0.4rem 0.7rem;
+      padding: 0.38rem 0.6rem;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .new-group-btn {
       background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
       color: #020617;
       border: none;
-      padding: 0.42rem 0.75rem;
+      padding: 0.4rem 0.62rem;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 800;
       cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .profile-edit-btn {
+      background: rgba(168, 85, 247, 0.16);
+      color: var(--accent-purple);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      padding: 0.38rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
     }
 
     .theme-switch {
       position: relative;
       display: inline-flex;
       align-items: center;
-      width: 68px;
-      height: 26px;
+      width: 64px;
+      height: 25px;
       padding: 3px;
       border-radius: 999px;
       background: var(--pill-bg);
@@ -156,24 +170,24 @@
     }
 
     .theme-switch-knob {
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       border-radius: 50%;
       background: var(--pill-knob);
       transition: transform 0.3s ease;
     }
 
-    [data-theme="light"] .theme-switch-knob { transform: translateX(42px); }
+    [data-theme="light"] .theme-switch-knob { transform: translateX(39px); }
 
     .theme-switch-label {
       position: absolute;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       font-weight: 800;
       pointer-events: none;
     }
-    .label-dark { right: 7px; color: var(--accent-primary); }
-    .label-light { left: 7px; opacity: 0; color: #b45309; }
+    .label-dark { right: 6px; color: var(--accent-primary); }
+    .label-light { left: 6px; opacity: 0; color: #b45309; }
     [data-theme="light"] .label-dark { opacity: 0; }
     [data-theme="light"] .label-light { opacity: 1; }
 
@@ -213,8 +227,8 @@
     .thread-item {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.68rem 0.8rem;
+      gap: 0.68rem;
+      padding: 0.64rem 0.75rem;
       border-radius: 12px;
       cursor: pointer;
       transition: background 0.2s ease;
@@ -223,6 +237,9 @@
 
     .thread-item:hover { background: var(--item-hover); }
     .thread-item.active { background: var(--item-active); }
+    .thread-item.pinned-item {
+      border-left: 2.5px solid var(--accent-gold);
+    }
 
     .avatar-wrap {
       position: relative;
@@ -241,6 +258,14 @@
       background: linear-gradient(135deg, rgba(0, 240, 255, 0.22), rgba(16, 185, 129, 0.22));
       border: 1.5px solid var(--accent-primary);
       color: var(--accent-primary);
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .online-dot {
@@ -295,13 +320,19 @@
     }
 
     .thread-name {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.32rem;
       flex-wrap: wrap;
+    }
+
+    .nickname-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent-blue);
     }
 
     .role-pill {
@@ -320,6 +351,30 @@
       overflow: hidden;
       text-overflow: ellipsis;
       margin-top: 2px;
+    }
+
+    .thread-preview.typing-active {
+      color: var(--accent-primary);
+      font-weight: 700;
+    }
+
+    .pin-btn {
+      background: transparent;
+      border: none;
+      font-size: 0.92rem;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      opacity: 0.35;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .thread-item:hover .pin-btn { opacity: 0.75; }
+    .pin-btn:hover { opacity: 1 !important; transform: scale(1.12); }
+    .pin-btn.is-pinned {
+      opacity: 1 !important;
+      filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.65));
     }
 
     .unread-badge {
@@ -448,6 +503,64 @@
     .msg-bubble.img-only {
       padding: 0.35rem;
       background: transparent !important;
+    }
+
+    /* 對方正在輸入動畫氣泡 */
+    .typing-indicator-row {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      align-self: flex-start;
+      padding: 0 1.2rem 0.55rem;
+      animation: typingFadeIn 0.2s ease-out;
+    }
+
+    .typing-sender-label {
+      font-size: 0.72rem;
+      color: var(--accent-primary);
+      font-weight: 700;
+      margin-bottom: 3px;
+      padding-left: 4px;
+    }
+
+    .typing-bubble {
+      background: var(--bubble-other);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      padding: 0.62rem 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      opacity: 0.45;
+      animation: typingBounce 1.3s infinite ease-in-out both;
+    }
+
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% {
+        transform: translateY(0) scale(0.85);
+        opacity: 0.4;
+      }
+      40% {
+        transform: translateY(-5px) scale(1.1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes typingFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .reply-quote-box {
@@ -730,6 +843,35 @@
     .member-check-item:hover { background: var(--item-hover); }
     .member-check-item input[type="checkbox"] { width: 17px; height: 17px; accent-color: #00f0ff; }
 
+    .avatar-preview-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+    }
+
+    .avatar-preview-large {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      border: 2.5px solid var(--accent-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      background: rgba(0, 240, 255, 0.15);
+      overflow: hidden;
+    }
+
+    .avatar-preview-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     #imgLightbox img {
       max-width: 94vw;
       max-height: 88dvh;
@@ -758,6 +900,32 @@
     <img id="lightboxImg" src="" alt="放大圖片">
   </div>
 
+  <!-- 個人資料（全站暱稱與頭像）設定彈窗 -->
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>👤 我的全站暱稱與頭像</h3>
+        <button class="modal-close" onclick="closeProfileModal()">✕</button>
+      </div>
+      <div class="avatar-preview-box">
+        <div class="avatar-preview-large" id="avatarPreviewLarge"></div>
+        <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="handleAvatarUpload(this)">
+        <div style="display:flex; gap:0.5rem; width:100%;">
+          <button class="send-btn" style="flex:1; border-radius:10px; font-size:0.84rem;" onclick="document.getElementById('avatarFileInput').click()">📁 更換頭像照片</button>
+          <button class="danger-btn" style="font-size:0.82rem;" onclick="resetMyAvatar()">恢復預設</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border-color); margin:0.9rem 0; padding-top:0.9rem;">
+        <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.4rem;">我的全站顯示暱稱（留空則僅顯示座號與本名）：</div>
+        <div style="display:flex; gap:0.5rem;">
+          <input type="text" id="globalNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：阿霏、數學小老師">
+          <button class="send-btn" style="border-radius:10px; padding:0 1.1rem;" onclick="saveGlobalNickname()">儲存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 建立自訂群組彈窗 -->
   <div class="modal-backdrop" id="createRoomModal">
     <div class="modal-card">
@@ -776,7 +944,7 @@
   <div class="modal-backdrop" id="roomInfoModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>⚙️ 小群組資訊與暱稱設定</h3>
+        <h3>⚙️ 小群組資訊與群內暱稱</h3>
         <button class="modal-close" onclick="closeRoomInfoModal()">✕</button>
       </div>
       <div id="roomInfoBody"></div>
@@ -787,7 +955,8 @@
     <div class="ig-sidebar">
       <div class="sidebar-top">
         <button class="back-btn" id="backPortalBtn" onclick="goBackPortal()">← 返回</button>
-        <button class="new-group-btn" id="openCreateRoomBtn" onclick="openCreateRoomModal()">＋ 建立群組</button>
+        <button class="new-group-btn" id="openCreateRoomBtn" onclick="openCreateRoomModal()">＋ 建群</button>
+        <button class="profile-edit-btn" id="openProfileBtn" onclick="openProfileModal()">👤 個人</button>
         <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
           <span class="theme-switch-label label-light">LIGHT</span>
           <div class="theme-switch-knob"></div>
@@ -796,7 +965,7 @@
       </div>
 
       <div class="search-box">
-        <input type="text" id="contactSearchInput" placeholder="🔍 搜尋群組、座號或姓名..." oninput="renderThreadList()">
+        <input type="text" id="contactSearchInput" placeholder="🔍 搜尋群組、座號、姓名或暱稱..." oninput="renderThreadList()">
       </div>
 
       <div class="thread-list" id="threadList">
@@ -822,6 +991,16 @@
         <div style="text-align:center; color:var(--text-muted); margin-top:2rem;">載入訊息中...</div>
       </div>
 
+      <!-- 對方正在輸入動畫 -->
+      <div class="typing-indicator-row" id="typingIndicatorRow">
+        <div class="typing-sender-label" id="typingSenderLabel">對方正在輸入...</div>
+        <div class="typing-bubble">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>
+
       <!-- 回覆特定訊息預覽條 -->
       <div class="reply-preview-bar" id="replyPreviewBar">
         <div class="reply-preview-info">
@@ -839,7 +1018,7 @@
           <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
         </div>
 
-        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（電腦可直接貼上圖片）..." autocomplete="off" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
+        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（電腦可直接貼上圖片）..." autocomplete="off" oninput="handleTypingInput()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
         <button type="button" class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
       </div>
     </div>
@@ -866,6 +1045,7 @@
     let contacts = [];
     let allStudents = [];
     let userMap = {};
+    let pinnedContactIds = [];
     let onlineUserIds = new Set();
     let customRooms = [];
     let roomMembersMap = {};
@@ -875,6 +1055,11 @@
     let activeChannel = { type: 'group', targetUser: null, pairUsers: null, roomId: null };
     let replyingTo = null;
     let isSending = false;
+
+    let realtimeChannel = null;
+    let lastTypingSentAt = 0;
+    let stopTypingTimer = null;
+    const activeTypers = new Map();
 
     function isMobileDevice() {
       return window.matchMedia('(max-width: 768px) and (pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -892,6 +1077,33 @@
       document.getElementById('igShell').classList.remove('mobile-chat-open');
     }
 
+    function renderUserAvatarContent(u) {
+      if (!u) return '?';
+      if (u.avatar_url) {
+        return `<img src="${escapeHtml(u.avatar_url)}" alt="頭像">`;
+      }
+      return u.role === 'admin' ? '師' : `${u.seat_number ?? '#'}`;
+    }
+
+    // 格式化成員名稱（含全站暱稱）
+    function formatUserFullLabel(u) {
+      if (!u) return '未知成員';
+      const base = u.role === 'admin' ? `${u.name}（導師）` : `${u.seat_number ?? '-'}號 ${u.name}`;
+      if (u.nickname && u.nickname.trim()) {
+        return `${base}（${u.nickname.trim()}）`;
+      }
+      return base;
+    }
+
+    function formatUserShort(u) {
+      if (!u) return '未知成員';
+      const base = u.role === 'admin' ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`;
+      if (u.nickname && u.nickname.trim()) {
+        return `${base}[${u.nickname.trim()}]`;
+      }
+      return base;
+    }
+
     function handleInputKeydown(e) {
       if (e.isComposing || e.keyCode === 229) return;
       if (e.key === 'Enter') {
@@ -901,6 +1113,96 @@
         cancelReply();
       }
     }
+
+    function handleTypingInput() {
+      if (isDevAuditor || !realtimeChannel || !me) return;
+      const input = document.getElementById('messageInput');
+      const hasText = input && input.value.trim().length > 0;
+
+      if (!hasText) {
+        broadcastTypingState(false);
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastTypingSentAt > 1200) {
+        lastTypingSentAt = now;
+        broadcastTypingState(true);
+      }
+
+      clearTimeout(stopTypingTimer);
+      stopTypingTimer = setTimeout(() => {
+        broadcastTypingState(false);
+      }, 2400);
+    }
+
+    function broadcastTypingState(isTyping) {
+      if (isDevAuditor || !realtimeChannel || !me) return;
+      if (!isTyping) {
+        lastTypingSentAt = 0;
+        clearTimeout(stopTypingTimer);
+      }
+
+      realtimeChannel.send({
+        type: 'broadcast',
+        event: 'typing',
+        payload: {
+          sender_id: me.id,
+          sender_label: formatUserFullLabel(me),
+          is_typing: isTyping,
+          channel_type: activeChannel.type,
+          receiver_id: activeChannel.type === 'dm' && activeChannel.targetUser ? activeChannel.targetUser.id : null,
+          room_id: activeChannel.type === 'room' ? activeChannel.roomId : null
+        }
+      });
+    }
+
+    function updateTypingIndicatorUI() {
+      const row = document.getElementById('typingIndicatorRow');
+      const labelEl = document.getElementById('typingSenderLabel');
+      if (!row || !labelEl) return;
+
+      const now = Date.now();
+      for (const [uid, info] of activeTypers.entries()) {
+        if (info.expiresAt <= now) activeTypers.delete(uid);
+      }
+
+      const relevantTypers = [];
+      for (const [uid, info] of activeTypers.entries()) {
+        if (uid === me.id) continue;
+        if (activeChannel.type === 'dm' && activeChannel.targetUser) {
+          if (info.channel_type === 'dm' && uid === activeChannel.targetUser.id && info.receiver_id === me.id) {
+            relevantTypers.push(info.sender_label);
+          }
+        } else if (activeChannel.type === 'group') {
+          if (info.channel_type === 'group') relevantTypers.push(info.sender_label);
+        } else if (activeChannel.type === 'student_group') {
+          if (info.channel_type === 'student_group') relevantTypers.push(info.sender_label);
+        } else if (activeChannel.type === 'room' && activeChannel.roomId) {
+          if (info.channel_type === 'room' && info.room_id === activeChannel.roomId) {
+            relevantTypers.push(info.sender_label);
+          }
+        }
+      }
+
+      if (relevantTypers.length === 0) {
+        row.style.display = 'none';
+      } else {
+        labelEl.innerText = relevantTypers.length === 1
+          ? `${relevantTypers[0]} 正在輸入...`
+          : `${relevantTypers.slice(0, 2).join('、')} 等 ${relevantTypers.length} 人正在輸入...`;
+        row.style.display = 'flex';
+        const area = document.getElementById('messagesArea');
+        area.scrollTop = area.scrollHeight;
+      }
+    }
+
+    setInterval(() => {
+      if (activeTypers.size > 0) {
+        updateTypingIndicatorUI();
+        renderThreadList();
+      }
+    }, 1000);
 
     function openLightbox(url) {
       document.getElementById('lightboxImg').src = url;
@@ -912,9 +1214,10 @@
       const msg = allMessages.find(m => m.id === msgId);
       if (!msg) return;
 
-      let senderLabel = msg.sender_role === 'admin'
-        ? `${msg.sender_name}(導師)`
-        : `${msg.sender_seat ?? '-'}號 ${msg.sender_name}`;
+      const senderObj = userMap[msg.sender_id];
+      let senderLabel = senderObj
+        ? formatUserFullLabel(senderObj)
+        : (msg.sender_role === 'admin' ? `${msg.sender_name}(導師)` : `${msg.sender_seat ?? '-'}號 ${msg.sender_name}`);
       if (activeChannel.type === 'room') {
         senderLabel = getRoomDisplayName(activeChannel.roomId, msg.sender_id);
       }
@@ -948,6 +1251,161 @@
       setTimeout(() => targetEl.classList.remove('highlight-flash'), 1200);
     }
 
+    // 置頂 / 取消置頂聯絡人（最多 3 人）
+    async function togglePinContact(event, targetUserId) {
+      event.stopPropagation();
+      if (isDevAuditor || !me) return;
+
+      const idx = pinnedContactIds.indexOf(targetUserId);
+      let nextPinned = [...pinnedContactIds];
+
+      if (idx !== -1) {
+        nextPinned.splice(idx, 1);
+      } else {
+        if (nextPinned.length >= 3) {
+          alert('最多只能置頂 3 位聯絡人！請先取消其中一位的置頂。');
+          return;
+        }
+        nextPinned.push(targetUserId);
+      }
+
+      pinnedContactIds = nextPinned;
+      renderThreadList();
+
+      const { error } = await supabaseClient
+        .from('profiles')
+        .update({ pinned_contacts: pinnedContactIds })
+        .eq('id', me.id);
+
+      if (error) {
+        alert('更新置頂設定失敗：' + error.message);
+      }
+    }
+
+    // 個人資料（全站暱稱與頭像）設定彈窗
+    function openProfileModal() {
+      if (isDevAuditor || !me) return;
+      document.getElementById('avatarPreviewLarge').innerHTML = renderUserAvatarContent(me);
+      document.getElementById('globalNicknameInput').value = me.nickname || '';
+      document.getElementById('profileModal').style.display = 'flex';
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    async function saveGlobalNickname() {
+      if (!me || isDevAuditor) return;
+      const nick = document.getElementById('globalNicknameInput').value.trim();
+
+      const { error } = await supabaseClient
+        .from('profiles')
+        .update({ nickname: nick || null })
+        .eq('id', me.id);
+
+      if (error) {
+        alert('儲存暱稱失敗：' + error.message);
+        return;
+      }
+
+      me.nickname = nick || null;
+      if (userMap[me.id]) userMap[me.id].nickname = me.nickname;
+      renderThreadList();
+      renderActiveMessages();
+      alert(nick ? `已將您的全站暱稱更新為「${nick}」！` : '已清除暱稱，恢復顯示本名！');
+    }
+
+    async function cropAvatarSquareBlob(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const img = new Image();
+          img.onload = () => {
+            const size = 256;
+            const minSide = Math.min(img.width, img.height);
+            const sx = (img.width - minSide) / 2;
+            const sy = (img.height - minSide) / 2;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+            canvas.toBlob(blob => {
+              if (blob) resolve(blob);
+              else reject(new Error('頭像裁切失敗'));
+            }, 'image/jpeg', 0.85);
+          };
+          img.onerror = reject;
+          img.src = ev.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function handleAvatarUpload(input) {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file || !me || isDevAuditor) return;
+
+      try {
+        const squareBlob = await cropAvatarSquareBlob(file);
+        const filePath = `avatars/${me.id}_${Date.now()}.jpg`;
+
+        const { error: upErr } = await supabaseClient.storage
+          .from('chat-images')
+          .upload(filePath, squareBlob, { contentType: 'image/jpeg', upsert: true });
+
+        if (upErr) {
+          alert('上傳頭像失敗：' + upErr.message);
+          return;
+        }
+
+        const { data: pubData } = supabaseClient.storage
+          .from('chat-images')
+          .getPublicUrl(filePath);
+
+        const newUrl = pubData.publicUrl;
+        const { error: dbErr } = await supabaseClient
+          .from('profiles')
+          .update({ avatar_url: newUrl })
+          .eq('id', me.id);
+
+        if (dbErr) {
+          alert('更新頭像資料失敗：' + dbErr.message);
+          return;
+        }
+
+        me.avatar_url = newUrl;
+        if (userMap[me.id]) userMap[me.id].avatar_url = newUrl;
+        document.getElementById('avatarPreviewLarge').innerHTML = renderUserAvatarContent(me);
+        renderThreadList();
+        alert('頭像已更新！');
+      } catch (err) {
+        alert('處理頭像時發生錯誤：' + err.message);
+      }
+    }
+
+    async function resetMyAvatar() {
+      if (!me || isDevAuditor) return;
+      const { error } = await supabaseClient
+        .from('profiles')
+        .update({ avatar_url: null })
+        .eq('id', me.id);
+
+      if (error) {
+        alert('恢復預設頭像失敗：' + error.message);
+        return;
+      }
+
+      me.avatar_url = null;
+      if (userMap[me.id]) userMap[me.id].avatar_url = null;
+      document.getElementById('avatarPreviewLarge').innerHTML = renderUserAvatarContent(me);
+      renderThreadList();
+      alert('已恢復預設座號頭像！');
+    }
+
     async function init() {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
@@ -957,7 +1415,7 @@
 
       const { data: myProfile } = await supabaseClient
         .from('profiles')
-        .select('id, seat_number, name, role, email')
+        .select('id, seat_number, name, role, email, avatar_url, nickname, pinned_contacts')
         .eq('id', session.user.id)
         .single();
 
@@ -968,10 +1426,12 @@
       }
 
       me = myProfile;
+      pinnedContactIds = Array.isArray(me.pinned_contacts) ? me.pinned_contacts.slice(0, 3) : [];
       isDevAuditor = me.role === 'developer' || (me.email || '').toLowerCase() === '202020@cysh.khc.edu.tw';
 
       if (isDevAuditor) {
         document.getElementById('openCreateRoomBtn').style.display = 'none';
+        document.getElementById('openProfileBtn').style.display = 'none';
         document.getElementById('chatInputBar').innerHTML =
           '<div class="readonly-banner">👁️ 系統管理員隱形唯讀模式（可檢視所有群組與私聊紀錄，無法發言或創群）</div>';
       } else if (!isMobileDevice()) {
@@ -981,7 +1441,7 @@
 
       const { data: users } = await supabaseClient
         .from('profiles')
-        .select('id, seat_number, name, role, email')
+        .select('id, seat_number, name, role, email, avatar_url, nickname')
         .in('role', ['student', 'admin'])
         .order('seat_number', { ascending: true });
 
@@ -1087,19 +1547,54 @@
     }
 
     function subscribeRealtime() {
-      const channel = supabaseClient.channel('nexus-direct-realtime', {
+      realtimeChannel = supabaseClient.channel('nexus-direct-realtime', {
         config: { presence: { key: me.id } }
       });
 
-      channel
+      realtimeChannel
         .on('presence', { event: 'sync' }, () => {
-          const state = channel.presenceState();
+          const state = realtimeChannel.presenceState();
           onlineUserIds = new Set(Object.keys(state));
           updateHeaderOnlineStatus();
           renderThreadList();
         })
+        .on('broadcast', { event: 'typing' }, ({ payload }) => {
+          if (!payload || payload.sender_id === me.id) return;
+          if (payload.is_typing) {
+            activeTypers.set(payload.sender_id, {
+              ...payload,
+              expiresAt: Date.now() + 3000
+            });
+          } else {
+            activeTypers.delete(payload.sender_id);
+          }
+          updateTypingIndicatorUI();
+          renderThreadList();
+        })
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, payload => {
+          const updatedUser = payload.new;
+          if (!updatedUser) return;
+          if (userMap[updatedUser.id]) {
+            userMap[updatedUser.id].avatar_url = updatedUser.avatar_url;
+            userMap[updatedUser.id].nickname = updatedUser.nickname;
+          }
+          const c = contacts.find(item => item.id === updatedUser.id);
+          if (c) {
+            c.avatar_url = updatedUser.avatar_url;
+            c.nickname = updatedUser.nickname;
+          }
+          if (activeChannel.type === 'dm' && activeChannel.targetUser && activeChannel.targetUser.id === updatedUser.id) {
+            document.getElementById('activeAvatar').innerHTML = renderUserAvatarContent(updatedUser);
+            document.getElementById('activeChatTitle').innerText = formatUserFullLabel(updatedUser);
+          }
+          renderThreadList();
+          renderActiveMessages();
+        })
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
           const newMsg = payload.new;
+          activeTypers.delete(newMsg.sender_id);
+          updateTypingIndicatorUI();
+
           if (!allMessages.some(m => m.id === newMsg.id)) {
             allMessages.push(newMsg);
           }
@@ -1162,7 +1657,7 @@
         })
         .subscribe(async status => {
           if (status === 'SUBSCRIBED' && !isDevAuditor) {
-            await channel.track({ online_at: new Date().toISOString() });
+            await realtimeChannel.track({ online_at: new Date().toISOString() });
           }
         });
     }
@@ -1186,7 +1681,7 @@
       const listEl = document.getElementById('memberChecklist');
       listEl.innerHTML = contacts.map(c => {
         const isTeacher = c.role === 'admin';
-        const label = isTeacher ? `👑 ${c.name}（導師）` : `${c.seat_number ?? '-'}號 ${c.name}`;
+        const label = isTeacher ? `👑 ${formatUserFullLabel(c)}` : formatUserFullLabel(c);
         return `
           <label class="member-check-item">
             <div style="display:flex; align-items:center; gap:0.6rem;">
@@ -1251,7 +1746,7 @@
       const mems = roomMembersMap[roomId] || [];
       const mem = mems.find(m => m.user_id === uid);
       const u = userMap[uid];
-      const baseName = u ? (u.role === 'admin' ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`) : '未知成員';
+      const baseName = formatUserShort(u);
       if (mem && mem.nickname && mem.nickname.trim()) {
         return `${mem.nickname.trim()}（${baseName}）`;
       }
@@ -1277,9 +1772,9 @@
       if (!isDevAuditor && myMem) {
         html += `
           <div style="margin-bottom:1rem;">
-            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.35rem;">我在本群的專屬暱稱（留空則顯示本名）：</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.35rem;">我在本群的群內暱稱（留空則顯示全站名稱）：</div>
             <div style="display:flex; gap:0.5rem;">
-              <input type="text" id="myRoomNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：數學小老師" value="${escapeHtml(myMem.nickname || '')}">
+              <input type="text" id="myRoomNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：小組長" value="${escapeHtml(myMem.nickname || '')}">
               <button class="send-btn" style="border-radius:10px; padding:0 1rem;" onclick="updateMyRoomNickname(${room.id})">套用</button>
             </div>
           </div>
@@ -1457,6 +1952,7 @@
     }
 
     async function selectGroupChannel(openMobile = true) {
+      broadcastTypingState(false);
       cancelReply();
       activeChannel = { type: 'group', targetUser: null, pairUsers: null, roomId: null };
       document.getElementById('roomSettingsBtn').style.display = 'none';
@@ -1470,12 +1966,14 @@
         : `共 ${memberTotal} 位成員（全班同學與導師）`;
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
       await markGroupAsRead();
+      updateTypingIndicatorUI();
       renderThreadList();
       renderActiveMessages();
     }
 
     async function selectStudentGroupChannel(openMobile = true) {
       if (me.role !== 'student' && !isDevAuditor) return;
+      broadcastTypingState(false);
       cancelReply();
       activeChannel = { type: 'student_group', targetUser: null, pairUsers: null, roomId: null };
       document.getElementById('roomSettingsBtn').style.display = 'none';
@@ -1488,6 +1986,7 @@
         : `全班同學 ${allStudents.length} 人專屬空間（導師無法加入與查看）`;
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
       await markStudentGroupAsRead();
+      updateTypingIndicatorUI();
       renderThreadList();
       renderActiveMessages();
     }
@@ -1502,6 +2001,7 @@
       const room = customRooms.find(r => r.id === roomId);
       if (!room) return;
 
+      broadcastTypingState(false);
       cancelReply();
       activeChannel = { type: 'room', targetUser: null, pairUsers: null, roomId: room.id };
       document.getElementById('roomSettingsBtn').style.display = 'inline-block';
@@ -1513,6 +2013,7 @@
 
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
       await markRoomAsRead(room.id);
+      updateTypingIndicatorUI();
       renderThreadList();
       renderActiveMessages();
     }
@@ -1522,20 +2023,20 @@
       const target = contacts.find(c => c.id === userId);
       if (!target) return;
 
+      broadcastTypingState(false);
       cancelReply();
       activeChannel = { type: 'dm', targetUser: target, pairUsers: null, roomId: null };
       document.getElementById('roomSettingsBtn').style.display = 'none';
       const isTeacher = target.role === 'admin';
 
       document.getElementById('activeAvatar').className = `avatar ${isTeacher ? 'teacher-av' : ''}`;
-      document.getElementById('activeAvatar').innerText = isTeacher ? '師' : `${target.seat_number ?? '#'}`;
-      document.getElementById('activeChatTitle').innerText = isTeacher
-        ? `${target.name}（導師）`
-        : `${target.seat_number ?? '-'}號 ${target.name}`;
+      document.getElementById('activeAvatar').innerHTML = renderUserAvatarContent(target);
+      document.getElementById('activeChatTitle').innerText = formatUserFullLabel(target);
       updateHeaderOnlineStatus();
 
       document.getElementById('igShell').classList.add('mobile-chat-open');
       await markDmAsRead(target.id);
+      updateTypingIndicatorUI();
       renderThreadList();
       renderActiveMessages();
     }
@@ -1557,24 +2058,70 @@
       document.getElementById('activeChatSubtitle').innerText = '系統管理員隱形唯讀稽核（無法發送訊息）';
 
       document.getElementById('igShell').classList.add('mobile-chat-open');
+      updateTypingIndicatorUI();
       renderThreadList();
       renderActiveMessages();
     }
 
-    function formatUserShort(u) {
-      if (!u) return '未知成員';
-      return u.role === 'admin' ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`;
+    // 渲染單一聯絡人列（共用給置頂區、近期對話區、所有聯絡人區）
+    function buildContactItemHtml(c, isPinned, now) {
+      const isTeacher = c.role === 'admin';
+      const isOnline = onlineUserIds.has(c.id);
+      const typerInfo = activeTypers.get(c.id);
+      const isTypingToMe = typerInfo && typerInfo.expiresAt > now && typerInfo.channel_type === 'dm' && typerInfo.receiver_id === me.id;
+
+      const dmMsgs = allMessages.filter(m =>
+        m.channel_type === 'dm' &&
+        ((m.sender_id === me.id && m.receiver_id === c.id) || (m.sender_id === c.id && m.receiver_id === me.id))
+      );
+      const lastDm = dmMsgs[dmMsgs.length - 1];
+      const unreadCount = dmMsgs.filter(m => m.sender_id === c.id && m.receiver_id === me.id && !m.is_read).length;
+      const preview = isTypingToMe
+        ? '✍️ 正在輸入...'
+        : (lastDm
+            ? (lastDm.sender_id === me.id
+                ? `你：${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`
+                : `${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`)
+            : (isOnline ? '🟢 在線上・點擊開始私聊' : '點擊開始私聊...'));
+
+      const isActive = activeChannel.type === 'dm' && activeChannel.targetUser && activeChannel.targetUser.id === c.id;
+      const nickHtml = (c.nickname && c.nickname.trim())
+        ? `<span class="nickname-tag">(${escapeHtml(c.nickname.trim())})</span>`
+        : '';
+
+      return `
+        <div class="thread-item ${isActive ? 'active' : ''} ${isPinned ? 'pinned-item' : ''}" onclick="selectDmChannel('${c.id}')">
+          <div class="avatar-wrap">
+            <div class="avatar ${isTeacher ? 'teacher-av' : ''}">${renderUserAvatarContent(c)}</div>
+            ${isOnline ? '<span class="online-dot"></span>' : ''}
+          </div>
+          <div class="thread-info">
+            <div class="thread-name">
+              <span>${isTeacher ? escapeHtml(c.name) : `${c.seat_number ?? '-'}號 ${escapeHtml(c.name)}`}</span>
+              ${nickHtml}
+              ${isTeacher ? '<span class="role-pill">導師</span>' : ''}
+            </div>
+            <div class="thread-preview ${isTypingToMe ? 'typing-active' : ''}">${escapeHtml(preview)}</div>
+          </div>
+          ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
+          <button type="button" class="pin-btn ${isPinned ? 'is-pinned' : ''}" title="${isPinned ? '取消置頂' : '置頂此聯絡人（最多3人）'}" onclick="togglePinContact(event, '${c.id}')">📌</button>
+        </div>
+      `;
     }
 
     function renderThreadList() {
       const keyword = document.getElementById('contactSearchInput').value.trim().toLowerCase();
       const listEl = document.getElementById('threadList');
+      const now = Date.now();
 
+      const groupTypers = Array.from(activeTypers.values()).filter(t => t.expiresAt > now && t.channel_type === 'group');
       const groupMsgs = allMessages.filter(m => m.channel_type === 'group');
       const lastGroup = groupMsgs[groupMsgs.length - 1];
-      const groupPreview = lastGroup
-        ? `${lastGroup.sender_name}：${lastGroup.image_url ? '[圖片] ' : ''}${lastGroup.content}`
-        : '點擊進入班級大群...';
+      const groupPreview = groupTypers.length > 0
+        ? `✍️ ${groupTypers[0].sender_label} 正在輸入...`
+        : (lastGroup
+            ? `${lastGroup.sender_name}：${lastGroup.image_url ? '[圖片] ' : ''}${lastGroup.content}`
+            : '點擊進入班級大群...');
       const groupUnread = (!isDevAuditor && activeChannel.type !== 'group')
         ? groupMsgs.filter(m => m.sender_id !== me.id && m.created_at > groupLastReadAt).length
         : 0;
@@ -1587,18 +2134,21 @@
           </div>
           <div class="thread-info">
             <div class="thread-name">國二-2 班級大群</div>
-            <div class="thread-preview">${escapeHtml(groupPreview)}</div>
+            <div class="thread-preview ${groupTypers.length > 0 ? 'typing-active' : ''}">${escapeHtml(groupPreview)}</div>
           </div>
           ${groupUnread > 0 ? `<span class="unread-badge">${groupUnread}</span>` : ''}
         </div>
       `;
 
       if (me.role === 'student' || isDevAuditor) {
+        const stuTypers = Array.from(activeTypers.values()).filter(t => t.expiresAt > now && t.channel_type === 'student_group');
         const stuMsgs = allMessages.filter(m => m.channel_type === 'student_group');
         const lastStu = stuMsgs[stuMsgs.length - 1];
-        const stuPreview = lastStu
-          ? `${lastStu.sender_name}：${lastStu.image_url ? '[圖片] ' : ''}${lastStu.content}`
-          : '全班同學專屬空間（無導師）...';
+        const stuPreview = stuTypers.length > 0
+          ? `✍️ ${stuTypers[0].sender_label} 正在輸入...`
+          : (lastStu
+              ? `${lastStu.sender_name}：${lastStu.image_url ? '[圖片] ' : ''}${lastStu.content}`
+              : '全班同學專屬空間（無導師）...');
         const stuUnread = (!isDevAuditor && activeChannel.type !== 'student_group')
           ? stuMsgs.filter(m => m.sender_id !== me.id && m.created_at > studentGroupLastReadAt).length
           : 0;
@@ -1610,7 +2160,7 @@
             </div>
             <div class="thread-info">
               <div class="thread-name">學生專屬群 <span class="role-pill">無導師</span></div>
-              <div class="thread-preview">${escapeHtml(stuPreview)}</div>
+              <div class="thread-preview ${stuTypers.length > 0 ? 'typing-active' : ''}">${escapeHtml(stuPreview)}</div>
             </div>
             ${stuUnread > 0 ? `<span class="unread-badge">${stuUnread}</span>` : ''}
           </div>
@@ -1624,16 +2174,19 @@
 
       html += `<div class="section-label">${isDevAuditor ? '全班自建小群監看（唯讀）' : '我的自建群組'}</div>`;
       if (filteredRooms.length === 0) {
-        html += `<div style="padding:0.55rem 0.85rem; color:var(--text-muted); font-size:0.8rem;">${isDevAuditor ? '目前尚無學生自建群組' : '尚未加入自建群組，可按上方「＋ 建立群組」'}</div>`;
+        html += `<div style="padding:0.55rem 0.85rem; color:var(--text-muted); font-size:0.8rem;">${isDevAuditor ? '目前尚無學生自建群組' : '尚未加入自建群組，可按上方「＋ 建群」'}</div>`;
       } else {
         html += filteredRooms.map(r => {
+          const rTypers = Array.from(activeTypers.values()).filter(t => t.expiresAt > now && t.channel_type === 'room' && t.room_id === r.id);
           const rMsgs = allMessages.filter(m => m.channel_type === 'room' && m.room_id === r.id);
           const lastR = rMsgs[rMsgs.length - 1];
           const mems = roomMembersMap[r.id] || [];
           const myMem = mems.find(m => m.user_id === me.id);
-          const preview = lastR
-            ? `${lastR.sender_name}：${lastR.image_url ? '[圖片] ' : ''}${lastR.content}`
-            : `群組成員 ${mems.length} 人・點擊開始聊天`;
+          const preview = rTypers.length > 0
+            ? `✍️ ${rTypers[0].sender_label} 正在輸入...`
+            : (lastR
+                ? `${lastR.sender_name}：${lastR.image_url ? '[圖片] ' : ''}${lastR.content}`
+                : `群組成員 ${mems.length} 人・點擊開始聊天`);
           const isActive = activeChannel.type === 'room' && activeChannel.roomId === r.id;
           const lastRead = (myMem && myMem.last_read_at) ? myMem.last_read_at : '1970-01-01T00:00:00Z';
           const roomUnread = (!isDevAuditor && !isActive)
@@ -1647,7 +2200,7 @@
               </div>
               <div class="thread-info">
                 <div class="thread-name">${escapeHtml(r.name)} <span style="font-size:0.72rem; color:var(--text-muted);">(${mems.length})</span></div>
-                <div class="thread-preview">${escapeHtml(preview)}</div>
+                <div class="thread-preview ${rTypers.length > 0 ? 'typing-active' : ''}">${escapeHtml(preview)}</div>
               </div>
               ${roomUnread > 0 ? `<span class="unread-badge">${roomUnread}</span>` : ''}
             </div>
@@ -1701,47 +2254,54 @@
         return;
       }
 
-      html += `<div class="section-label">私聊聯絡人（1 對 1）</div>`;
+      // 過濾聯絡人（支援座號、本名、全站暱稱搜尋）
       const filtered = contacts.filter(c => {
         if (!keyword) return true;
         const seatStr = String(c.seat_number ?? '');
-        return seatStr.includes(keyword) || (c.name || '').toLowerCase().includes(keyword);
+        const nickStr = (c.nickname || '').toLowerCase();
+        return seatStr.includes(keyword) || (c.name || '').toLowerCase().includes(keyword) || nickStr.includes(keyword);
       });
 
-      html += filtered.map(c => {
-        const isTeacher = c.role === 'admin';
-        const isOnline = onlineUserIds.has(c.id);
+      // 1. 置頂聯絡人（最多 3 人，保持置頂順序）
+      const pinnedList = pinnedContactIds
+        .map(pid => filtered.find(c => c.id === pid))
+        .filter(Boolean);
+
+      if (pinnedList.length > 0) {
+        html += `<div class="section-label">📌 置頂聯絡人（${pinnedList.length}/3）</div>`;
+        html += pinnedList.map(c => buildContactItemHtml(c, true, now)).join('');
+      }
+
+      // 2. 非置頂聯絡人：分成「近期傳訊息者（置頂下方，按最新訊息時間排序）」與「其他聯絡人（按座號排序）」
+      const unpinnedList = filtered.filter(c => !pinnedContactIds.includes(c.id));
+
+      const recentWithTs = [];
+      const untouchedList = [];
+
+      unpinnedList.forEach(c => {
         const dmMsgs = allMessages.filter(m =>
           m.channel_type === 'dm' &&
           ((m.sender_id === me.id && m.receiver_id === c.id) || (m.sender_id === c.id && m.receiver_id === me.id))
         );
-        const lastDm = dmMsgs[dmMsgs.length - 1];
-        const unreadCount = dmMsgs.filter(m => m.sender_id === c.id && m.receiver_id === me.id && !m.is_read).length;
-        const preview = lastDm
-          ? (lastDm.sender_id === me.id
-              ? `你：${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`
-              : `${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`)
-          : (isOnline ? '🟢 在線上・點擊開始私聊' : '點擊開始私聊...');
+        if (dmMsgs.length > 0) {
+          const lastTs = new Date(dmMsgs[dmMsgs.length - 1].created_at).getTime();
+          recentWithTs.push({ contact: c, lastTs });
+        } else {
+          untouchedList.push(c);
+        }
+      });
 
-        const isActive = activeChannel.type === 'dm' && activeChannel.targetUser && activeChannel.targetUser.id === c.id;
+      recentWithTs.sort((a, b) => b.lastTs - a.lastTs);
 
-        return `
-          <div class="thread-item ${isActive ? 'active' : ''}" onclick="selectDmChannel('${c.id}')">
-            <div class="avatar-wrap">
-              <div class="avatar ${isTeacher ? 'teacher-av' : ''}">${isTeacher ? '師' : (c.seat_number ?? '#')}</div>
-              ${isOnline ? '<span class="online-dot"></span>' : ''}
-            </div>
-            <div class="thread-info">
-              <div class="thread-name">
-                ${isTeacher ? c.name : `${c.seat_number ?? '-'}號 ${c.name}`}
-                ${isTeacher ? '<span class="role-pill">導師</span>' : ''}
-              </div>
-              <div class="thread-preview">${escapeHtml(preview)}</div>
-            </div>
-            ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
-          </div>
-        `;
-      }).join('');
+      if (recentWithTs.length > 0) {
+        html += `<div class="section-label">💬 近期對話</div>`;
+        html += recentWithTs.map(item => buildContactItemHtml(item.contact, false, now)).join('');
+      }
+
+      if (untouchedList.length > 0) {
+        html += `<div class="section-label">所有聯絡人（1 對 1）</div>`;
+        html += untouchedList.map(c => buildContactItemHtml(c, false, now)).join('');
+      }
 
       listEl.innerHTML = html;
     }
@@ -1783,9 +2343,10 @@
         const dt = new Date(m.created_at);
         const timeStr = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
 
-        let senderLabel = m.sender_role === 'admin'
-          ? `👑 ${m.sender_name}（導師）`
-          : `${m.sender_seat ?? '-'}號 ${m.sender_name}`;
+        const senderObj = userMap[m.sender_id];
+        let senderLabel = senderObj
+          ? (senderObj.role === 'admin' ? `👑 ${formatUserFullLabel(senderObj)}` : formatUserFullLabel(senderObj))
+          : (m.sender_role === 'admin' ? `👑 ${m.sender_name}（導師）` : `${m.sender_seat ?? '-'}號 ${m.sender_name}`);
         if (activeChannel.type === 'room') {
           senderLabel = getRoomDisplayName(activeChannel.roomId, m.sender_id);
         }
@@ -1973,6 +2534,7 @@
       if (!content) return;
 
       isSending = true;
+      broadcastTypingState(false);
 
       const currentReply = replyingTo;
       cancelReply();
