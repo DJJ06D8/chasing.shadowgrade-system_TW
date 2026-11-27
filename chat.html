@@ -1,108 +1,112 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS DIRECT // 國二-2 班級即時訊息</title>
+  <title>NEXUS DIRECT // 班級即時訊息</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-base: #060913;
-      --bg-glow-1: rgba(0, 240, 255, 0.1);
-      --bg-glow-2: rgba(16, 185, 129, 0.1);
-      --grid-line: rgba(0, 240, 255, 0.03);
-      --panel-bg: rgba(15, 23, 42, 0.88);
-      --sidebar-bg: rgba(2, 6, 23, 0.65);
-      --border-color: rgba(0, 240, 255, 0.22);
-      --accent-primary: #00f0ff;
-      --accent-blue: #38bdf8;
-      --accent-emerald: #10b981;
-      --accent-gold: #fbbf24;
-      --accent-purple: #a855f7;
-      --text-main: #f8fafc;
-      --text-sub: #cbd5e1;
-      --text-muted: #94a3b8;
-      --item-hover: rgba(0, 240, 255, 0.07);
-      --item-active: rgba(0, 240, 255, 0.15);
-      --bubble-me: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
-      --bubble-me-text: #ffffff;
-      --bubble-other: rgba(30, 41, 59, 0.92);
-      --bubble-other-text: #f1f5f9;
-      --input-bg: rgba(2, 6, 23, 0.85);
-      --modal-bg: #0f172a;
-      --pill-bg: rgba(2, 6, 23, 0.85);
-      --pill-border: rgba(0, 240, 255, 0.4);
-      --pill-knob: linear-gradient(135deg, #00f0ff, #38bdf8);
-    }
-
-    [data-theme="light"] {
-      --bg-base: #eef3f9;
-      --bg-glow-1: rgba(2, 132, 199, 0.11);
-      --bg-glow-2: rgba(16, 185, 129, 0.09);
-      --grid-line: rgba(14, 116, 144, 0.065);
-      --panel-bg: rgba(255, 255, 255, 0.94);
-      --sidebar-bg: rgba(248, 250, 252, 0.95);
-      --border-color: rgba(2, 132, 199, 0.22);
-      --accent-primary: #0284c7;
-      --accent-blue: #0369a1;
+      --bg-main: #F4F5F7;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F9FAFB;
+      --bg-input: #FFFFFF;
+      --text-primary: #111827;
+      --text-secondary: #4B5563;
+      --text-muted: #9CA3AF;
+      --border-light: #E5E7EB;
+      --border-focus: #111827;
+      --accent-primary: #111827;
+      --accent-btn-text: #FFFFFF;
+      --accent-blue: #2563EB;
+      --accent-blue-soft: #EFF6FF;
       --accent-emerald: #059669;
-      --accent-gold: #d97706;
-      --accent-purple: #7e22ce;
-      --text-main: #0f172a;
-      --text-sub: #334155;
-      --text-muted: #64748b;
-      --item-hover: rgba(2, 132, 199, 0.07);
-      --item-active: rgba(2, 132, 199, 0.14);
-      --bubble-me: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
-      --bubble-me-text: #ffffff;
-      --bubble-other: #e2e8f0;
-      --bubble-other-text: #0f172a;
-      --input-bg: #f1f5f9;
-      --modal-bg: #ffffff;
-      --pill-bg: #e2e8f0;
-      --pill-border: rgba(2, 132, 199, 0.38);
-      --pill-knob: linear-gradient(135deg, #f59e0b, #fbbf24);
+      --accent-emerald-soft: #ECFDF5;
+      --accent-amber: #D97706;
+      --accent-amber-soft: #FFFBEB;
+      --accent-purple: #7C3AED;
+      --accent-purple-soft: #F5F3FF;
+      --accent-rose: #DC2626;
+      --accent-rose-soft: #FEF2F2;
+      --item-hover: #F3F4F6;
+      --item-active: #EFF6FF;
+      --bubble-me: #2563EB;
+      --bubble-me-text: #FFFFFF;
+      --bubble-other: #F3F4F6;
+      --bubble-other-text: #111827;
+      --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 4px 10px -6px rgba(0, 0, 0, 0.03);
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
     }
 
-    * { box-sizing: border-box; }
+    [data-theme="dark"] {
+      --bg-main: #0B0F19;
+      --bg-card: #111827;
+      --bg-subtle: #1F2937;
+      --bg-input: #1F2937;
+      --text-primary: #F9FAFB;
+      --text-secondary: #D1D5DB;
+      --text-muted: #6B7280;
+      --border-light: #374151;
+      --border-focus: #60A5FA;
+      --accent-primary: #F9FAFB;
+      --accent-btn-text: #0B0F19;
+      --accent-blue: #60A5FA;
+      --accent-blue-soft: rgba(59, 130, 246, 0.16);
+      --accent-emerald: #34D399;
+      --accent-emerald-soft: rgba(16, 185, 129, 0.16);
+      --accent-amber: #FBBF24;
+      --accent-amber-soft: rgba(245, 158, 11, 0.16);
+      --accent-purple: #A78BFA;
+      --accent-purple-soft: rgba(139, 92, 246, 0.16);
+      --accent-rose: #F87171;
+      --accent-rose-soft: rgba(239, 68, 68, 0.16);
+      --item-hover: rgba(255, 255, 255, 0.05);
+      --item-active: rgba(59, 130, 246, 0.16);
+      --bubble-me: #2563EB;
+      --bubble-me-text: #FFFFFF;
+      --bubble-other: #1F2937;
+      --bubble-other-text: #F9FAFB;
+      --shadow-card: 0 20px 45px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
 
     body {
       margin: 0;
       height: 100dvh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-base);
-      background-image:
-        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 40%),
-        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 45%),
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
-      color: var(--text-main);
+      background-color: var(--bg-main);
+      color: var(--text-primary);
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 1rem;
       overflow: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .ig-shell {
       width: 100%;
-      max-width: 1080px;
+      max-width: 1120px;
       height: 100%;
-      max-height: 820px;
-      background: var(--panel-bg);
-      backdrop-filter: blur(18px);
-      border: 1px solid var(--border-color);
-      border-radius: 18px;
+      max-height: 840px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
       display: grid;
-      grid-template-columns: 340px 1fr;
+      grid-template-columns: 345px 1fr;
       overflow: hidden;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+      box-shadow: var(--shadow-card);
     }
 
     .ig-sidebar {
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--border-color);
+      background: var(--bg-subtle);
+      border-right: 1px solid var(--border-light);
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -111,7 +115,8 @@
 
     .sidebar-top {
       padding: 0.85rem 0.9rem;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-card);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -119,92 +124,77 @@
     }
 
     .back-btn {
-      background: rgba(2, 132, 199, 0.14);
-      color: var(--accent-primary);
-      border: 1px solid var(--border-color);
-      padding: 0.38rem 0.6rem;
-      border-radius: 8px;
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+      padding: 0.42rem 0.65rem;
+      border-radius: var(--radius-md);
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
     }
+    .back-btn:hover { border-color: var(--text-primary); }
 
     .new-group-btn {
-      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
-      color: #020617;
+      background: var(--accent-blue);
+      color: #FFFFFF;
       border: none;
-      padding: 0.4rem 0.62rem;
-      border-radius: 8px;
+      padding: 0.44rem 0.68rem;
+      border-radius: var(--radius-md);
       font-size: 0.78rem;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
     }
 
     .profile-edit-btn {
-      background: rgba(168, 85, 247, 0.16);
+      background: var(--accent-purple-soft);
       color: var(--accent-purple);
-      border: 1px solid rgba(168, 85, 247, 0.4);
-      padding: 0.38rem 0.6rem;
-      border-radius: 8px;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      padding: 0.42rem 0.65rem;
+      border-radius: var(--radius-md);
       font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
     }
 
-    .theme-switch {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: 64px;
-      height: 25px;
-      padding: 3px;
-      border-radius: 999px;
-      background: var(--pill-bg);
-      border: 1px solid var(--pill-border);
+    .theme-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
       flex-shrink: 0;
     }
 
-    .theme-switch-knob {
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      background: var(--pill-knob);
-      transition: transform 0.3s ease;
-    }
-
-    [data-theme="light"] .theme-switch-knob { transform: translateX(39px); }
-
-    .theme-switch-label {
-      position: absolute;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.58rem;
-      font-weight: 800;
-      pointer-events: none;
-    }
-    .label-dark { right: 6px; color: var(--accent-primary); }
-    .label-light { left: 6px; opacity: 0; color: #b45309; }
-    [data-theme="light"] .label-dark { opacity: 0; }
-    [data-theme="light"] .label-light { opacity: 1; }
-
     .search-box {
-      padding: 0.7rem 1rem;
-      border-bottom: 1px solid var(--border-color);
+      padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-card);
     }
 
     .search-box input {
       width: 100%;
-      padding: 0.52rem 0.85rem;
+      padding: 0.55rem 0.9rem;
       border-radius: 999px;
-      border: 1px solid var(--border-color);
-      background: var(--input-bg);
-      color: var(--text-main);
-      font-size: 0.86rem;
+      border: 1.5px solid var(--border-light);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 500;
       outline: none;
+    }
+    .search-box input:focus {
+      border-color: var(--accent-blue);
+      background: var(--bg-card);
     }
 
     .thread-list {
@@ -215,10 +205,10 @@
 
     .section-label {
       font-size: 0.72rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--text-muted);
-      padding: 0.55rem 0.75rem 0.35rem;
-      letter-spacing: 0.08em;
+      padding: 0.6rem 0.75rem 0.35rem;
+      letter-spacing: 0.04em;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -228,17 +218,20 @@
       display: flex;
       align-items: center;
       gap: 0.68rem;
-      padding: 0.64rem 0.75rem;
-      border-radius: 12px;
+      padding: 0.65rem 0.75rem;
+      border-radius: var(--radius-lg);
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: background 0.18s ease;
       position: relative;
+      margin-bottom: 2px;
     }
 
     .thread-item:hover { background: var(--item-hover); }
-    .thread-item.active { background: var(--item-active); }
+    .thread-item.active {
+      background: var(--item-active);
+    }
     .thread-item.pinned-item {
-      border-left: 2.5px solid var(--accent-gold);
+      border-left: 3px solid var(--accent-amber);
     }
 
     .avatar-wrap {
@@ -254,10 +247,10 @@
       justify-content: center;
       align-items: center;
       font-weight: 800;
-      font-size: 0.9rem;
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.22), rgba(16, 185, 129, 0.22));
-      border: 1.5px solid var(--accent-primary);
-      color: var(--accent-primary);
+      font-size: 0.88rem;
+      background: var(--accent-blue-soft);
+      border: 1.5px solid rgba(37, 99, 235, 0.35);
+      color: var(--accent-blue);
       overflow: hidden;
     }
 
@@ -275,27 +268,26 @@
       width: 11px;
       height: 11px;
       border-radius: 50%;
-      background: #10b981;
-      border: 2px solid var(--panel-bg);
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.85);
+      background: #10B981;
+      border: 2px solid var(--bg-card);
     }
 
     .avatar.group-av {
-      background: linear-gradient(135deg, #f59e0b, #ec4899);
+      background: linear-gradient(135deg, #F59E0B, #EA580C);
       border: none;
       color: #ffffff;
       font-size: 1.1rem;
     }
 
     .avatar.student-group-av {
-      background: linear-gradient(135deg, #10b981, #0ea5e9);
+      background: linear-gradient(135deg, #10B981, #0284C7);
       border: none;
       color: #ffffff;
       font-size: 1.1rem;
     }
 
     .avatar.custom-room-av {
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      background: linear-gradient(135deg, #3B82F6, #7C3AED);
       border: none;
       color: #ffffff;
       font-size: 1rem;
@@ -304,14 +296,14 @@
     .avatar.teacher-av {
       border-color: var(--accent-emerald);
       color: var(--accent-emerald);
-      background: rgba(16, 185, 129, 0.18);
+      background: var(--accent-emerald-soft);
     }
 
     .avatar.audit-av {
       border-color: var(--accent-purple);
       color: var(--accent-purple);
-      background: rgba(168, 85, 247, 0.18);
-      font-size: 0.8rem;
+      background: var(--accent-purple-soft);
+      font-size: 0.78rem;
     }
 
     .thread-info {
@@ -322,7 +314,7 @@
     .thread-name {
       font-size: 0.88rem;
       font-weight: 700;
-      color: var(--text-main);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 0.32rem;
@@ -337,11 +329,11 @@
 
     .role-pill {
       font-size: 0.68rem;
+      font-weight: 700;
       padding: 1px 6px;
       border-radius: 5px;
-      background: rgba(16, 185, 129, 0.18);
+      background: var(--accent-emerald-soft);
       color: var(--accent-emerald);
-      border: 1px solid rgba(16, 185, 129, 0.4);
     }
 
     .thread-preview {
@@ -354,7 +346,7 @@
     }
 
     .thread-preview.typing-active {
-      color: var(--accent-primary);
+      color: var(--accent-blue);
       font-weight: 700;
     }
 
@@ -372,13 +364,10 @@
 
     .thread-item:hover .pin-btn { opacity: 0.75; }
     .pin-btn:hover { opacity: 1 !important; transform: scale(1.12); }
-    .pin-btn.is-pinned {
-      opacity: 1 !important;
-      filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.65));
-    }
+    .pin-btn.is-pinned { opacity: 1 !important; }
 
     .unread-badge {
-      background: #f43f5e;
+      background: var(--accent-rose);
       color: #ffffff;
       font-size: 0.72rem;
       font-weight: 800;
@@ -397,32 +386,35 @@
       flex-direction: column;
       height: 100%;
       overflow: hidden;
+      background: var(--bg-card);
     }
 
     .chat-header {
       padding: 0.9rem 1.25rem;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      background: var(--bg-card);
     }
 
     .mobile-back-btn {
       display: none;
       background: transparent;
       border: none;
-      color: var(--accent-primary);
-      font-size: 1.3rem;
+      color: var(--accent-blue);
+      font-size: 1.4rem;
       font-weight: 800;
       cursor: pointer;
       padding: 0 0.3rem;
     }
 
     .chat-title-wrap { flex: 1; min-width: 0; }
-    .chat-title { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+    .chat-title { font-size: 1.02rem; font-weight: 800; color: var(--text-primary); }
     .chat-subtitle {
       font-size: 0.76rem;
       color: var(--text-muted);
+      font-weight: 600;
       margin-top: 2px;
       white-space: nowrap;
       overflow: hidden;
@@ -431,11 +423,11 @@
 
     .room-settings-btn {
       display: none;
-      background: rgba(59, 130, 246, 0.16);
-      border: 1px solid rgba(59, 130, 246, 0.45);
+      background: var(--accent-blue-soft);
+      border: 1px solid rgba(37, 99, 235, 0.3);
       color: var(--accent-blue);
-      padding: 0.42rem 0.75rem;
-      border-radius: 8px;
+      padding: 0.42rem 0.78rem;
+      border-radius: var(--radius-md);
       font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
@@ -445,7 +437,7 @@
     .messages-area {
       flex: 1;
       overflow-y: auto;
-      padding: 1.2rem;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 0.65rem;
@@ -461,7 +453,7 @@
     }
 
     .msg-row.highlight-flash {
-      background: rgba(0, 240, 255, 0.22);
+      background: var(--accent-blue-soft);
     }
 
     .msg-row.mine {
@@ -477,6 +469,7 @@
     .msg-sender {
       font-size: 0.74rem;
       color: var(--text-muted);
+      font-weight: 600;
       margin-bottom: 3px;
       padding: 0 4px;
     }
@@ -492,10 +485,10 @@
     }
 
     .msg-bubble {
-      padding: 0.55rem 0.9rem;
+      padding: 0.6rem 0.95rem;
       border-radius: 18px;
       font-size: 0.92rem;
-      line-height: 1.4;
+      line-height: 1.45;
       word-break: break-word;
       width: fit-content;
     }
@@ -511,13 +504,13 @@
       flex-direction: column;
       align-items: flex-start;
       align-self: flex-start;
-      padding: 0 1.2rem 0.55rem;
+      padding: 0 1.25rem 0.55rem;
       animation: typingFadeIn 0.2s ease-out;
     }
 
     .typing-sender-label {
       font-size: 0.72rem;
-      color: var(--accent-primary);
+      color: var(--accent-blue);
       font-weight: 700;
       margin-bottom: 3px;
       padding-left: 4px;
@@ -525,7 +518,7 @@
 
     .typing-bubble {
       background: var(--bubble-other);
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-light);
       border-radius: 18px;
       border-bottom-left-radius: 4px;
       padding: 0.62rem 0.9rem;
@@ -538,7 +531,7 @@
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--accent-primary);
+      background: var(--accent-blue);
       opacity: 0.45;
       animation: typingBounce 1.3s infinite ease-in-out both;
     }
@@ -548,14 +541,8 @@
     .typing-dot:nth-child(3) { animation-delay: 0s; }
 
     @keyframes typingBounce {
-      0%, 80%, 100% {
-        transform: translateY(0) scale(0.85);
-        opacity: 0.4;
-      }
-      40% {
-        transform: translateY(-5px) scale(1.1);
-        opacity: 1;
-      }
+      0%, 80%, 100% { transform: translateY(0) scale(0.85); opacity: 0.4; }
+      40% { transform: translateY(-5px) scale(1.1); opacity: 1; }
     }
 
     @keyframes typingFadeIn {
@@ -568,14 +555,15 @@
       padding: 0.38rem 0.6rem;
       margin-bottom: 0.42rem;
       border-radius: 10px;
-      border-left: 3px solid #00f0ff;
-      background: rgba(0, 0, 0, 0.22);
+      border-left: 3px solid currentColor;
+      background: rgba(0, 0, 0, 0.14);
       cursor: pointer;
       opacity: 0.92;
     }
 
-    [data-theme="light"] .msg-row.others .reply-quote-box {
-      background: rgba(15, 23, 42, 0.08);
+    .msg-row.others .reply-quote-box {
+      background: rgba(0, 0, 0, 0.06);
+      border-left-color: var(--accent-blue);
     }
 
     .reply-quote-sender {
@@ -597,7 +585,7 @@
       border-radius: 14px;
       display: block;
       cursor: zoom-in;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-light);
     }
 
     .msg-row.mine .msg-bubble {
@@ -643,14 +631,14 @@
       cursor: pointer;
       padding: 2px 4px;
     }
-    .action-icon-btn:hover { color: var(--accent-primary); }
-    .action-icon-btn.del-btn:hover { color: #f43f5e; }
+    .action-icon-btn:hover { color: var(--accent-blue); }
+    .action-icon-btn.del-btn:hover { color: var(--accent-rose); }
 
     .reply-preview-bar {
       display: none;
       padding: 0.55rem 1.1rem;
-      border-top: 1px solid var(--border-color);
-      background: rgba(0, 240, 255, 0.08);
+      border-top: 1px solid var(--border-light);
+      background: var(--accent-blue-soft);
       justify-content: space-between;
       align-items: center;
       gap: 0.6rem;
@@ -660,18 +648,18 @@
     .reply-preview-info {
       min-width: 0;
       flex: 1;
-      border-left: 3px solid var(--accent-primary);
+      border-left: 3px solid var(--accent-blue);
       padding-left: 0.6rem;
     }
 
     .reply-preview-title {
       font-weight: 800;
-      color: var(--accent-primary);
+      color: var(--accent-blue);
       font-size: 0.78rem;
     }
 
     .reply-preview-snippet {
-      color: var(--text-sub);
+      color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -679,7 +667,8 @@
 
     .chat-input-bar {
       padding: 0.85rem 1.1rem;
-      border-top: 1px solid var(--border-color);
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-card);
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -704,9 +693,9 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      border: 1px solid var(--border-color);
-      background: var(--input-bg);
-      color: var(--accent-primary);
+      border: 1.5px solid var(--border-light);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
       font-size: 1.05rem;
       display: flex;
       justify-content: center;
@@ -714,37 +703,42 @@
       cursor: pointer;
       padding: 0;
     }
+    .media-btn:hover { border-color: var(--accent-blue); }
 
     .chat-input-bar input[type="text"] {
       flex: 1;
       min-width: 0;
-      padding: 0.72rem 1rem;
+      padding: 0.7rem 1.05rem;
       border-radius: 999px;
-      border: 1px solid var(--border-color);
-      background: var(--input-bg);
-      color: var(--text-main);
-      font-size: 16px;
+      border: 1.5px solid var(--border-light);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-size: 15px;
       outline: none;
+    }
+    .chat-input-bar input[type="text"]:focus {
+      border-color: var(--accent-blue);
+      background: var(--bg-card);
     }
 
     .send-btn {
-      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
-      color: #020617;
+      background: var(--accent-blue);
+      color: #FFFFFF;
       border: none;
-      padding: 0.7rem 1.15rem;
+      padding: 0.7rem 1.2rem;
       border-radius: 999px;
-      font-weight: 800;
+      font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
       flex-shrink: 0;
     }
 
     .danger-btn {
-      background: rgba(244, 63, 94, 0.16);
-      border: 1px solid rgba(244, 63, 94, 0.45);
-      color: #fb7185;
+      background: var(--accent-rose-soft);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      color: var(--accent-rose);
       padding: 0.55rem 0.9rem;
-      border-radius: 10px;
+      border-radius: var(--radius-md);
       font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
@@ -755,8 +749,8 @@
       text-align: center;
       padding: 0.72rem 1rem;
       border-radius: 999px;
-      background: rgba(168, 85, 247, 0.14);
-      border: 1px solid rgba(168, 85, 247, 0.4);
+      background: var(--accent-purple-soft);
+      border: 1px solid rgba(124, 58, 237, 0.35);
       color: var(--accent-purple);
       font-size: 0.84rem;
       font-weight: 700;
@@ -767,8 +761,8 @@
       position: fixed;
       inset: 0;
       z-index: 999;
-      background: rgba(2, 6, 23, 0.82);
-      backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
       justify-content: center;
       align-items: center;
       padding: 1rem;
@@ -779,11 +773,11 @@
       max-width: 450px;
       max-height: 88dvh;
       overflow-y: auto;
-      background: var(--modal-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 1.4rem;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55);
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
     }
 
     .modal-header {
@@ -796,7 +790,8 @@
     .modal-header h3 {
       margin: 0;
       font-size: 1.05rem;
-      color: var(--accent-primary);
+      font-weight: 800;
+      color: var(--text-primary);
     }
 
     .modal-close {
@@ -810,23 +805,24 @@
     .modal-input {
       width: 100%;
       padding: 0.65rem 0.9rem;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      background: var(--input-bg);
-      color: var(--text-main);
-      font-size: 0.95rem;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border-light);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 0.92rem;
       margin-bottom: 0.85rem;
       outline: none;
     }
+    .modal-input:focus { border-color: var(--accent-blue); }
 
     .member-checklist {
       max-height: 220px;
       overflow-y: auto;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
       padding: 0.45rem;
       margin-bottom: 1rem;
-      background: var(--input-bg);
+      background: var(--bg-subtle);
     }
 
     .member-check-item {
@@ -841,7 +837,7 @@
     }
 
     .member-check-item:hover { background: var(--item-hover); }
-    .member-check-item input[type="checkbox"] { width: 17px; height: 17px; accent-color: #00f0ff; }
+    .member-check-item input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--accent-blue); }
 
     .avatar-preview-box {
       display: flex;
@@ -855,14 +851,14 @@
       width: 92px;
       height: 92px;
       border-radius: 50%;
-      border: 2.5px solid var(--accent-primary);
+      border: 2.5px solid var(--accent-blue);
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 1.7rem;
       font-weight: 800;
-      color: var(--accent-primary);
-      background: rgba(0, 240, 255, 0.15);
+      color: var(--accent-blue);
+      background: var(--accent-blue-soft);
       overflow: hidden;
     }
 
@@ -916,8 +912,8 @@
         </div>
       </div>
 
-      <div style="border-top:1px solid var(--border-color); margin:0.9rem 0; padding-top:0.9rem;">
-        <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.4rem;">我的全站顯示暱稱（留空則僅顯示座號與本名）：</div>
+      <div style="border-top:1px solid var(--border-light); margin:0.9rem 0; padding-top:0.9rem;">
+        <div style="font-size:0.82rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.4rem;">我的全站顯示暱稱（留空則僅顯示座號與本名）：</div>
         <div style="display:flex; gap:0.5rem;">
           <input type="text" id="globalNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：小老師、值日生">
           <button class="send-btn" style="border-radius:10px; padding:0 1.1rem;" onclick="saveGlobalNickname()">儲存</button>
@@ -934,7 +930,7 @@
         <button class="modal-close" onclick="closeCreateRoomModal()">✕</button>
       </div>
       <input type="text" id="newRoomNameInput" class="modal-input" maxlength="30" placeholder="輸入群組名稱（例如：數學讀書會、園遊會小組）">
-      <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.45rem;">勾選要邀請加入的同學或導師（系統會自動包含您自己）：</div>
+      <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.45rem;">勾選要邀請加入的同學或導師（系統會自動包含您自己）：</div>
       <div class="member-checklist" id="memberChecklist"></div>
       <button class="send-btn" style="width:100%; border-radius:10px;" onclick="createCustomRoom()">確認建立群組</button>
     </div>
@@ -957,11 +953,7 @@
         <button class="back-btn" id="backPortalBtn" onclick="goBackPortal()">← 返回</button>
         <button class="new-group-btn" id="openCreateRoomBtn" onclick="openCreateRoomModal()">＋ 建群</button>
         <button class="profile-edit-btn" id="openProfileBtn" onclick="openProfileModal()">👤 個人</button>
-        <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
-          <span class="theme-switch-label label-light">LIGHT</span>
-          <div class="theme-switch-knob"></div>
-          <span class="theme-switch-label label-dark">DARK</span>
-        </div>
+        <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
       </div>
 
       <div class="search-box">
@@ -981,7 +973,7 @@
           <span class="online-dot" id="activeOnlineDot" style="display:none;"></span>
         </div>
         <div class="chat-title-wrap">
-          <div class="chat-title" id="activeChatTitle">國二-2 班級大群</div>
+          <div class="chat-title" id="activeChatTitle">班級大群</div>
           <div class="chat-subtitle" id="activeChatSubtitle">全班同學與導師共同討論區</div>
         </div>
         <button class="room-settings-btn" id="roomSettingsBtn" onclick="openRoomInfoModal()">⚙️ 群組資訊</button>
@@ -1026,21 +1018,24 @@
 
   <script>
     function applyTheme(theme) {
-      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
-      else document.documentElement.removeAttribute('data-theme');
+      document.documentElement.setAttribute('data-theme', theme);
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
     function toggleTheme() {
       const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       localStorage.setItem('nexus-theme', next);
       applyTheme(next);
     }
-    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+    applyTheme(localStorage.getItem('nexus-theme') || 'light');
 
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let me = null;
+    let currentClassName = '國二-2';
+    let classUserIdSet = new Set();
     let isDevAuditor = false;
     let contacts = [];
     let allStudents = [];
@@ -1066,7 +1061,7 @@
     }
 
     function goBackPortal() {
-      if (me && (me.role === 'admin' || isDevAuditor)) {
+      if (me && (me.role === 'admin' || me.role === 'teacher' || isDevAuditor)) {
         window.location.href = 'admin.html';
       } else {
         window.location.href = 'student.html';
@@ -1082,12 +1077,12 @@
       if (u.avatar_url) {
         return `<img src="${escapeHtml(u.avatar_url)}" alt="頭像">`;
       }
-      return u.role === 'admin' ? '師' : `${u.seat_number ?? '#'}`;
+      return (u.role === 'admin' || u.role === 'teacher') ? '師' : `${u.seat_number ?? '#'}`;
     }
 
     function formatUserFullLabel(u) {
       if (!u) return '未知成員';
-      const base = u.role === 'admin' ? `${u.name}（導師）` : `${u.seat_number ?? '-'}號 ${u.name}`;
+      const base = (u.role === 'admin' || u.role === 'teacher') ? `${u.name}（導師）` : `${u.seat_number ?? '-'}號 ${u.name}`;
       if (u.nickname && u.nickname.trim()) {
         return `${base}（${u.nickname.trim()}）`;
       }
@@ -1096,7 +1091,7 @@
 
     function formatUserShort(u) {
       if (!u) return '未知成員';
-      const base = u.role === 'admin' ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`;
+      const base = (u.role === 'admin' || u.role === 'teacher') ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`;
       if (u.nickname && u.nickname.trim()) {
         return `${base}[${u.nickname.trim()}]`;
       }
@@ -1148,6 +1143,7 @@
         payload: {
           sender_id: me.id,
           sender_label: formatUserFullLabel(me),
+          class_name: currentClassName,
           is_typing: isTyping,
           channel_type: activeChannel.type,
           receiver_id: activeChannel.type === 'dm' && activeChannel.targetUser ? activeChannel.targetUser.id : null,
@@ -1169,6 +1165,7 @@
       const relevantTypers = [];
       for (const [uid, info] of activeTypers.entries()) {
         if (uid === me.id) continue;
+        if (!isDevAuditor && info.class_name && info.class_name !== currentClassName) continue;
         if (activeChannel.type === 'dm' && activeChannel.targetUser) {
           if (info.channel_type === 'dm' && uid === activeChannel.targetUser.id && info.receiver_id === me.id) {
             relevantTypers.push(info.sender_label);
@@ -1216,7 +1213,7 @@
       const senderObj = userMap[msg.sender_id];
       let senderLabel = senderObj
         ? formatUserFullLabel(senderObj)
-        : (msg.sender_role === 'admin' ? `${msg.sender_name}(導師)` : `${msg.sender_seat ?? '-'}號 ${msg.sender_name}`);
+        : ((msg.sender_role === 'admin' || msg.sender_role === 'teacher') ? `${msg.sender_name}(導師)` : `${msg.sender_seat ?? '-'}號 ${msg.sender_name}`);
       if (activeChannel.type === 'room') {
         senderLabel = getRoomDisplayName(activeChannel.roomId, msg.sender_id);
       }
@@ -1412,9 +1409,9 @@
 
       const { data: myProfile } = await supabaseClient
         .from('profiles')
-        .select('id, seat_number, name, role, email, avatar_url, nickname, pinned_contacts')
+        .select('*')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (!myProfile || myProfile.role === 'parent') {
         alert('此功能僅限班級成員使用！');
@@ -1423,6 +1420,8 @@
       }
 
       me = myProfile;
+      currentClassName = me.class_name || '國二-2';
+      document.title = `NEXUS DIRECT // ${currentClassName} 班級即時訊息`;
       pinnedContactIds = Array.isArray(me.pinned_contacts) ? me.pinned_contacts.slice(0, 3) : [];
       isDevAuditor = me.role === 'developer' || (me.email || '').toLowerCase() === '202020@cysh.khc.edu.tw';
 
@@ -1438,12 +1437,19 @@
 
       const { data: users } = await supabaseClient
         .from('profiles')
-        .select('id, seat_number, name, role, email, avatar_url, nickname')
-        .in('role', ['student', 'admin'])
+        .select('*')
+        .in('role', ['student', 'admin', 'teacher'])
         .order('seat_number', { ascending: true });
 
-      const visibleMembers = (users || []).filter(u => (u.email || '').toLowerCase() !== '202020@cysh.khc.edu.tw');
-      visibleMembers.forEach(u => { userMap[u.id] = u; });
+      const visibleMembers = (users || []).filter(u => {
+        if ((u.email || '').toLowerCase() === '202020@cysh.khc.edu.tw') return false;
+        if (!isDevAuditor && (u.class_name || '國二-2') !== currentClassName) return false;
+        return true;
+      });
+      visibleMembers.forEach(u => {
+        userMap[u.id] = u;
+        classUserIdSet.add(u.id);
+      });
 
       allStudents = visibleMembers.filter(u => u.role === 'student');
       contacts = visibleMembers.filter(u => u.id !== me.id);
@@ -1516,8 +1522,6 @@
         .select('*')
         .order('created_at', { ascending: false });
 
-      customRooms = rooms || [];
-
       const { data: members } = await supabaseClient
         .from('chat_room_members')
         .select('room_id, user_id, nickname, last_read_at');
@@ -1526,6 +1530,12 @@
       (members || []).forEach(m => {
         if (!roomMembersMap[m.room_id]) roomMembersMap[m.room_id] = [];
         roomMembersMap[m.room_id].push(m);
+      });
+
+      customRooms = (rooms || []).filter(r => {
+        if (isDevAuditor) return true;
+        const mems = roomMembersMap[r.id] || [];
+        return mems.some(m => m.user_id === me.id);
       });
     }
 
@@ -1537,7 +1547,11 @@
         .limit(1000);
 
       if (!error && data) {
-        allMessages = data;
+        allMessages = data.filter(m => {
+          if (isDevAuditor) return true;
+          if (m.channel_type === 'room') return true;
+          return classUserIdSet.has(m.sender_id);
+        });
         renderThreadList();
         renderActiveMessages();
       }
@@ -1551,12 +1565,13 @@
       realtimeChannel
         .on('presence', { event: 'sync' }, () => {
           const state = realtimeChannel.presenceState();
-          onlineUserIds = new Set(Object.keys(state));
+          onlineUserIds = new Set(Object.keys(state).filter(uid => isDevAuditor || classUserIdSet.has(uid)));
           updateHeaderOnlineStatus();
           renderThreadList();
         })
         .on('broadcast', { event: 'typing' }, ({ payload }) => {
           if (!payload || payload.sender_id === me.id) return;
+          if (!isDevAuditor && !classUserIdSet.has(payload.sender_id)) return;
           if (payload.is_typing) {
             activeTypers.set(payload.sender_id, {
               ...payload,
@@ -1589,6 +1604,7 @@
         })
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
           const newMsg = payload.new;
+          if (!isDevAuditor && newMsg.channel_type !== 'room' && !classUserIdSet.has(newMsg.sender_id)) return;
           activeTypers.delete(newMsg.sender_id);
           updateTypingIndicatorUI();
 
@@ -1677,7 +1693,7 @@
       document.getElementById('newRoomNameInput').value = '';
       const listEl = document.getElementById('memberChecklist');
       listEl.innerHTML = contacts.map(c => {
-        const isTeacher = c.role === 'admin';
+        const isTeacher = c.role === 'admin' || c.role === 'teacher';
         const label = isTeacher ? `👑 ${formatUserFullLabel(c)}` : formatUserFullLabel(c);
         return `
           <label class="member-check-item">
@@ -1761,15 +1777,15 @@
       const creatorLabel = formatUserShort(userMap[room.created_by]);
 
       let html = `
-        <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.85rem;">
-          建立者：<strong style="color:var(--text-main);">${escapeHtml(creatorLabel)}</strong>
+        <div style="font-size:0.82rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.85rem;">
+          建立者：<strong style="color:var(--text-primary);">${escapeHtml(creatorLabel)}</strong>
         </div>
       `;
 
       if (!isDevAuditor && myMem) {
         html += `
           <div style="margin-bottom:1rem;">
-            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.35rem;">我在本群的群內暱稱（留空則顯示全站名稱）：</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.35rem;">我在本群的群內暱稱（留空則顯示全站名稱）：</div>
             <div style="display:flex; gap:0.5rem;">
               <input type="text" id="myRoomNicknameInput" class="modal-input" style="margin-bottom:0;" maxlength="20" placeholder="例如：小組長" value="${escapeHtml(myMem.nickname || '')}">
               <button class="send-btn" style="border-radius:10px; padding:0 1rem;" onclick="updateMyRoomNickname(${room.id})">套用</button>
@@ -1781,7 +1797,7 @@
       if (isOwner) {
         html += `
           <div style="margin-bottom:1rem;">
-            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.35rem;">修改小群組名稱：</div>
+            <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.35rem;">修改小群組名稱：</div>
             <div style="display:flex; gap:0.5rem;">
               <input type="text" id="editRoomNameInput" class="modal-input" style="margin-bottom:0;" maxlength="30" value="${escapeHtml(room.name)}">
               <button class="send-btn" style="border-radius:10px; padding:0 1rem;" onclick="renameCustomRoom(${room.id})">儲存</button>
@@ -1790,7 +1806,7 @@
         `;
       }
 
-      html += `<div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.45rem;">目前成員（${currentMembers.length} 人）：</div>`;
+      html += `<div style="font-size:0.82rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.45rem;">目前成員（${currentMembers.length} 人）：</div>`;
       html += `<div class="member-checklist">`;
       html += currentMembers.map(m => {
         const uid = m.user_id;
@@ -1811,7 +1827,7 @@
         const nonMembers = contacts.filter(c => !currentIds.includes(c.id));
         if (nonMembers.length > 0) {
           html += `
-            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.45rem;">邀請新成員加入：</div>
+            <div style="font-size:0.82rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.45rem;">邀請新成員加入：</div>
             <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
               <select id="addMemberSelect" class="modal-input" style="margin-bottom:0;">
                 ${nonMembers.map(c => `<option value="${c.id}">${escapeHtml(formatUserShort(c))}</option>`).join('')}
@@ -1957,7 +1973,7 @@
       const memberTotal = isDevAuditor ? contacts.length : contacts.length + 1;
       document.getElementById('activeAvatar').className = 'avatar group-av';
       document.getElementById('activeAvatar').innerText = '📢';
-      document.getElementById('activeChatTitle').innerText = '國二-2 班級大群';
+      document.getElementById('activeChatTitle').innerText = `${currentClassName} 班級大群`;
       document.getElementById('activeChatSubtitle').innerText = isDevAuditor
         ? `共 ${memberTotal} 位成員（隱形稽核檢視中・大群不可退人）`
         : `共 ${memberTotal} 位成員（全班同學與導師）`;
@@ -1977,7 +1993,7 @@
       document.getElementById('activeOnlineDot').style.display = 'none';
       document.getElementById('activeAvatar').className = 'avatar student-group-av';
       document.getElementById('activeAvatar').innerText = '🎒';
-      document.getElementById('activeChatTitle').innerText = '國二-2 學生專屬群（無導師）';
+      document.getElementById('activeChatTitle').innerText = `${currentClassName} 學生專屬群（無導師）`;
       document.getElementById('activeChatSubtitle').innerText = isDevAuditor
         ? `全班學生 ${allStudents.length} 人（隱形稽核檢視中・導師不可見）`
         : `全班同學 ${allStudents.length} 人專屬空間（導師無法加入與查看）`;
@@ -2024,7 +2040,7 @@
       cancelReply();
       activeChannel = { type: 'dm', targetUser: target, pairUsers: null, roomId: null };
       document.getElementById('roomSettingsBtn').style.display = 'none';
-      const isTeacher = target.role === 'admin';
+      const isTeacher = target.role === 'admin' || target.role === 'teacher';
 
       document.getElementById('activeAvatar').className = `avatar ${isTeacher ? 'teacher-av' : ''}`;
       document.getElementById('activeAvatar').innerHTML = renderUserAvatarContent(target);
@@ -2061,7 +2077,7 @@
     }
 
     function buildContactItemHtml(c, isPinned, now) {
-      const isTeacher = c.role === 'admin';
+      const isTeacher = c.role === 'admin' || c.role === 'teacher';
       const isOnline = onlineUserIds.has(c.id);
       const typerInfo = activeTypers.get(c.id);
       const isTypingToMe = typerInfo && typerInfo.expiresAt > now && typerInfo.channel_type === 'dm' && typerInfo.receiver_id === me.id;
@@ -2123,13 +2139,13 @@
         : 0;
 
       let html = `
-        <div class="section-label">班級官方頻道（${onlineUserIds.size} 人在線）</div>
+        <div class="section-label">${escapeHtml(currentClassName)} 官方頻道（${onlineUserIds.size} 人在線）</div>
         <div class="thread-item ${activeChannel.type === 'group' ? 'active' : ''}" onclick="selectGroupChannel(true)">
           <div class="avatar-wrap">
             <div class="avatar group-av">📢</div>
           </div>
           <div class="thread-info">
-            <div class="thread-name">國二-2 班級大群</div>
+            <div class="thread-name">${escapeHtml(currentClassName)} 班級大群</div>
             <div class="thread-preview ${groupTypers.length > 0 ? 'typing-active' : ''}">${escapeHtml(groupPreview)}</div>
           </div>
           ${groupUnread > 0 ? `<span class="unread-badge">${groupUnread}</span>` : ''}
@@ -2168,7 +2184,7 @@
         return r.name.toLowerCase().includes(keyword);
       });
 
-      html += `<div class="section-label">${isDevAuditor ? '全班自建小群監看（唯讀）' : '我的自建群組'}</div>`;
+      html += `<div class="section-label">${isDevAuditor ? '全校自建小群監看（唯讀）' : '我的自建群組'}</div>`;
       if (filteredRooms.length === 0) {
         html += `<div style="padding:0.55rem 0.85rem; color:var(--text-muted); font-size:0.8rem;">${isDevAuditor ? '目前尚無學生自建群組' : '尚未加入自建群組，可按上方「＋ 建群」'}</div>`;
       } else {
@@ -2205,7 +2221,7 @@
       }
 
       if (isDevAuditor) {
-        html += `<div class="section-label">全班私聊紀錄監看（唯讀）</div>`;
+        html += `<div class="section-label">全校私聊紀錄監看（唯讀）</div>`;
         const pairMap = new Map();
 
         allMessages
@@ -2328,7 +2344,7 @@
         return;
       }
 
-      const canModDelete = me.role === 'admin' || isDevAuditor;
+      const canModDelete = me.role === 'admin' || me.role === 'teacher' || isDevAuditor;
       const roomMembers = activeChannel.type === 'room' ? (roomMembersMap[activeChannel.roomId] || []) : [];
 
       area.innerHTML = msgs.map(m => {
@@ -2338,8 +2354,8 @@
 
         const senderObj = userMap[m.sender_id];
         let senderLabel = senderObj
-          ? (senderObj.role === 'admin' ? `👑 ${formatUserFullLabel(senderObj)}` : formatUserFullLabel(senderObj))
-          : (m.sender_role === 'admin' ? `👑 ${m.sender_name}（導師）` : `${m.sender_seat ?? '-'}號 ${m.sender_name}`);
+          ? ((senderObj.role === 'admin' || senderObj.role === 'teacher') ? `👑 ${formatUserFullLabel(senderObj)}` : formatUserFullLabel(senderObj))
+          : ((m.sender_role === 'admin' || m.sender_role === 'teacher') ? `👑 ${m.sender_name}（導師）` : `${m.sender_seat ?? '-'}號 ${m.sender_name}`);
         if (activeChannel.type === 'room') {
           senderLabel = getRoomDisplayName(activeChannel.roomId, m.sender_id);
         }

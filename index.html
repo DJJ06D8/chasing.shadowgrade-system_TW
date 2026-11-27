@@ -1,608 +1,520 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE // 國二-2 智慧成績系統</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root {
-      --bg-base: #060913;
-      --bg-glow-1: rgba(0, 240, 255, 0.12);
-      --bg-glow-2: rgba(16, 185, 129, 0.12);
-      --grid-line: rgba(0, 240, 255, 0.035);
-      --card-bg: rgba(15, 23, 42, 0.85);
-      --card-border: rgba(0, 240, 255, 0.25);
-      --card-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
-      --accent-primary: #00f0ff;
-      --accent-blue: #38bdf8;
-      --accent-emerald: #10b981;
-      --accent-gold: #fbbf24;
-      --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
-      --text-main: #f8fafc;
-      --text-label: #cbd5e1;
-      --text-muted: #94a3b8;
-      --input-bg: rgba(2, 6, 23, 0.78);
-      --input-border: rgba(148, 163, 184, 0.35);
-      --input-text: #ffffff;
-      --btn-grad: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
-      --btn-text: #020617;
-      --pill-bg: rgba(2, 6, 23, 0.85);
-      --pill-border: rgba(0, 240, 255, 0.4);
-      --pill-knob: linear-gradient(135deg, #00f0ff, #38bdf8);
-      --pill-knob-shadow: 0 0 10px rgba(0, 240, 255, 0.75);
-      --ann-item-bg: rgba(2, 6, 23, 0.6);
-      --ann-item-border: rgba(148, 163, 184, 0.2);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXUS GRADE // 智慧成績與班級通訊系統</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #F4F5F7; --bg-card: #FFFFFF; --bg-subtle: #F9FAFB; --bg-input: #FFFFFF;
+            --text-primary: #111827; --text-secondary: #4B5563; --text-muted: #9CA3AF;
+            --border-light: #E5E7EB; --border-focus: #111827;
+            --accent-primary: #111827; --accent-primary-hover: #374151; --accent-btn-text: #FFFFFF;
+            --accent-blue: #2563EB; --accent-blue-soft: #EFF6FF;
+            --accent-emerald: #059669; --accent-emerald-soft: #ECFDF5;
+            --accent-amber: #D97706; --accent-amber-soft: #FFFBEB;
+            --accent-rose: #DC2626; --accent-rose-soft: #FEF2F2;
+            --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            --radius-xl: 20px; --radius-lg: 14px; --radius-md: 10px;
+            --splash-bg: #F4F5F7;
+        }
+        [data-theme="dark"] {
+            --bg-main: #0B0F19; --bg-card: #111827; --bg-subtle: #1F2937; --bg-input: #1F2937;
+            --text-primary: #F9FAFB; --text-secondary: #D1D5DB; --text-muted: #6B7280;
+            --border-light: #374151; --border-focus: #60A5FA;
+            --accent-primary: #F9FAFB; --accent-primary-hover: #E5E7EB; --accent-btn-text: #0B0F19;
+            --accent-blue: #60A5FA; --accent-blue-soft: rgba(59, 130, 246, 0.15);
+            --accent-emerald: #34D399; --accent-emerald-soft: rgba(16, 185, 129, 0.15);
+            --accent-amber: #FBBF24; --accent-amber-soft: rgba(245, 158, 11, 0.15);
+            --accent-rose: #F87171; --accent-rose-soft: rgba(239, 68, 68, 0.15);
+            --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+            --splash-bg: #0B0F19;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-primary); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
 
-    [data-theme="light"] {
-      --bg-base: #eef3f9;
-      --bg-glow-1: rgba(2, 132, 199, 0.12);
-      --bg-glow-2: rgba(16, 185, 129, 0.1);
-      --grid-line: rgba(14, 116, 144, 0.065);
-      --card-bg: rgba(255, 255, 255, 0.92);
-      --card-border: rgba(2, 132, 199, 0.25);
-      --card-shadow: 0 20px 50px rgba(15, 23, 42, 0.09);
-      --accent-primary: #0284c7;
-      --accent-blue: #0369a1;
-      --accent-emerald: #059669;
-      --accent-gold: #d97706;
-      --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
-      --text-main: #0f172a;
-      --text-label: #334155;
-      --text-muted: #475569;
-      --input-bg: #f8fafc;
-      --input-border: rgba(148, 163, 184, 0.45);
-      --input-text: #0f172a;
-      --btn-grad: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
-      --btn-text: #ffffff;
-      --pill-bg: #e2e8f0;
-      --pill-border: rgba(2, 132, 199, 0.38);
-      --pill-knob: linear-gradient(135deg, #f59e0b, #fbbf24);
-      --pill-knob-shadow: 0 0 10px rgba(245, 158, 11, 0.65);
-      --ann-item-bg: rgba(248, 250, 252, 0.95);
-      --ann-item-border: rgba(148, 163, 184, 0.3);
-    }
+        /* 動態背景網格與光暈 */
+        .bg-grid { position: fixed; inset: 0; background-image: radial-gradient(var(--border-light) 1px, transparent 1px); background-size: 28px 28px; opacity: 0.7; z-index: 0; pointer-events: none; }
+        .bg-glow { position: fixed; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%); top: -200px; right: -100px; z-index: 0; pointer-events: none; }
 
-    * { box-sizing: border-box; }
+        /* 開機進場過場動畫 */
+        #bootSplash {
+            position: fixed; inset: 0; background-color: var(--splash-bg); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.55s ease;
+        }
+        #bootSplash.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        .splash-logo {
+            width: 68px; height: 68px; background: var(--text-primary); color: var(--bg-main); border-radius: 18px;
+            display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.18); animation: pulseLogo 1.4s ease-in-out infinite;
+        }
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+        .splash-title { margin-top: 20px; font-size: 24px; font-weight: 900; letter-spacing: 2px; color: var(--text-primary); }
+        .splash-sub { margin-top: 6px; font-size: 12px; color: var(--text-muted); font-weight: 700; letter-spacing: 1px; }
+        .splash-bar-wrap { width: 200px; height: 4px; background: var(--border-light); border-radius: 99px; overflow: hidden; margin-top: 24px; }
+        .splash-bar { width: 0%; height: 100%; background: var(--accent-blue); border-radius: 99px; animation: loadProgress 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        @keyframes loadProgress { 0% { width: 0%; } 60% { width: 75%; } 100% { width: 100%; } }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-base);
-      background-image: 
-        radial-gradient(circle at 15% 20%, var(--bg-glow-1) 0%, transparent 45%),
-        radial-gradient(circle at 85% 80%, var(--bg-glow-2) 0%, transparent 45%),
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
-      color: var(--text-main);
-      padding: 1.25rem;
-      transition: background-color 0.35s ease, color 0.35s ease;
-      overflow-x: hidden;
-    }
+        /* 主容器雙欄佈局 */
+        .portal-wrapper {
+            position: relative; z-index: 10; width: 100%; max-width: 1020px;
+            display: grid; grid-template-columns: 1.15fr 0.95fr; gap: 28px; align-items: stretch;
+            opacity: 0; transform: translateY(12px); transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+        .portal-wrapper.card-ready { opacity: 1; transform: translateY(0); }
 
-    #bootSplash {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: var(--bg-base);
-      background-image:
-        radial-gradient(circle at 50% 45%, var(--bg-glow-1) 0%, transparent 55%),
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 100% 100%, 30px 30px, 30px 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.45s ease, visibility 0.45s ease;
-    }
+        .panel-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); transition: background-color 0.3s, border-color 0.3s; }
 
-    #bootSplash.fade-out {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+        /* 左側：班級與系統公告欄 */
+        .notice-board-panel { padding: 34px 36px; display: flex; flex-direction: column; max-height: 640px; }
+        .nb-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; border-bottom: 1px solid var(--border-light); margin-bottom: 18px; }
+        .nb-title-wrap { display: flex; align-items: center; gap: 10px; }
+        .nb-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--accent-blue-soft); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; }
+        .nb-title { font-size: 18px; font-weight: 900; letter-spacing: -0.3px; }
+        .nb-badge { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 99px; background: var(--bg-subtle); border: 1px solid var(--border-light); color: var(--text-secondary); }
 
-    .splash-core {
-      text-align: center;
-      padding: 1.5rem;
-    }
+        .nb-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; }
+        .nb-list::-webkit-scrollbar { width: 5px; }
+        .nb-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 99px; }
 
-    .splash-ring {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 1rem auto;
-      border-radius: 50%;
-      border: 2.5px solid rgba(0, 240, 255, 0.18);
-      border-top-color: var(--accent-primary);
-      border-right-color: var(--accent-emerald);
-      animation: spinRing 0.9s linear infinite;
-    }
+        .nb-item { background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px 18px; transition: 0.2s; }
+        .nb-item:hover { border-color: var(--accent-blue); }
+        .nb-item.pinned { border-left: 4px solid var(--accent-amber); background: var(--bg-card); }
+        .nb-item-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .nb-tag { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; }
+        .tag-sys { background: var(--accent-blue-soft); color: var(--accent-blue); }
+        .tag-pin { background: var(--accent-amber-soft); color: var(--accent-amber); }
+        .tag-upd { background: var(--accent-emerald-soft); color: var(--accent-emerald); }
+        .tag-imp { background: var(--accent-rose-soft); color: var(--accent-rose); }
+        .nb-date { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+        .nb-item-title { font-size: 15px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; line-height: 1.4; }
+        .nb-item-body { font-size: 13px; color: var(--text-secondary); line-height: 1.6; white-space: pre-line; word-break: break-word; }
 
-    .splash-tag {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.78rem;
-      letter-spacing: 0.2em;
-      color: var(--accent-primary);
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
+        .nb-footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); }
 
-    .splash-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: var(--title-grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1rem;
-    }
+        /* 右側：登入區塊 */
+        .login-panel { padding: 36px 38px; display: flex; flex-direction: column; justify-content: space-between; }
+        .brand-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+        .brand-logo-row { display: flex; align-items: center; gap: 12px; }
+        .brand-mark { width: 42px; height: 42px; background: var(--text-primary); color: var(--bg-main); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 19px; }
+        .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+        .brand-text p { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
 
-    .splash-bar-track {
-      width: 220px;
-      height: 4px;
-      background: rgba(148, 163, 184, 0.2);
-      border-radius: 999px;
-      margin: 0 auto;
-      overflow: hidden;
-    }
+        .theme-btn { background: var(--bg-subtle); border: 1px solid var(--border-light); color: var(--text-primary); width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: 0.2s; flex-shrink: 0; }
+        .theme-btn:hover { border-color: var(--text-primary); }
 
-    .splash-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-emerald));
-      border-radius: 999px;
-      animation: loadBar 0.7s ease forwards;
-    }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 12px; font-weight: 800; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 0.3px; }
+        input, select, textarea { width: 100%; background: var(--bg-input); border: 1.5px solid var(--border-light); border-radius: var(--radius-md); padding: 12px 14px; font-size: 16px; color: var(--text-primary); outline: none; transition: 0.2s; font-weight: 600; }
+        input:focus, textarea:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
 
-    @keyframes spinRing { to { transform: rotate(360deg); } }
-    @keyframes loadBar { to { width: 100%; } }
+        .btn-submit { width: 100%; background: var(--accent-primary); color: var(--accent-btn-text); border: none; border-radius: var(--radius-md); padding: 14px; font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-submit:hover { opacity: 0.92; transform: translateY(-1px); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    .portal-wrapper {
-      width: 100%;
-      max-width: 960px;
-      display: grid;
-      grid-template-columns: 1.1fr 0.95fr;
-      gap: 1.75rem;
-      align-items: stretch;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.45s ease, transform 0.45s ease;
-    }
+        .btn-apply-class { width: 100%; background: var(--accent-blue-soft); color: var(--accent-blue); border: 1.5px dashed var(--accent-blue); border-radius: var(--radius-md); padding: 11px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-apply-class:hover { background: var(--accent-blue); color: #FFF; }
 
-    @media (max-width: 820px) {
-      body {
-        align-items: flex-start;
-        padding: 1rem 0.85rem 2rem 0.85rem;
-      }
-      .portal-wrapper {
-        display: flex;
-        flex-direction: column-reverse;
-        max-width: 480px;
-        gap: 1.25rem;
-      }
-      .panel-card { padding: 1.5rem 1.25rem !important; }
-      h1, h2 { font-size: 1.32rem !important; }
-      .ann-list { max-height: 300px !important; }
-    }
+        #msg { margin-top: 14px; text-align: center; font-size: 13px; font-weight: 700; min-height: 18px; }
 
-    .portal-wrapper.card-ready {
-      opacity: 1;
-      transform: translateY(0);
-    }
+        .role-hint { margin-top: 16px; padding: 14px 16px; background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-md); font-size: 12px; color: var(--text-secondary); line-height: 1.7; }
+        .role-hint strong { color: var(--text-primary); }
+        .role-hint code { font-family: 'JetBrains Mono', monospace; background: var(--bg-card); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border-light); color: var(--accent-blue); }
 
-    .panel-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 2rem;
-      box-shadow: var(--card-shadow);
-      display: flex;
-      flex-direction: column;
-    }
+        /* 申請開通新班級 Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .modal-box { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-xl); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 20px; }
+        .modal-close { background: transparent; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
+        .modal-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      gap: 0.5rem;
-    }
-
-    .sys-tag {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.72rem;
-      color: var(--accent-primary);
-      letter-spacing: 0.12em;
-      font-weight: 700;
-    }
-
-    .theme-switch {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: 78px;
-      height: 30px;
-      padding: 3px;
-      border-radius: 999px;
-      background: var(--pill-bg);
-      border: 1px solid var(--pill-border);
-      cursor: pointer;
-      user-select: none;
-      flex-shrink: 0;
-    }
-
-    .theme-switch-knob {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--pill-knob);
-      box-shadow: var(--pill-knob-shadow);
-      transform: translateX(0);
-      transition: transform 0.3s ease;
-      flex-shrink: 0;
-    }
-
-    [data-theme="light"] .theme-switch-knob { transform: translateX(48px); }
-
-    .theme-switch-label {
-      position: absolute;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.66rem;
-      font-weight: 800;
-      pointer-events: none;
-    }
-
-    .label-dark { right: 9px; opacity: 1; color: var(--accent-primary); }
-    .label-light { left: 9px; opacity: 0; color: #b45309; }
-    [data-theme="light"] .label-dark { opacity: 0; }
-    [data-theme="light"] .label-light { opacity: 1; }
-
-    h1, h2 {
-      margin: 0 0 0.45rem 0;
-      font-size: 1.48rem;
-      background: var(--title-grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .subtitle {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 1.35rem;
-      line-height: 1.5;
-    }
-
-    .ann-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.85rem;
-      max-height: 410px;
-      overflow-y: auto;
-      padding-right: 0.25rem;
-    }
-
-    .ann-item {
-      background: var(--ann-item-bg);
-      border: 1px solid var(--ann-item-border);
-      border-radius: 12px;
-      padding: 1rem 1.1rem;
-    }
-
-    .ann-item.pinned {
-      border-color: rgba(251, 191, 36, 0.55);
-    }
-
-    .ann-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.45rem;
-      gap: 0.5rem;
-    }
-
-    .ann-badge {
-      display: inline-block;
-      padding: 0.16rem 0.5rem;
-      border-radius: 5px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      background: rgba(0, 240, 255, 0.12);
-      color: var(--accent-primary);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-    }
-
-    .ann-item.pinned .ann-badge {
-      background: rgba(245, 158, 11, 0.18);
-      color: var(--accent-gold);
-      border-color: rgba(245, 158, 11, 0.45);
-    }
-
-    .ann-date {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.76rem;
-      color: var(--text-muted);
-    }
-
-    .ann-title {
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.35rem;
-    }
-
-    .ann-body {
-      font-size: 0.85rem;
-      color: var(--text-label);
-      line-height: 1.55;
-      white-space: pre-line;
-    }
-
-    .form-group { margin-bottom: 1.15rem; }
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-label);
-      margin-bottom: 0.45rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 0.78rem 0.95rem;
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: 10px;
-      color: var(--input-text);
-      font-size: 16px;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 12px var(--bg-glow-1);
-    }
-
-    .hint-box {
-      background: rgba(2, 132, 199, 0.08);
-      border: 1px solid rgba(2, 132, 199, 0.25);
-      border-radius: 10px;
-      padding: 0.75rem 0.95rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 1.35rem;
-      line-height: 1.55;
-    }
-    .hint-box strong { color: var(--accent-primary); }
-
-    .login-btn {
-      width: 100%;
-      padding: 0.92rem;
-      background: var(--btn-grad);
-      color: var(--btn-text);
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-    }
-
-    #msg {
-      margin-top: 1rem;
-      text-align: center;
-      font-size: 0.88rem;
-      font-weight: 600;
-      min-height: 1.25rem;
-    }
-  </style>
+        @media (max-width: 860px) {
+            body { align-items: flex-start; padding: 16px; }
+            .portal-wrapper { display: flex; flex-direction: column-reverse; gap: 20px; max-width: 520px; }
+            .notice-board-panel { max-height: 380px; padding: 24px; }
+            .login-panel { padding: 28px 24px; }
+            .modal-grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <div id="bootSplash">
-    <div class="splash-core">
-      <div class="splash-ring"></div>
-      <div class="splash-tag">NEXUS GRADE SYSTEM</div>
-      <div class="splash-title">國二-2 智慧成績系統</div>
-      <div class="splash-bar-track">
-        <div class="splash-bar-fill"></div>
-      </div>
-    </div>
-  </div>
 
-  <div class="portal-wrapper" id="portalWrapper">
-    <div class="panel-card">
-      <div class="top-bar">
-        <span class="sys-tag">BULLETIN BOARD // 班級與系統公告欄</span>
-      </div>
-      <h2>📢 最新公告事項</h2>
-      <p class="subtitle">重要考程通知、成績發布動態與系統更新公告</p>
-      <div class="ann-list" id="announcementList">
-        <div style="color: var(--text-muted); font-size: 0.88rem;">正在載入最新公告...</div>
-      </div>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <!-- 開機進場畫面 -->
+    <div id="bootSplash">
+        <div class="splash-logo mono">N</div>
+        <div class="splash-title mono">NEXUS GRADE</div>
+        <div class="splash-sub">智慧成績與班級通訊系統 // INITIALIZING</div>
+        <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
     </div>
 
-    <div class="panel-card">
-      <div class="top-bar">
-        <span class="sys-tag">NEXUS GRADE // ACCESS PORTAL</span>
-        <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
-          <span class="theme-switch-label label-light">LIGHT</span>
-          <div class="theme-switch-knob"></div>
-          <span class="theme-switch-label label-dark">DARK</span>
+    <!-- 主容器 -->
+    <div class="portal-wrapper" id="portalWrapper">
+        
+        <!-- 左側：班級與系統公告欄 -->
+        <div class="panel-card notice-board-panel">
+            <div class="nb-header">
+                <div class="nb-title-wrap">
+                    <div class="nb-icon">📢</div>
+                    <div>
+                        <div class="nb-title">班級與系統公告欄</div>
+                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">BULLETIN BOARD // 最新公告事項</div>
+                    </div>
+                </div>
+                <span class="nb-badge mono" id="notice-count">載入中...</span>
+            </div>
+
+            <div class="nb-list" id="announcementList">
+                <div style="text-align:center; padding:40px 10px; color:var(--text-muted); font-size:13px;">正在載入最新公告...</div>
+            </div>
+
+            <div class="nb-footer">
+                <span>重要考程通知與系統動態</span>
+                <span class="mono">STATUS: ONLINE</span>
+            </div>
         </div>
-      </div>
 
-      <h1>國二-2 智慧成績系統</h1>
-      <p class="subtitle">請輸入專屬帳號與密碼登入查看學習數據與全班組距分布</p>
+        <!-- 右側：統一登入終端 -->
+        <div class="panel-card login-panel">
+            <div>
+                <div class="brand-top">
+                    <div class="brand-logo-row">
+                        <div class="brand-mark mono">N</div>
+                        <div class="brand-text">
+                            <h1>NEXUS GRADE</h1>
+                            <p>多班級智慧成績與班級通訊系統</p>
+                        </div>
+                    </div>
+                    <button type="button" class="theme-btn" id="themeToggle" onclick="toggleTheme()" title="切換深色/淺色模式">🌙</button>
+                </div>
 
-      <div class="form-group">
-        <label for="accountInput">登入帳號（學號 / 家長帳號 / 老師帳號）</label>
-        <input type="text" id="accountInput" placeholder="學生填學號；家長填 F＋學號" autocomplete="username">
-      </div>
+                <div class="form-group">
+                    <label for="accountInput">登入帳號（學號 / 家長帳號 / 老師帳號）</label>
+                    <input type="text" id="accountInput" class="mono" placeholder="學生填學號；家長填 F＋學號" autocomplete="username">
+                </div>
 
-      <div class="form-group">
-        <label for="passwordInput">登入密碼</label>
-        <input type="password" id="passwordInput" placeholder="預設密碼為 123456" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()">
-      </div>
+                <div class="form-group">
+                    <label for="passwordInput">登入密碼</label>
+                    <input type="password" id="passwordInput" placeholder="預設密碼為 123456" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()">
+                </div>
 
-      <div class="hint-box">
-        • <strong>學生登入：</strong>直接輸入學號（例如 <code>1410101</code>）<br>
-        • <strong>家長登入：</strong>輸入 <code>F</code> ＋ 孩子學號（例如 <code>F1410101</code>，大小寫皆可）<br>
-        • 首次登入預設密碼皆為 <code>123456</code>，登入後可自行修改
-      </div>
+                <button type="button" class="btn-submit" id="loginBtn" onclick="handleLogin()">登入系統終端 ➔</button>
 
-      <button class="login-btn" id="loginBtn" onclick="handleLogin()">登入系統終端</button>
-      <div id="msg"></div>
+                <button type="button" class="btn-apply-class" onclick="openApplyModal()">
+                    🏫 導師申請開通新班級帳號
+                </button>
+
+                <div id="msg"></div>
+            </div>
+
+            <div class="role-hint">
+                • <strong>學生登入：</strong>直接輸入學號（例如 <code>1410101</code>）<br>
+                • <strong>家長登入：</strong>輸入 <code>F</code> ＋ 孩子學號（例如 <code>F1410101</code>，大小寫皆可）<br>
+                • 首次登入預設密碼皆為 <code>123456</code>，登入後可自行修改
+            </div>
+        </div>
+
     </div>
-  </div>
 
-  <script>
-    function applyTheme(theme) {
-      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
-      else document.documentElement.removeAttribute('data-theme');
-    }
-    function toggleTheme() {
-      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      localStorage.setItem('nexus-theme', next);
-      applyTheme(next);
-    }
-    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+    <!-- 導師申請開通新班級 Modal -->
+    <div id="applyModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div>
+                    <h2 style="font-size:18px; font-weight:900;">🏫 導師申請開通新班級</h2>
+                    <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">提交後由系統開發者審核，核准即一鍵建立全班師生與家長帳號</p>
+                </div>
+                <button type="button" class="modal-close" onclick="closeApplyModal()">✕</button>
+            </div>
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const splash = document.getElementById('bootSplash');
-      const wrapper = document.getElementById('portalWrapper');
-      setTimeout(() => {
-        if (splash) splash.classList.add('fade-out');
-        if (wrapper) wrapper.classList.add('card-ready');
-      }, 650);
-    });
+            <div class="modal-grid-2">
+                <div>
+                    <label for="appTeacherName">導師姓名</label>
+                    <input type="text" id="appTeacherName" placeholder="例如：陳大文 老師">
+                </div>
+                <div>
+                    <label for="appClassName">開通班級名稱</label>
+                    <input type="text" id="appClassName" placeholder="例如：國二-3">
+                </div>
+            </div>
 
-    const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const SCHOOL_DOMAIN = 'cysh.khc.edu.tw';
+            <div class="form-group">
+                <label for="appTeacherEmail">導師登入信箱 (Email)</label>
+                <input type="email" id="appTeacherEmail" class="mono" placeholder="teacher@cysh.khc.edu.tw">
+            </div>
 
-    async function loadAnnouncements() {
-      const listEl = document.getElementById('announcementList');
-      try {
-        const { data, error } = await supabaseClient
-          .from('announcements')
-          .select('id, title, content, tag, is_pinned, created_at')
-          .order('is_pinned', { ascending: false })
-          .order('created_at', { ascending: false });
+            <div class="form-group">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <label for="appStudentRaw" style="margin:0;">全班學生名單（格式：座號, 學號, 姓名）</label>
+                    <label style="margin:0; color:var(--accent-blue); cursor:pointer;">
+                        📂 匯入 Excel/CSV
+                        <input type="file" accept=".xlsx,.xls,.csv" style="display:none;" onchange="importStudentExcel(event)">
+                    </label>
+                </div>
+                <textarea id="appStudentRaw" rows="6" class="mono" style="font-size:13px;" placeholder="每行一位學生，逗號或空白分隔，例如：&#10;01, 1410101, 王小明&#10;02, 1410102, 李小華&#10;03, 1410103, 張大同" oninput="updateParsePreview()"></textarea>
+                <div id="appParsePreview" style="font-size:12px; color:var(--accent-emerald); font-weight:700; margin-top:6px;"></div>
+            </div>
 
-        if (error || !data || data.length === 0) {
-          listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 0.88rem; padding: 1rem 0;">目前尚無公告事項</div>';
-          return;
+            <button type="button" id="submitAppBtn" class="btn-submit" style="background:var(--accent-blue); color:#FFF;" onclick="submitTeacherApplication()">送出開通申請</button>
+        </div>
+    </div>
+
+    <script>
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const btn = document.getElementById('themeToggle');
+            if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+        function toggleTheme() {
+            const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            localStorage.setItem('nexus-theme', next);
+            applyTheme(next);
+        }
+        applyTheme(localStorage.getItem('nexus-theme') || 'light');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const splash = document.getElementById('bootSplash');
+            const wrapper = document.getElementById('portalWrapper');
+            setTimeout(() => {
+                if (splash) splash.classList.add('fade-out');
+                if (wrapper) wrapper.classList.add('card-ready');
+            }, 750);
+        });
+
+        const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SCHOOL_DOMAIN = 'cysh.khc.edu.tw';
+
+        async function loadAnnouncements() {
+            const listEl = document.getElementById('announcementList');
+            const countEl = document.getElementById('notice-count');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('announcements')
+                    .select('id, title, content, tag, is_pinned, created_at')
+                    .order('is_pinned', { ascending: false })
+                    .order('created_at', { ascending: false });
+
+                if (error || !data || data.length === 0) {
+                    if (countEl) countEl.textContent = '0 則公告';
+                    listEl.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 13px; padding: 36px 10px;">目前尚無公告事項</div>';
+                    return;
+                }
+
+                if (countEl) countEl.textContent = `${data.length} 則公告`;
+                listEl.innerHTML = data.map(item => {
+                    const dt = new Date(item.created_at);
+                    const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
+                    let tagClass = 'tag-sys';
+                    if (item.is_pinned) tagClass = 'tag-pin';
+                    else if (item.tag === '功能更新') tagClass = 'tag-upd';
+                    else if (item.tag === '重要通知') tagClass = 'tag-imp';
+
+                    return `
+                        <div class="nb-item ${item.is_pinned ? 'pinned' : ''}">
+                            <div class="nb-item-top">
+                                <span class="nb-tag ${tagClass}">${item.is_pinned ? '📌 ' : ''}${item.tag || '一般通知'}</span>
+                                <span class="nb-date mono">${dateStr}</span>
+                            </div>
+                            <div class="nb-item-title">${item.title}</div>
+                            <div class="nb-item-body">${item.content}</div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                if (countEl) countEl.textContent = '0 則公告';
+                listEl.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 13px; padding: 36px 10px;">目前尚無公告事項</div>';
+            }
         }
 
-        listEl.innerHTML = data.map(item => {
-          const dt = new Date(item.created_at);
-          const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
-          return `
-            <div class="ann-item ${item.is_pinned ? 'pinned' : ''}">
-              <div class="ann-meta">
-                <span class="ann-badge">${item.is_pinned ? '📌 ' : ''}${item.tag || '一般通知'}</span>
-                <span class="ann-date">${dateStr}</span>
-              </div>
-              <div class="ann-title">${item.title}</div>
-              <div class="ann-body">${item.content}</div>
-            </div>
-          `;
-        }).join('');
-      } catch (e) {
-        listEl.innerHTML = '<div style="color: var(--text-muted); font-size: 0.88rem; padding: 1rem 0;">目前尚無公告事項</div>';
-      }
-    }
+        async function redirectByRole(user) {
+            const userEmail = (user.email || '').toLowerCase();
+            const accountPrefix = userEmail.split('@')[0];
 
-    async function redirectByRole(user) {
-      const userEmail = (user.email || '').toLowerCase();
-      const accountPrefix = userEmail.split('@')[0];
+            // 1. 開發者帳號直接秒進 admin.html
+            if (userEmail === '202020@cysh.khc.edu.tw') {
+                window.location.replace('admin.html');
+                return;
+            }
 
-      // 1. 開發者帳號直接秒進 admin.html
-      if (userEmail === '202020@cysh.khc.edu.tw') {
-        window.location.replace('admin.html');
-        return;
-      }
+            // 2. 優先查詢 profiles 角色設定
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('role')
+                .eq('id', user.id)
+                .maybeSingle();
 
-      // 2. 優先查詢 profiles 角色設定
-      const { data: profile } = await supabaseClient
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .maybeSingle();
+            if (profile && (profile.role === 'admin' || profile.role === 'developer' || profile.role === 'teacher')) {
+                window.location.replace('admin.html');
+                return;
+            }
+            if (profile && profile.role === 'parent') {
+                window.location.replace('parent.html');
+                return;
+            }
+            if (profile && profile.role === 'student') {
+                window.location.replace('student.html');
+                return;
+            }
 
-      if (profile && (profile.role === 'admin' || profile.role === 'developer')) {
-        window.location.replace('admin.html');
-        return;
-      }
-      if (profile && profile.role === 'parent') {
-        window.location.replace('parent.html');
-        return;
-      }
-      if (profile && profile.role === 'student') {
-        window.location.replace('student.html');
-        return;
-      }
+            // 3. 資料庫查詢受阻或尚未建立時，自動依帳號前綴分流（F 開頭為家長，其餘學號為學生）
+            if (/^f\d+$/i.test(accountPrefix)) {
+                window.location.replace('parent.html');
+            } else {
+                window.location.replace('student.html');
+            }
+        }
 
-      // 3. 資料庫查詢受阻或尚未建立時，自動依帳號前綴分流（F 開頭為家長，其餘學號為學生）
-      if (/^f\d+$/i.test(accountPrefix)) {
-        window.location.replace('parent.html');
-      } else {
-        window.location.replace('student.html');
-      }
-    }
+        (async () => {
+            loadAnnouncements();
+            if (window.location.search.includes('error=1')) return;
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) await redirectByRole(session.user);
+        })();
 
-    (async () => {
-      loadAnnouncements();
-      // 若是被內頁踢回來的（帶有 ?error=1），暫停自動跳轉，避免無限迴圈
-      if (window.location.search.includes('error=1')) return;
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session && session.user) await redirectByRole(session.user);
-    })();
+        async function handleLogin() {
+            const rawAccount = document.getElementById('accountInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            const msgEl = document.getElementById('msg');
+            const btn = document.getElementById('loginBtn');
 
-    async function handleLogin() {
-      const rawAccount = document.getElementById('accountInput').value.trim();
-      const password = document.getElementById('passwordInput').value.trim();
-      const msgEl = document.getElementById('msg');
-      const btn = document.getElementById('loginBtn');
+            if (!rawAccount || !password) {
+                msgEl.style.color = 'var(--accent-rose)';
+                msgEl.innerText = '請輸入帳號與密碼！';
+                return;
+            }
 
-      if (!rawAccount || !password) {
-        msgEl.style.color = '#f43f5e';
-        msgEl.innerText = '請輸入帳號與密碼！';
-        return;
-      }
+            const email = rawAccount.includes('@')
+                ? rawAccount.toLowerCase()
+                : `${rawAccount.toLowerCase()}@${SCHOOL_DOMAIN}`;
 
-      const email = rawAccount.includes('@')
-        ? rawAccount.toLowerCase()
-        : `${rawAccount.toLowerCase()}@${SCHOOL_DOMAIN}`;
+            btn.disabled = true;
+            msgEl.style.color = 'var(--accent-blue)';
+            msgEl.innerText = '正在驗證身分權限...';
 
-      btn.disabled = true;
-      msgEl.style.color = 'var(--accent-blue)';
-      msgEl.innerText = '正在驗證身分權限...';
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
 
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+            btn.disabled = false;
 
-      btn.disabled = false;
+            if (error) {
+                msgEl.style.color = 'var(--accent-rose)';
+                msgEl.innerText = '帳號或密碼錯誤，請重新確認！';
+                return;
+            }
 
-      if (error) {
-        msgEl.style.color = '#f43f5e';
-        msgEl.innerText = '帳號或密碼錯誤，請重新確認！';
-        return;
-      }
+            msgEl.style.color = 'var(--accent-emerald)';
+            msgEl.innerText = '✓ 驗證成功，正在進入專屬終端...';
+            await redirectByRole(data.user);
+        }
 
-      msgEl.style.color = '#10b981';
-      msgEl.innerText = '✓ 驗證成功，正在進入專屬終端...';
-      await redirectByRole(data.user);
-    }
-  </script>
+        // 導師申請開通新班級功能
+        function openApplyModal() {
+            document.getElementById('applyModal').style.display = 'flex';
+        }
+        function closeApplyModal() {
+            document.getElementById('applyModal').style.display = 'none';
+        }
+
+        function importStudentExcel(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const wb = XLSX.read(evt.target.result, { type: 'binary' });
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                const lines = [];
+                rows.forEach(r => {
+                    if (r && r.length >= 2) {
+                        const clean = r.map(c => String(c || '').trim()).filter(Boolean);
+                        if (clean.length >= 2 && !['座號', '學號', '姓名'].includes(clean[0])) {
+                            lines.push(clean.join(', '));
+                        }
+                    }
+                });
+                document.getElementById('appStudentRaw').value = lines.join('\n');
+                updateParsePreview();
+            };
+            reader.readAsBinaryString(file);
+        }
+
+        function parseStudentRaw() {
+            const raw = document.getElementById('appStudentRaw').value.trim();
+            if (!raw) return [];
+            const lines = raw.split(/\r?\n/);
+            const result = [];
+            lines.forEach(line => {
+                const parts = line.split(/[,，\t\s]+/).map(s => s.trim()).filter(Boolean);
+                if (parts.length >= 3) {
+                    result.push({ seat_no: parts[0], student_id: parts[1], full_name: parts[2] });
+                } else if (parts.length === 2) {
+                    result.push({ seat_no: '', student_id: parts[0], full_name: parts[1] });
+                }
+            });
+            return result;
+        }
+
+        function updateParsePreview() {
+            const list = parseStudentRaw();
+            const prev = document.getElementById('appParsePreview');
+            prev.innerText = list.length > 0 ? `✓ 已成功解析 ${list.length} 位學生資料（核准後將同步建立 ${list.length} 組家長帳號）` : '';
+        }
+
+        async function submitTeacherApplication() {
+            const teacher_name = document.getElementById('appTeacherName').value.trim();
+            const class_name = document.getElementById('appClassName').value.trim();
+            const teacher_email = document.getElementById('appTeacherEmail').value.trim().toLowerCase();
+            const student_list = parseStudentRaw();
+            const btn = document.getElementById('submitAppBtn');
+
+            if (!teacher_name || !class_name || !teacher_email) {
+                alert('請完整填寫導師姓名、班級名稱與導師信箱！');
+                return;
+            }
+            if (student_list.length === 0) {
+                alert('請至少輸入或匯入一位學生的名單（格式：座號, 學號, 姓名）！');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = '正在送出申請...';
+
+            const { error } = await supabaseClient.from('teacher_applications').insert([{
+                teacher_name,
+                teacher_email,
+                class_name,
+                student_list
+            }]);
+
+            btn.disabled = false;
+            btn.innerText = '送出開通申請';
+
+            if (error) {
+                alert('送出失敗：' + error.message);
+                return;
+            }
+
+            alert(`✅ 已成功送出「${class_name}」開通申請！\n\n系統開發者審核通過後，您的導師帳號與全班 ${student_list.length} 位學生、家長帳號（預設密碼 123456）將自動啟用。`);
+            closeApplyModal();
+            document.getElementById('appTeacherName').value = '';
+            document.getElementById('appClassName').value = '';
+            document.getElementById('appTeacherEmail').value = '';
+            document.getElementById('appStudentRaw').value = '';
+            document.getElementById('appParsePreview').innerText = '';
+        }
+    </script>
 </body>
 </html>

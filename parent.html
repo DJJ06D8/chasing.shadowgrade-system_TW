@@ -1,115 +1,135 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NEXUS GRADE // 家長關懷終端</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-base: #060913;
-      --bg-glow-1: rgba(0, 240, 255, 0.1);
-      --bg-glow-2: rgba(16, 185, 129, 0.1);
-      --grid-line: rgba(0, 240, 255, 0.03);
-      --container-bg: rgba(15, 23, 42, 0.82);
-      --container-border: rgba(0, 240, 255, 0.22);
-      --container-shadow: 0 0 35px rgba(0, 0, 0, 0.65);
-      --header-border: rgba(0, 240, 255, 0.18);
-      --accent-primary: #00f0ff;
-      --accent-blue: #38bdf8;
-      --accent-emerald: #10b981;
-      --accent-gold: #fbbf24;
-      --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
-      --text-main: #f8fafc;
-      --text-heading: #e2e8f0;
-      --text-muted: #94a3b8;
-      --th-bg: rgba(2, 6, 23, 0.6);
-      --td-border: rgba(148, 163, 184, 0.15);
-      --tr-hover: rgba(0, 240, 255, 0.03);
-      --card-bg: rgba(2, 6, 23, 0.65);
-      --card-border: rgba(148, 163, 184, 0.2);
-      --card-hi-bg: rgba(8, 47, 73, 0.45);
-      --card-hi-border: rgba(0, 240, 255, 0.45);
-      --badge-bg: rgba(0, 240, 255, 0.12);
-      --badge-border: rgba(0, 240, 255, 0.3);
-      --toggle-bg: rgba(15, 23, 42, 0.75);
-      --toggle-border: rgba(0, 240, 255, 0.35);
-      --bar-track: rgba(148, 163, 184, 0.14);
-      --pill-bg: rgba(2, 6, 23, 0.85);
-      --pill-border: rgba(0, 240, 255, 0.4);
-      --pill-knob: linear-gradient(135deg, #00f0ff, #38bdf8);
-      --pill-knob-shadow: 0 0 10px rgba(0, 240, 255, 0.75);
-    }
-
-    [data-theme="light"] {
-      --bg-base: #eef3f9;
-      --bg-glow-1: rgba(2, 132, 199, 0.11);
-      --bg-glow-2: rgba(16, 185, 129, 0.09);
-      --grid-line: rgba(14, 116, 144, 0.065);
-      --container-bg: rgba(255, 255, 255, 0.88);
-      --container-border: rgba(2, 132, 199, 0.24);
-      --container-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      --header-border: rgba(2, 132, 199, 0.18);
-      --accent-primary: #0284c7;
-      --accent-blue: #0369a1;
+      --bg-main: #F4F5F7;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F9FAFB;
+      --bg-input: #FFFFFF;
+      --text-primary: #111827;
+      --text-secondary: #4B5563;
+      --text-muted: #9CA3AF;
+      --border-light: #E5E7EB;
+      --border-focus: #111827;
+      --accent-primary: #111827;
+      --accent-btn-text: #FFFFFF;
+      --accent-blue: #2563EB;
+      --accent-blue-soft: #EFF6FF;
       --accent-emerald: #059669;
-      --accent-gold: #d97706;
-      --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
-      --text-main: #0f172a;
-      --text-heading: #1e293b;
-      --text-muted: #475569;
-      --th-bg: rgba(241, 245, 249, 0.92);
-      --td-border: rgba(148, 163, 184, 0.24);
-      --tr-hover: rgba(2, 132, 199, 0.045);
-      --card-bg: rgba(248, 250, 252, 0.92);
-      --card-border: rgba(148, 163, 184, 0.32);
-      --card-hi-bg: rgba(224, 242, 254, 0.85);
-      --card-hi-border: rgba(2, 132, 199, 0.45);
-      --badge-bg: rgba(2, 132, 199, 0.1);
-      --badge-border: rgba(2, 132, 199, 0.28);
-      --toggle-bg: rgba(255, 255, 255, 0.9);
-      --toggle-border: rgba(2, 132, 199, 0.3);
-      --bar-track: rgba(148, 163, 184, 0.22);
-      --pill-bg: #e2e8f0;
-      --pill-border: rgba(2, 132, 199, 0.38);
-      --pill-knob: linear-gradient(135deg, #f59e0b, #fbbf24);
-      --pill-knob-shadow: 0 0 10px rgba(245, 158, 11, 0.65);
+      --accent-emerald-soft: #ECFDF5;
+      --accent-amber: #D97706;
+      --accent-amber-soft: #FFFBEB;
+      --accent-rose: #DC2626;
+      --accent-rose-soft: #FEF2F2;
+      --bar-track: #E5E7EB;
+      --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -6px rgba(0, 0, 0, 0.02);
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
     }
 
-    * { box-sizing: border-box; }
+    [data-theme="dark"] {
+      --bg-main: #0B0F19;
+      --bg-card: #111827;
+      --bg-subtle: #1F2937;
+      --bg-input: #1F2937;
+      --text-primary: #F9FAFB;
+      --text-secondary: #D1D5DB;
+      --text-muted: #6B7280;
+      --border-light: #374151;
+      --border-focus: #60A5FA;
+      --accent-primary: #F9FAFB;
+      --accent-btn-text: #0B0F19;
+      --accent-blue: #60A5FA;
+      --accent-blue-soft: rgba(59, 130, 246, 0.15);
+      --accent-emerald: #34D399;
+      --accent-emerald-soft: rgba(16, 185, 129, 0.15);
+      --accent-amber: #FBBF24;
+      --accent-amber-soft: rgba(245, 158, 11, 0.15);
+      --accent-rose: #F87171;
+      --accent-rose-soft: rgba(239, 68, 68, 0.15);
+      --bar-track: #374151;
+      --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 4px 10px -6px rgba(0, 0, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-base);
-      background-image: 
-        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 40%),
-        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 45%),
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
-      color: var(--text-main);
+      background-color: var(--bg-main);
+      color: var(--text-primary);
       padding: 1.5rem;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
+    /* 🚨 明日考試自動置頂提醒橫幅 */
+    .tomorrow-exam-banner {
+      max-width: 960px;
+      margin: 0 auto 1.4rem auto;
+      background: var(--accent-rose-soft);
+      border: 1.5px solid var(--accent-rose);
+      border-radius: var(--radius-xl);
+      padding: 1.2rem 1.5rem;
+    }
+
+    .tomorrow-exam-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .tomorrow-exam-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--accent-rose);
+    }
+
+    .tomorrow-exam-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .tomorrow-exam-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
     .container {
-      max-width: 900px;
-      margin: 0 auto 2rem auto;
-      background: var(--container-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--container-border);
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: var(--container-shadow);
+      max-width: 960px;
+      margin: 0 auto 1.5rem auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem 2rem;
+      box-shadow: var(--shadow-card);
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--header-border);
+      border-bottom: 1px solid var(--border-light);
       padding-bottom: 1rem;
       margin-bottom: 1.5rem;
       flex-wrap: wrap;
@@ -117,93 +137,124 @@
     }
 
     .role-tag {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
       color: var(--accent-emerald);
-      letter-spacing: 0.12em;
+      letter-spacing: 0.08em;
       display: block;
       margin-bottom: 0.25rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     h2 {
       margin: 0;
-      font-size: 1.35rem;
-      background: var(--title-grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 1.38rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: -0.4px;
     }
 
-    h3 { margin-top: 0; color: var(--text-heading); font-size: 1.02rem; margin-bottom: 1rem; }
+    h3 {
+      margin-top: 0;
+      color: var(--text-primary);
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
 
-    .btn-group { display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center; }
+    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
 
-    /* 滑動膠囊明暗切換條 */
-    .theme-switch {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: 78px;
-      height: 32px;
-      padding: 3px;
-      border-radius: 999px;
-      background: var(--pill-bg);
-      border: 1px solid var(--pill-border);
+    .theme-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      user-select: none;
-      transition: background 0.3s ease, border-color 0.3s ease;
-    }
-
-    .theme-switch-knob {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--pill-knob);
-      box-shadow: var(--pill-knob-shadow);
-      transform: translateX(0);
-      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
       flex-shrink: 0;
     }
 
-    [data-theme="light"] .theme-switch-knob {
-      transform: translateX(46px);
-    }
-
-    .theme-switch-label {
-      position: absolute;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.66rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      transition: opacity 0.25s ease;
-      pointer-events: none;
-    }
-
-    .label-dark { right: 9px; opacity: 1; color: var(--accent-primary); }
-    .label-light { left: 9px; opacity: 0; color: #b45309; }
-
-    [data-theme="light"] .label-dark { opacity: 0; }
-    [data-theme="light"] .label-light { opacity: 1; }
-
     .pw-edit-btn {
-      background: rgba(2, 132, 199, 0.12);
-      color: var(--accent-primary);
-      border: 1px solid rgba(2, 132, 199, 0.4);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
       padding: 0.45rem 0.85rem;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.84rem;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .pw-edit-btn:hover {
+      border-color: var(--text-primary);
     }
 
     .logout-btn {
-      background: rgba(244, 63, 94, 0.15);
-      color: #f43f5e;
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      padding: 0.5rem 1.1rem;
-      border-radius: 8px;
+      background: var(--accent-rose-soft);
+      color: var(--accent-rose);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 0.84rem;
+    }
+
+    /* 📋 功課＆考試布告欄 */
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+      gap: 0.95rem;
+    }
+
+    .board-subject-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .board-subject-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.45rem;
+    }
+
+    .board-item-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0.55rem 0.7rem;
+      font-size: 0.85rem;
+    }
+
+    .type-pill-hw {
+      display: inline-block;
+      background: var(--accent-emerald-soft);
+      color: var(--accent-emerald);
+      padding: 0.12rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .type-pill-exam {
+      display: inline-block;
+      background: var(--accent-rose-soft);
+      color: var(--accent-rose);
+      padding: 0.12rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
     }
 
     .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
@@ -211,30 +262,29 @@
     .summary-card {
       flex: 1;
       min-width: 145px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
       padding: 1rem;
       text-align: center;
     }
 
-    .summary-card .sub-title { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.35rem; font-weight: 600; }
+    .summary-card .sub-title { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.35rem; font-weight: 700; }
     .summary-card .sub-val {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 1.55rem;
       font-weight: 800;
-      color: var(--text-main);
+      color: var(--text-primary);
       margin-bottom: 0.25rem;
     }
-    .summary-card .sub-avg { font-size: 0.78rem; color: var(--text-muted); }
+    .summary-card .sub-avg { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
 
     .rank-direct-card {
-      width: 220px;
+      width: 230px;
       height: 118px;
-      border-radius: 14px;
-      background: linear-gradient(145deg, rgba(69, 26, 3, 0.85), rgba(30, 27, 15, 0.92));
-      border: 1.5px solid rgba(251, 191, 36, 0.65);
-      box-shadow: 0 0 28px rgba(251, 191, 36, 0.22);
+      border-radius: var(--radius-lg);
+      background: var(--accent-amber-soft);
+      border: 1.5px solid var(--accent-amber);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -243,15 +293,14 @@
       text-align: center;
     }
 
-    .rank-reveal-label { font-size: 0.82rem; color: #fbbf24; font-weight: 700; margin-bottom: 0.3rem; }
+    .rank-reveal-label { font-size: 0.8rem; color: var(--accent-amber); font-weight: 800; margin-bottom: 0.3rem; }
     .rank-reveal-num {
       font-size: 1.85rem;
       font-weight: 900;
-      color: #fde047;
-      text-shadow: 0 0 12px rgba(250, 204, 21, 0.45);
+      color: var(--text-primary);
       line-height: 1.15;
     }
-    .rank-reveal-sub { font-size: 0.78rem; color: #fcd34d; margin-top: 0.25rem; }
+    .rank-reveal-sub { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.25rem; font-weight: 600; }
 
     .dist-section-grid {
       display: grid;
@@ -261,9 +310,9 @@
     }
 
     .dist-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
       padding: 1.25rem;
     }
 
@@ -276,12 +325,12 @@
       flex-wrap: wrap;
     }
 
-    .dist-card-title { font-weight: 700; font-size: 0.95rem; color: var(--accent-primary); }
+    .dist-card-title { font-weight: 800; font-size: 0.95rem; color: var(--text-primary); }
 
     .dist-select {
-      background: var(--toggle-bg);
-      color: var(--text-main);
-      border: 1px solid var(--toggle-border);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border-light);
       border-radius: 8px;
       padding: 0.35rem 0.65rem;
       font-size: 0.82rem;
@@ -298,107 +347,124 @@
 
     .dist-label {
       width: 68px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       text-align: right;
       flex-shrink: 0;
     }
 
     .dist-bar-bg {
       flex: 1;
-      height: 18px;
+      height: 16px;
       background: var(--bar-track);
-      border-radius: 6px;
+      border-radius: 99px;
       overflow: hidden;
     }
 
     .dist-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-emerald));
-      border-radius: 6px;
+      background: var(--accent-blue);
+      border-radius: 99px;
       transition: width 0.4s ease;
     }
 
-    .dist-row.is-me .dist-label { color: var(--accent-gold); }
+    .dist-row.is-me .dist-label { color: var(--accent-amber); font-weight: 800; }
     .dist-row.is-me .dist-bar-fill {
-      background: linear-gradient(90deg, #f59e0b, #fde047);
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+      background: var(--accent-amber);
     }
 
-    .dist-count { width: 88px; font-weight: 700; color: var(--text-main); font-size: 0.8rem; flex-shrink: 0; }
+    .dist-count { width: 88px; font-weight: 700; color: var(--text-primary); font-size: 0.8rem; flex-shrink: 0; }
 
     .me-pill {
       display: inline-block;
-      background: rgba(245, 158, 11, 0.2);
-      color: var(--accent-gold);
-      border: 1px solid rgba(245, 158, 11, 0.5);
+      background: var(--accent-amber-soft);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
       border-radius: 4px;
       padding: 0 4px;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
+      font-weight: 800;
       margin-left: 3px;
     }
 
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 0.85rem 0.75rem; text-align: center; border-bottom: 1px solid var(--td-border); }
+    th, td { padding: 0.85rem 0.75rem; text-align: center; border-bottom: 1px solid var(--border-light); }
     th {
-      background: var(--th-bg);
-      color: var(--accent-primary);
-      font-size: 0.82rem;
-      letter-spacing: 0.05em;
-      font-weight: 700;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      font-weight: 800;
     }
-    tr:hover td { background: var(--tr-hover); }
+    tr:hover td { background: var(--bg-subtle); }
 
     .badge {
       display: inline-block;
-      background: var(--badge-bg);
-      color: var(--accent-primary);
-      border: 1px solid var(--badge-border);
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
       padding: 0.22rem 0.6rem;
       border-radius: 6px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 700;
     }
 
     .date-tag {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.84rem;
       color: var(--text-muted);
       font-weight: 600;
     }
 
     .score-num {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 1.05rem;
       font-weight: 800;
       color: var(--accent-blue);
     }
 
-    .reported-tag { font-size: 0.78rem; color: var(--accent-gold); font-weight: 700; }
+    .reported-tag { font-size: 0.78rem; color: var(--accent-amber); font-weight: 700; }
 
     @media (max-width: 768px) {
       body { padding: 0.85rem; }
-      .container { padding: 1.25rem 1rem; border-radius: 14px; }
-      h2 { font-size: 1.15rem; }
+      .container, .tomorrow-exam-banner { padding: 1.25rem 1rem; border-radius: 16px; }
+      h2 { font-size: 1.18rem; }
       .dist-section-grid { grid-template-columns: 1fr; }
-      th, td { padding: 0.55rem 0.45rem; font-size: 0.86rem; }
+      th, td { padding: 0.55rem 0.45rem; font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
+  <!-- 🚨 明日考試自動置頂提醒（家長一開啟直接看到） -->
+  <div class="tomorrow-exam-banner" id="tomorrowExamBanner" style="display: none;">
+    <div class="tomorrow-exam-header">
+      <div class="tomorrow-exam-title">🚨 孩子明日考試提醒（自動置頂）</div>
+      <span class="badge" id="tomorrowDateBadge" style="background:var(--bg-card); color:var(--accent-rose);"></span>
+    </div>
+    <div class="tomorrow-exam-list" id="tomorrowExamList"></div>
+  </div>
+
+  <!-- 📋 功課＆考試布告欄（家長同步檢視孩子每日功課與考試進度） -->
+  <div class="container">
+    <div class="header" style="margin-bottom: 1.1rem;">
+      <div>
+        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // 班級布告欄</span>
+        <h2 style="font-size: 1.22rem;">📋 功課＆考試布告欄</h2>
+      </div>
+    </div>
+    <div class="board-grid" id="parentBoardGrid">
+      <div style="color: var(--text-muted);">載入功課＆考試布告欄中...</div>
+    </div>
+  </div>
+
   <div class="container">
     <div class="header">
       <div>
-        <span class="role-tag">PARENT GUARDIAN PORTAL // 家長專用終端</span>
+        <span class="role-tag" id="parentRoleTag">PARENT GUARDIAN PORTAL // 家長專用終端</span>
         <h2 id="parentHeaderTitle">載入家長與學生資料中...</h2>
       </div>
       <div class="btn-group">
-        <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
-          <span class="theme-switch-label label-light">LIGHT</span>
-          <div class="theme-switch-knob"></div>
-          <span class="theme-switch-label label-dark">DARK</span>
-        </div>
+        <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
         <button class="pw-edit-btn" onclick="changeMyPassword()">修改家長密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
@@ -426,7 +492,7 @@
       <div class="dist-card">
         <div class="dist-card-header">
           <span class="dist-card-title">🏆 全班總平均組距分布</span>
-          <span style="font-size:0.78rem; color:var(--text-muted);">跨科總均落點</span>
+          <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">跨科總均落點</span>
         </div>
         <div id="overallDistBars"></div>
       </div>
@@ -455,26 +521,45 @@
 
   <script>
     function applyTheme(theme) {
-      if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
+      document.documentElement.setAttribute('data-theme', theme);
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
     function toggleTheme() {
       const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       localStorage.setItem('nexus-theme', next);
       applyTheme(next);
     }
-    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+    applyTheme(localStorage.getItem('nexus-theme') || 'light');
 
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    const BOARD_SUBJECTS = ['國文', '英文', '數學', '自然', '社會', '班務'];
+
     let targetStudentId = null;
+    let currentClassName = '國二-2';
+    let classStudentIdSet = null;
     let publishedScoresCache = [];
     let studentTotalsCache = [];
+
+    function getLocalDateStr(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
 
     const SCORE_BINS = [
       { label: '100 分', min: 100, max: 100.99 },
@@ -512,16 +597,16 @@
 
       const { data: parentProfile, error: profErr } = await supabaseClient
         .from('profiles')
-        .select('id, seat_number, name, email, role, parent_of_student_id')
+        .select('*')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
 
       if (profErr || !parentProfile) {
-        window.location.href = 'index.html';
+        window.location.href = 'index.html?error=1';
         return;
       }
 
-      if (parentProfile.role === 'admin' || parentProfile.role === 'developer') { window.location.href = 'admin.html'; return; }
+      if (parentProfile.role === 'admin' || parentProfile.role === 'developer' || parentProfile.role === 'teacher') { window.location.href = 'admin.html'; return; }
       if (parentProfile.role === 'student') { window.location.href = 'student.html'; return; }
 
       targetStudentId = parentProfile.parent_of_student_id;
@@ -532,9 +617,9 @@
           const stEmail = `${pCode.slice(1)}@cysh.khc.edu.tw`;
           const { data: childData } = await supabaseClient
             .from('profiles')
-            .select('id, seat_number, name')
+            .select('*')
             .eq('email', stEmail)
-            .single();
+            .maybeSingle();
           if (childData) targetStudentId = childData.id;
         }
       }
@@ -546,15 +631,103 @@
 
       const { data: childProfile } = await supabaseClient
         .from('profiles')
-        .select('seat_number, name')
+        .select('*')
         .eq('id', targetStudentId)
-        .single();
+        .maybeSingle();
 
+      currentClassName = childProfile?.class_name || parentProfile.class_name || '國二-2';
       const childSeat = childProfile?.seat_number ?? parentProfile.seat_number ?? '-';
       const childName = childProfile?.name ?? parentProfile.name.replace(' 家長', '');
-      document.getElementById('parentHeaderTitle').innerText = `[${childSeat}號] ${childName} 的家長終端`;
+      document.getElementById('parentRoleTag').innerText = `PARENT GUARDIAN PORTAL // ${currentClassName}`;
+      document.getElementById('parentHeaderTitle').innerText = `[${currentClassName}・${childSeat}號] ${childName} 的家長終端`;
 
-      await loadChildScores();
+      // 取得同班學生 ID 名單（若資料庫尚未新增 class_name 欄位則自動相容全部學生）
+      const { data: allStudents } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('role', 'student');
+
+      if (allStudents && allStudents.length > 0) {
+        const sameClass = allStudents.filter(st => (st.class_name || '國二-2') === currentClassName);
+        if (sameClass.length > 0) {
+          classStudentIdSet = new Set(sameClass.map(st => st.id));
+        }
+      }
+
+      await Promise.all([loadParentClassBoard(), loadChildScores()]);
+    }
+
+    /* ================= 📋 功課＆考試布告欄 + 明日考試置頂 ================= */
+    async function loadParentClassBoard() {
+      const { data: items } = await supabaseClient
+        .from('class_board_items')
+        .select('*')
+        .order('exam_date', { ascending: true, nullsFirst: false })
+        .order('id', { ascending: false });
+
+      const boardItems = (items || []).filter(i => (i.class_name || '國二-2') === currentClassName);
+
+      const tomorrowStr = getLocalDateStr(1);
+      const todayDow = new Date().getDay();
+      const nextMondayStr = todayDow === 5 ? getLocalDateStr(3) : null;
+
+      const urgentExams = boardItems.filter(item => {
+        if (item.item_type !== 'exam' || !item.exam_date) return false;
+        return item.exam_date === tomorrowStr || (nextMondayStr && item.exam_date === nextMondayStr);
+      });
+
+      const banner = document.getElementById('tomorrowExamBanner');
+      const listEl = document.getElementById('tomorrowExamList');
+      const badgeEl = document.getElementById('tomorrowDateBadge');
+
+      if (urgentExams.length > 0) {
+        badgeEl.innerText = nextMondayStr
+          ? `明日 (${tomorrowStr}) 及下週一 (${nextMondayStr})`
+          : `明日日期：${tomorrowStr}`;
+
+        listEl.innerHTML = urgentExams.map(ex => {
+          const isMon = nextMondayStr && ex.exam_date === nextMondayStr;
+          const dayTag = isMon ? `下週一 ${ex.exam_date}` : `明天 ${ex.exam_date}`;
+          return `
+            <div class="tomorrow-exam-chip">
+              <div>
+                <span class="type-pill-exam">${dayTag}</span>
+                <strong style="margin-left:0.45rem; color:var(--accent-blue);">【${escapeHtml(ex.subject)}】</strong>
+                <span style="font-weight:700;">${escapeHtml(ex.title)}</span>
+              </div>
+              <span style="font-size:0.75rem; color:var(--text-muted);">${escapeHtml(ex.created_by_name || '')}</span>
+            </div>
+          `;
+        }).join('');
+        banner.style.display = 'block';
+      } else {
+        banner.style.display = 'none';
+      }
+
+      const grid = document.getElementById('parentBoardGrid');
+      grid.innerHTML = BOARD_SUBJECTS.map(sub => {
+        const subItems = boardItems.filter(i => i.subject === sub);
+        const itemsHtml = subItems.length === 0
+          ? `<div style="font-size:0.82rem; color:var(--text-muted); padding:0.35rem 0;">目前無功課或考試</div>`
+          : subItems.map(item => `
+              <div class="board-item-row">
+                <div style="margin-bottom:0.2rem;">
+                  ${item.item_type === 'exam' ? '<span class="type-pill-exam">🚨 考試</span>' : '<span class="type-pill-hw">📝 功課</span>'}
+                  ${item.exam_date ? `<span style="font-size:0.75rem; color:var(--accent-amber); font-weight:700; margin-left:0.35rem;">📅 ${item.exam_date}</span>` : ''}
+                </div>
+                <div style="font-weight:700; word-break:break-word;">${escapeHtml(item.title)}</div>
+              </div>
+            `).join('');
+
+        return `
+          <div class="board-subject-card">
+            <div class="board-subject-top">
+              <strong style="color:var(--accent-blue); font-size:0.96rem;">📚 ${escapeHtml(sub)}</strong>
+            </div>
+            ${itemsHtml}
+          </div>
+        `;
+      }).join('');
     }
 
     async function loadChildScores() {
@@ -569,7 +742,11 @@
         return;
       }
 
-      publishedScoresCache = (allScores || []).filter(s => s.is_published !== false);
+      publishedScoresCache = (allScores || []).filter(s => {
+        if (s.is_published === false) return false;
+        if (classStudentIdSet && !classStudentIdSet.has(s.student_id)) return false;
+        return true;
+      });
       const childScores = publishedScoresCache.filter(s => s.student_id === targetStudentId);
 
       renderSummaryAndRank(publishedScoresCache, childScores);
@@ -598,7 +775,7 @@
 
         return `
           <div class="summary-card">
-            <div class="sub-title">${sub} 科平均</div>
+            <div class="sub-title">${escapeHtml(sub)} 科平均</div>
             <div class="sub-val">${childAvg}</div>
             <div class="sub-avg">班均 ${classAvg}</div>
           </div>
@@ -631,7 +808,7 @@
       const childOverallAvg = childTotalObj ? childTotalObj.totalAvg : '-';
 
       cardsHtml.push(`
-        <div class="summary-card" style="border-color: var(--card-hi-border); background: var(--card-hi-bg);">
+        <div class="summary-card" style="border-color: var(--accent-blue); background: var(--accent-blue-soft);">
           <div class="sub-title" style="color: var(--accent-blue);">跨科總平均</div>
           <div class="sub-val" style="color: var(--accent-blue);">${childOverallAvg}</div>
           <div class="sub-avg">全班總均 ${classOverallAvg}</div>
@@ -649,7 +826,7 @@
       document.getElementById('totalParticipantsText').innerText = `共 ${studentTotalsCache.length} 人參與`;
 
       const subSelect = document.getElementById('subjectDistSelect');
-      subSelect.innerHTML = subjects.map(sub => `<option value="${sub}">${sub}科組距</option>`).join('');
+      subSelect.innerHTML = subjects.map(sub => `<option value="${escapeHtml(sub)}">${escapeHtml(sub)}科組距</option>`).join('');
       renderSubjectDistribution();
 
       const allOverallVals = studentTotalsCache.map(x => x.totalAvg);
@@ -690,15 +867,15 @@
 
       tbody.innerHTML = childScores.map(item => `
         <tr>
-          <td><span class="date-tag">${item.exam_date || '未填日期'}</span></td>
-          <td><span class="badge">${item.subject}</span></td>
-          <td><strong>${item.exam_name || '平時考'}</strong></td>
+          <td><span class="date-tag">${escapeHtml(item.exam_date || '未填日期')}</span></td>
+          <td><span class="badge">${escapeHtml(item.subject)}</span></td>
+          <td><strong>${escapeHtml(item.exam_name || '平時考')}</strong></td>
           <td><span class="score-num">${item.score}</span></td>
           <td>${item.class_avg ?? '-'}</td>
           <td>第 ${item.rank ?? '-'} 名</td>
           <td>
             ${item.report_note
-              ? `<span class="reported-tag">⏳ 孩子已回報：${item.report_note}</span>`
+              ? `<span class="reported-tag">⏳ 孩子已回報：${escapeHtml(item.report_note)}</span>`
               : `<span style="color:var(--text-muted); font-size:0.8rem;">正常</span>`
             }
           </td>

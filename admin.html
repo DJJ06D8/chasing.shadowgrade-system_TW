@@ -1,173 +1,166 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NEXUS GRADE // 老師與系統開發者指揮終端</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
-      --bg-base: #060913;
-      --bg-glow-1: rgba(0, 240, 255, 0.1);
-      --bg-glow-2: rgba(16, 185, 129, 0.1);
-      --grid-line: rgba(0, 240, 255, 0.03);
-      --container-bg: rgba(15, 23, 42, 0.82);
-      --container-border: rgba(0, 240, 255, 0.22);
-      --container-shadow: 0 0 35px rgba(0, 0, 0, 0.65);
-      --alert-bg: rgba(69, 26, 3, 0.65);
-      --alert-border: rgba(245, 158, 11, 0.65);
-      --alert-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
-      --alert-title: #fbbf24;
-      --header-border: rgba(0, 240, 255, 0.18);
-      --accent-primary: #00f0ff;
-      --accent-blue: #38bdf8;
-      --accent-emerald: #10b981;
-      --accent-gold: #fbbf24;
-      --accent-purple: #a855f7;
-      --title-grad: linear-gradient(90deg, #ffffff, #38bdf8);
-      --text-main: #f8fafc;
-      --text-heading: #e2e8f0;
-      --text-label: #cbd5e1;
-      --text-muted: #94a3b8;
-      --input-bg: rgba(2, 6, 23, 0.75);
-      --input-border: rgba(148, 163, 184, 0.3);
-      --input-text: #ffffff;
-      --th-bg: rgba(2, 6, 23, 0.6);
-      --td-border: rgba(148, 163, 184, 0.15);
-      --tr-hover: rgba(0, 240, 255, 0.03);
-      --modal-bg: rgba(15, 23, 42, 0.95);
-      --modal-border: rgba(0, 240, 255, 0.4);
-      --card-bg: rgba(2, 6, 23, 0.65);
-      --card-border: rgba(148, 163, 184, 0.2);
-      --card-hi-bg: rgba(8, 47, 73, 0.45);
-      --card-hi-border: rgba(0, 240, 255, 0.45);
-      --acc-item-bg: rgba(2, 6, 23, 0.6);
-      --acc-head-bg: rgba(15, 23, 42, 0.6);
-      --badge-bg: rgba(0, 240, 255, 0.12);
-      --badge-border: rgba(0, 240, 255, 0.3);
-      --btn-grad: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
-      --btn-text: #020617;
-      --pill-bg: rgba(2, 6, 23, 0.85);
-      --pill-border: rgba(0, 240, 255, 0.4);
-      --pill-knob: linear-gradient(135deg, #00f0ff, #38bdf8);
-      --pill-knob-shadow: 0 0 10px rgba(0, 240, 255, 0.75);
-      --dropzone-bg: rgba(2, 6, 23, 0.55);
-      --dropzone-border: rgba(0, 240, 255, 0.45);
-    }
-
-    [data-theme="light"] {
-      --bg-base: #eef3f9;
-      --bg-glow-1: rgba(2, 132, 199, 0.11);
-      --bg-glow-2: rgba(16, 185, 129, 0.09);
-      --grid-line: rgba(14, 116, 144, 0.065);
-      --container-bg: rgba(255, 255, 255, 0.88);
-      --container-border: rgba(2, 132, 199, 0.24);
-      --container-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      --alert-bg: rgba(255, 251, 235, 0.94);
-      --alert-border: rgba(217, 119, 6, 0.55);
-      --alert-shadow: 0 12px 30px rgba(217, 119, 6, 0.12);
-      --alert-title: #b45309;
-      --header-border: rgba(2, 132, 199, 0.18);
-      --accent-primary: #0284c7;
-      --accent-blue: #0369a1;
+      --bg-main: #F4F5F7;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F9FAFB;
+      --bg-input: #FFFFFF;
+      --text-primary: #111827;
+      --text-secondary: #4B5563;
+      --text-muted: #9CA3AF;
+      --border-light: #E5E7EB;
+      --border-focus: #111827;
+      --accent-primary: #111827;
+      --accent-btn-text: #FFFFFF;
+      --accent-blue: #2563EB;
+      --accent-blue-soft: #EFF6FF;
       --accent-emerald: #059669;
-      --accent-gold: #d97706;
-      --accent-purple: #7e22ce;
-      --title-grad: linear-gradient(90deg, #0f172a, #0284c7);
-      --text-main: #0f172a;
-      --text-heading: #1e293b;
-      --text-label: #334155;
-      --text-muted: #475569;
-      --input-bg: #f8fafc;
-      --input-border: rgba(148, 163, 184, 0.45);
-      --input-text: #0f172a;
-      --th-bg: rgba(241, 245, 249, 0.92);
-      --td-border: rgba(148, 163, 184, 0.24);
-      --tr-hover: rgba(2, 132, 199, 0.045);
-      --modal-bg: #ffffff;
-      --modal-border: rgba(2, 132, 199, 0.35);
-      --card-bg: rgba(248, 250, 252, 0.92);
-      --card-border: rgba(148, 163, 184, 0.32);
-      --card-hi-bg: rgba(224, 242, 254, 0.85);
-      --card-hi-border: rgba(2, 132, 199, 0.45);
-      --acc-item-bg: rgba(248, 250, 252, 0.95);
-      --acc-head-bg: rgba(241, 245, 249, 0.9);
-      --badge-bg: rgba(2, 132, 199, 0.1);
-      --badge-border: rgba(2, 132, 199, 0.28);
-      --btn-grad: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
-      --btn-text: #ffffff;
-      --pill-bg: #e2e8f0;
-      --pill-border: rgba(2, 132, 199, 0.38);
-      --pill-knob: linear-gradient(135deg, #f59e0b, #fbbf24);
-      --pill-knob-shadow: 0 0 10px rgba(245, 158, 11, 0.65);
-      --dropzone-bg: rgba(240, 249, 255, 0.85);
-      --dropzone-border: rgba(2, 132, 199, 0.45);
+      --accent-emerald-soft: #ECFDF5;
+      --accent-amber: #D97706;
+      --accent-amber-soft: #FFFBEB;
+      --accent-rose: #DC2626;
+      --accent-rose-soft: #FEF2F2;
+      --accent-purple: #7C3AED;
+      --accent-purple-soft: #F5F3FF;
+      --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -6px rgba(0, 0, 0, 0.02);
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
     }
 
-    * { box-sizing: border-box; }
+    [data-theme="dark"] {
+      --bg-main: #0B0F19;
+      --bg-card: #111827;
+      --bg-subtle: #1F2937;
+      --bg-input: #1F2937;
+      --text-primary: #F9FAFB;
+      --text-secondary: #D1D5DB;
+      --text-muted: #6B7280;
+      --border-light: #374151;
+      --border-focus: #60A5FA;
+      --accent-primary: #F9FAFB;
+      --accent-btn-text: #0B0F19;
+      --accent-blue: #60A5FA;
+      --accent-blue-soft: rgba(59, 130, 246, 0.15);
+      --accent-emerald: #34D399;
+      --accent-emerald-soft: rgba(16, 185, 129, 0.15);
+      --accent-amber: #FBBF24;
+      --accent-amber-soft: rgba(245, 158, 11, 0.15);
+      --accent-rose: #F87171;
+      --accent-rose-soft: rgba(239, 68, 68, 0.15);
+      --accent-purple: #A78BFA;
+      --accent-purple-soft: rgba(139, 92, 246, 0.15);
+      --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 4px 10px -6px rgba(0, 0, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-base);
-      background-image: 
-        radial-gradient(circle at 12% 20%, var(--bg-glow-1) 0%, transparent 40%),
-        radial-gradient(circle at 88% 80%, var(--bg-glow-2) 0%, transparent 45%),
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
-      color: var(--text-main);
+      background-color: var(--bg-main);
+      color: var(--text-primary);
       padding: 1.5rem;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .container {
-      max-width: 920px;
-      margin: 0 auto 2rem auto;
-      background: var(--container-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--container-border);
-      border-radius: 16px;
+      max-width: 980px;
+      margin: 0 auto 1.5rem auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
       padding: 1.75rem 2rem;
-      box-shadow: var(--container-shadow);
+      box-shadow: var(--shadow-card);
     }
 
     .dev-container {
-      border-color: rgba(168, 85, 247, 0.45);
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.12);
+      border: 1.5px solid var(--accent-purple);
     }
 
     .dev-badge {
       display: inline-block;
-      background: rgba(168, 85, 247, 0.16);
+      background: var(--accent-purple-soft);
       color: var(--accent-purple);
-      border: 1px solid rgba(168, 85, 247, 0.45);
-      padding: 0.15rem 0.55rem;
-      border-radius: 6px;
+      padding: 3px 10px;
+      border-radius: 99px;
       font-size: 0.74rem;
-      font-weight: 700;
-      margin-left: 0.4rem;
+      font-weight: 800;
+      margin-left: 0.45rem;
     }
 
     .alert-box {
-      max-width: 920px;
-      margin: 0 auto 2rem auto;
-      background: var(--alert-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--alert-border);
+      max-width: 980px;
+      margin: 0 auto 1.5rem auto;
+      background: var(--accent-amber-soft);
+      border: 1.5px solid var(--accent-amber);
       padding: 1.5rem 2rem;
-      border-radius: 16px;
-      box-shadow: var(--alert-shadow);
+      border-radius: var(--radius-xl);
     }
 
     .alert-box h3 {
       margin-top: 0;
-      color: var(--alert-title);
-      border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--accent-amber);
+      border-bottom: 1px solid rgba(217, 119, 6, 0.25);
       padding-bottom: 0.6rem;
+    }
+
+    /* 明日考試自動置頂提醒橫幅 */
+    .tomorrow-exam-banner {
+      max-width: 980px;
+      margin: 0 auto 1.5rem auto;
+      background: var(--accent-rose-soft);
+      border: 1.5px solid var(--accent-rose);
+      border-radius: var(--radius-xl);
+      padding: 1.25rem 1.75rem;
+    }
+
+    .tomorrow-exam-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .tomorrow-exam-title {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--accent-rose);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .tomorrow-exam-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .tomorrow-exam-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0.65rem 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .header {
@@ -193,139 +186,126 @@
     }
 
     .role-tag {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
-      color: var(--accent-primary);
-      letter-spacing: 0.12em;
+      color: var(--accent-blue);
+      letter-spacing: 0.08em;
       display: block;
       margin-bottom: 0.25rem;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     h2 {
       margin: 0;
-      font-size: 1.35rem;
-      background: var(--title-grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: -0.4px;
     }
 
     h3 {
       margin-top: 0;
-      color: var(--text-heading);
-      border-bottom: 1px solid var(--td-border);
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-light);
       padding-bottom: 0.75rem;
-      font-size: 1.05rem;
+      font-size: 1.08rem;
+      font-weight: 800;
     }
 
     .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+
+    .class-switcher-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-md);
+    }
+
+    .class-switcher-box select {
+      border: none;
+      background: transparent;
+      padding: 0.2rem 0.4rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+      width: auto;
+      cursor: pointer;
+    }
 
     .chat-portal-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      background: linear-gradient(135deg, #00f0ff 0%, #10b981 100%);
-      color: #020617;
+      background: var(--accent-blue);
+      color: #FFFFFF;
       border: none;
-      padding: 0.48rem 0.95rem;
-      border-radius: 8px;
+      padding: 0.5rem 0.95rem;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      font-weight: 800;
+      font-weight: 700;
       font-size: 0.84rem;
-      box-shadow: 0 4px 14px rgba(0, 240, 255, 0.28);
     }
 
-    /* 滑動膠囊明暗切換條 */
-    .theme-switch {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      width: 78px;
-      height: 32px;
-      padding: 3px;
-      border-radius: 999px;
-      background: var(--pill-bg);
-      border: 1px solid var(--pill-border);
+    .theme-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      user-select: none;
-      transition: background 0.3s ease, border-color 0.3s ease;
-    }
-
-    .theme-switch-knob {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--pill-knob);
-      box-shadow: var(--pill-knob-shadow);
-      transform: translateX(0);
-      transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
       flex-shrink: 0;
     }
-
-    [data-theme="light"] .theme-switch-knob {
-      transform: translateX(46px);
-    }
-
-    .theme-switch-label {
-      position: absolute;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.66rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      transition: opacity 0.25s ease;
-      pointer-events: none;
-    }
-
-    .label-dark { right: 9px; opacity: 1; color: var(--accent-primary); }
-    .label-light { left: 9px; opacity: 0; color: #b45309; }
-
-    [data-theme="light"] .label-dark { opacity: 0; }
-    [data-theme="light"] .label-light { opacity: 1; }
 
     .excel-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      background: var(--accent-emerald);
       color: #ffffff;
       border: none;
       padding: 0.5rem 0.95rem;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 700;
       font-size: 0.84rem;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     }
 
     .pdf-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      background: var(--accent-purple);
       color: #ffffff;
       border: none;
       padding: 0.5rem 0.95rem;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 700;
       font-size: 0.84rem;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     }
 
     .logout-btn {
-      background: rgba(244, 63, 94, 0.15);
-      color: #f43f5e;
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      padding: 0.5rem 1.05rem;
-      border-radius: 8px;
+      background: var(--accent-rose-soft);
+      color: var(--accent-rose);
+      border: 1px solid rgba(220, 38, 38, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 0.84rem;
     }
 
     .excel-dropzone {
-      background: var(--dropzone-bg);
-      border: 2px dashed var(--dropzone-border);
-      border-radius: 12px;
+      background: var(--bg-subtle);
+      border: 2px dashed var(--border-light);
+      border-radius: var(--radius-lg);
       padding: 1.25rem 1.5rem;
       margin-bottom: 1.5rem;
       display: flex;
@@ -338,19 +318,19 @@
 
     .excel-dropzone.dragover {
       border-color: var(--accent-emerald);
-      background: rgba(16, 185, 129, 0.12);
+      background: var(--accent-emerald-soft);
     }
 
     .dropzone-info strong {
-      color: var(--accent-primary);
-      font-size: 1rem;
+      color: var(--accent-blue);
+      font-size: 0.98rem;
       display: block;
       margin-bottom: 0.25rem;
     }
 
     .dropzone-info span {
-      font-size: 0.83rem;
-      color: var(--text-muted);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
     }
 
     .dropzone-actions {
@@ -364,7 +344,7 @@
       width: 100%;
       margin-top: 0.65rem;
       padding-top: 0.75rem;
-      border-top: 1px solid var(--td-border);
+      border-top: 1px solid var(--border-light);
       display: none;
       align-items: center;
       gap: 0.75rem;
@@ -381,38 +361,35 @@
 
     .form-row { display: flex; gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
     .form-group { flex: 1; min-width: 200px; }
-    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.45rem; color: var(--text-label); }
+    label { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.45rem; color: var(--text-secondary); }
 
     input[type="text"], input[type="number"], input[type="date"], select, textarea {
       width: 100%;
       padding: 0.65rem 0.85rem;
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      border-radius: 8px;
-      color: var(--input-text);
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
       font-size: 0.95rem;
-      font-family: inherit;
+      font-weight: 600;
     }
 
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 10px var(--bg-glow-1);
+      border-color: var(--border-focus);
     }
-
-    select option { background: var(--modal-bg); color: var(--text-main); }
 
     .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
-    th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid var(--td-border); }
+    th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid var(--border-light); }
     th {
-      background: var(--th-bg);
-      color: var(--accent-primary);
-      font-size: 0.82rem;
-      letter-spacing: 0.05em;
-      font-weight: 700;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      font-weight: 800;
     }
-    tr:hover td { background: var(--tr-hover); }
+    tr:hover td { background: var(--bg-subtle); }
 
     .student-link { color: var(--accent-blue); cursor: pointer; font-weight: 700; text-decoration: underline; }
 
@@ -422,119 +399,222 @@
       z-index: 1000;
       left: 0; top: 0;
       width: 100%; height: 100%;
-      background: rgba(2, 6, 23, 0.78);
-      backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
       justify-content: center;
       align-items: center;
       padding: 1rem;
     }
     .modal-content {
-      background: var(--modal-bg);
-      border: 1px solid var(--modal-border);
-      border-radius: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
       width: 100%;
       max-width: 650px;
+      max-height: 88vh;
+      overflow-y: auto;
       padding: 2rem;
       position: relative;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     }
-    .close-modal { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+    .close-modal { position: absolute; top: 1.1rem; right: 1.35rem; font-size: 1.4rem; color: var(--text-muted); cursor: pointer; }
 
     .submit-btn {
       width: 100%;
       padding: 0.9rem;
-      background: var(--btn-grad);
-      color: var(--btn-text);
+      background: var(--accent-primary);
+      color: var(--accent-btn-text);
       border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+      border-radius: var(--radius-md);
+      font-size: 0.98rem;
+      font-weight: 800;
       cursor: pointer;
     }
 
     .edit-btn {
-      background: rgba(245, 158, 11, 0.16);
-      color: var(--accent-gold);
-      border: 1px solid rgba(245, 158, 11, 0.45);
+      background: var(--accent-amber-soft);
+      color: var(--accent-amber);
+      border: 1px solid rgba(217, 119, 6, 0.35);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.82rem;
+      font-weight: 700;
+      font-size: 0.8rem;
     }
 
     .del-btn {
-      background: rgba(244, 63, 94, 0.15);
-      color: #f43f5e;
-      border: 1px solid rgba(244, 63, 94, 0.45);
+      background: var(--accent-rose-soft);
+      color: var(--accent-rose);
+      border: 1px solid rgba(220, 38, 38, 0.35);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.82rem;
+      font-weight: 700;
+      font-size: 0.8rem;
     }
 
     .pw-edit-btn {
-      background: rgba(2, 132, 199, 0.12);
-      color: var(--accent-primary);
-      border: 1px solid rgba(2, 132, 199, 0.4);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
       padding: 0.45rem 0.85rem;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.84rem;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .pw-edit-btn:hover {
+      border-color: var(--text-primary);
     }
 
     .resolve-btn {
-      background: rgba(16, 185, 129, 0.18);
+      background: var(--accent-emerald-soft);
       color: var(--accent-emerald);
-      border: 1px solid rgba(16, 185, 129, 0.5);
+      border: 1px solid rgba(5, 150, 105, 0.35);
       padding: 0.35rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.82rem;
+      font-weight: 700;
+      font-size: 0.8rem;
     }
 
     .badge {
       display: inline-block;
-      background: var(--badge-bg);
-      color: var(--accent-primary);
-      border: 1px solid var(--badge-border);
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
       padding: 0.2rem 0.55rem;
       border-radius: 6px;
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .type-pill-hw {
+      display: inline-block;
+      background: var(--accent-emerald-soft);
+      color: var(--accent-emerald);
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .type-pill-exam {
+      display: inline-block;
+      background: var(--accent-rose-soft);
+      color: var(--accent-rose);
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .board-subject-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .board-subject-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.55rem;
+      gap: 0.4rem;
+    }
+
+    .board-helper-tags {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .board-item-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.86rem;
+    }
+
+    .helper-checklist {
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+      background: var(--bg-subtle);
+      margin-bottom: 1rem;
+    }
+
+    .helper-check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .helper-check-item:hover {
+      background: var(--bg-card);
     }
 
     .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
     .summary-card {
       flex: 1;
       min-width: 140px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
       padding: 1rem;
       text-align: center;
     }
-    .summary-card .sub-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 600; }
-    .summary-card .sub-val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.45rem; font-weight: 800; color: var(--text-main); }
+    .summary-card .sub-title { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.3rem; font-weight: 700; }
+    .summary-card .sub-val { font-family: 'JetBrains Mono', monospace; font-size: 1.45rem; font-weight: 800; color: var(--text-primary); }
 
-    .acc-item { background: var(--acc-item-bg); border: 1px solid var(--card-border); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden; }
-    .acc-head { padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: var(--acc-head-bg); }
+    .acc-item { background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-lg); margin-bottom: 0.75rem; overflow: hidden; }
+    .acc-head { padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
 
-    #status { margin-top: 1rem; text-align: center; font-weight: 600; }
+    /* 申請開通審核卡片 */
+    .app-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    #status { margin-top: 1rem; text-align: center; font-weight: 700; }
 
     #printOnlyReportSheet { display: none; }
 
     @media (max-width: 768px) {
       body { padding: 0.85rem; }
-      .container, .alert-box { padding: 1.25rem 1rem; border-radius: 14px; }
-      h2 { font-size: 1.15rem; }
+      .container, .alert-box, .tomorrow-exam-banner { padding: 1.25rem 1rem; border-radius: 16px; }
+      h2 { font-size: 1.18rem; }
       .form-group { min-width: 100%; }
       input[type="text"], input[type="number"], input[type="date"], select, textarea { font-size: 16px; }
-      th, td { padding: 0.55rem 0.45rem; font-size: 0.86rem; }
+      th, td { padding: 0.55rem 0.45rem; font-size: 0.85rem; }
     }
 
     @page {
@@ -549,13 +629,17 @@
         padding: 0 !important;
         margin: 0 !important;
       }
+      #tomorrowExamBanner,
       #reportAlertSection,
+      #devApplicationSection,
       #entrySection,
+      #classBoardSection,
       #adminRankSection,
       #adminHistorySection,
       #devAnnouncementSection,
       #adminPasswordSection,
       #trendModal,
+      #helperAssignModal,
       .btn-group,
       .no-print {
         display: none !important;
@@ -621,11 +705,31 @@
   <div class="modal" id="trendModal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeTrendModal()">&times;</span>
-      <h3 id="modalTitle" style="color: var(--accent-primary); margin-bottom: 1rem;">📈 個人成績趨勢分析</h3>
+      <h3 id="modalTitle" style="color: var(--accent-blue); margin-bottom: 1rem;">📈 個人成績趨勢分析</h3>
       <div style="position: relative; height: 300px; width: 100%;">
         <canvas id="trendChart"></canvas>
       </div>
     </div>
+  </div>
+
+  <!-- 指派各科小老師彈窗（導師與開發者皆可調整） -->
+  <div class="modal" id="helperAssignModal">
+    <div class="modal-content" style="max-width: 480px;">
+      <span class="close-modal" onclick="closeHelperAssignModal()">&times;</span>
+      <h3 id="helperModalTitle" style="color: var(--accent-blue); margin-bottom: 0.75rem;">👩‍🏫 指派科目小老師</h3>
+      <p class="hint" style="margin-bottom: 0.85rem;">勾選的同學將在學生端獲得「該科目功課＆考試」的新增與編輯權限：</p>
+      <div class="helper-checklist" id="helperChecklistBody"></div>
+      <button class="submit-btn" onclick="saveSubjectHelpers()">💾 儲存小老師名單</button>
+    </div>
+  </div>
+
+  <!-- 🚨 明日考試自動置頂提醒（免點開直接顯示） -->
+  <div class="tomorrow-exam-banner" id="tomorrowExamBanner" style="display: none;">
+    <div class="tomorrow-exam-header">
+      <div class="tomorrow-exam-title">🚨 明日考試提醒（自動置頂・免點開）</div>
+      <span class="badge" id="tomorrowDateBadge" style="background:var(--bg-card); color:var(--accent-rose);"></span>
+    </div>
+    <div class="tomorrow-exam-list" id="tomorrowExamList"></div>
   </div>
 
   <div class="alert-box" id="reportAlertSection" style="display: none;">
@@ -647,21 +751,21 @@
     </div>
   </div>
 
-  <!-- 區塊一：直列 Excel 匯入與成績登錄控制台（預設收合） -->
+  <!-- 頂部指揮中心主控列 -->
   <div class="container" id="entrySection">
     <div class="header" id="entryHeader">
       <div>
-        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V4.2</span>
+        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V5.0</span>
         <h2 id="commandTitle">國二-2 成績系統指揮中心（老師專用）</h2>
       </div>
       <div class="btn-group">
+        <div class="class-switcher-box" id="classSwitcherContainer" style="display:none;">
+          <span style="font-size:0.78rem; font-weight:800; color:var(--text-secondary);">🏫 檢視班級：</span>
+          <select id="activeClassSelect" onchange="handleClassSwitch()"></select>
+        </div>
         <button class="chat-portal-btn" onclick="window.location.href='chat.html'">💬 班級訊息中心</button>
         <button class="pw-edit-btn" onclick="toggleSection('entryCollapsibleBody', 'entryHeader', '1.5rem')">📂 展開 / 收合成績登錄區</button>
-        <div class="theme-switch" role="button" tabindex="0" aria-label="切換明暗主題" onclick="toggleTheme()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleTheme()">
-          <span class="theme-switch-label label-light">LIGHT</span>
-          <div class="theme-switch-knob"></div>
-          <span class="theme-switch-label label-dark">DARK</span>
-        </div>
+        <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
         <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
@@ -678,7 +782,7 @@
           <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleExcelUpload(event)">
         </div>
         <div id="excelColumnPicker">
-          <label for="excelScoreColSelect" style="margin:0; white-space:nowrap; color:var(--accent-primary);">📑 偵測到多欄成績，請選擇要帶入哪一欄：</label>
+          <label for="excelScoreColSelect" style="margin:0; white-space:nowrap; color:var(--accent-blue);">📑 偵測到多欄成績，請選擇要帶入哪一欄：</label>
           <select id="excelScoreColSelect" style="width:auto; min-width:220px;" onchange="applySelectedExcelColumn()"></select>
         </div>
         <div id="excelImportMsg"></div>
@@ -753,10 +857,68 @@
     </div>
   </div>
 
-  <!-- 區塊二：全班各科平均與總平均總排名總覽（預設收合） -->
+  <!-- 🏫 系統開發者專用：導師申請開通新班級審核與一鍵建檔 -->
+  <div class="container dev-container" id="devApplicationSection" style="display: none;">
+    <div class="section-header-bar" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
+      <div>
+        <h3>🏫 導師申請開通新班級審核 <span class="dev-badge">系統開發者專用</span></h3>
+        <div class="hint">核准後系統將自動建立新班級、導師帳號，以及全班所有學生與家長帳號（預設密碼皆為 123456）</div>
+      </div>
+      <span class="badge mono" id="pendingAppCountBadge">0 筆待審核</span>
+    </div>
+    <div id="teacherApplicationList">
+      <div style="color: var(--text-muted); font-size: 0.88rem;">載入申請紀錄中...</div>
+    </div>
+  </div>
+
+  <!-- 📋 功課＆考試布告欄（老師與開發者皆可指派小老師、新增/編輯/刪除） -->
+  <div class="container" id="classBoardSection">
+    <div class="section-header-bar" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
+      <div>
+        <h3>📋 功課＆考試布告欄（老師 / 開發者 / 各科小老師共同維護）</h3>
+        <div class="hint">設定為「考試」且日期為明天時，學生端、家長端與導師端最上方會自動跳出提醒</div>
+      </div>
+    </div>
+
+    <div class="form-row" style="margin-bottom: 0.75rem;">
+      <div class="form-group" style="max-width: 140px; min-width: 120px;">
+        <label for="boardSubjectInput">科目</label>
+        <select id="boardSubjectInput">
+          <option value="國文">國文</option>
+          <option value="英文">英文</option>
+          <option value="數學">數學</option>
+          <option value="自然">自然</option>
+          <option value="社會">社會</option>
+          <option value="班務">班務</option>
+        </select>
+      </div>
+      <div class="form-group" style="max-width: 145px; min-width: 120px;">
+        <label for="boardTypeInput">類型</label>
+        <select id="boardTypeInput" onchange="toggleBoardDateRequired()">
+          <option value="homework">📝 功課作業</option>
+          <option value="exam">🚨 考試測驗</option>
+        </select>
+      </div>
+      <div class="form-group" style="max-width: 175px; min-width: 150px;">
+        <label for="boardDateInput" id="boardDateLabel">繳交 / 考試日期</label>
+        <input type="date" id="boardDateInput">
+      </div>
+      <div class="form-group" style="flex: 2; min-width: 220px;">
+        <label for="boardTitleInput">內容說明（範圍 / 頁數 / 準備事項）</label>
+        <input type="text" id="boardTitleInput" maxlength="120" placeholder="例如：考 L3 單字＋片語、習作 P.24~27">
+      </div>
+    </div>
+    <button class="submit-btn" style="padding: 0.75rem; margin-bottom: 1.25rem;" onclick="addBoardItem()">＋ 發布至功課＆考試布告欄</button>
+
+    <div class="board-grid" id="adminBoardGrid">
+      <div style="color: var(--text-muted);">載入布告欄資料中...</div>
+    </div>
+  </div>
+
+  <!-- 區塊二：全班各科平均與總平均總排名總覽 -->
   <div class="container" id="adminRankSection">
     <div class="section-header-bar" id="rankHeaderBar">
-      <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-primary); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span></h3>
+      <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-blue); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span></h3>
       <div class="btn-group no-print">
         <button class="pw-edit-btn" onclick="toggleSection('rankCollapsibleBody', 'rankHeaderBar', '1.25rem')">📂 展開 / 收合排名矩陣</button>
         <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel (.xlsx)</button>
@@ -775,10 +937,9 @@
     </div>
   </div>
 
-  <!-- 專屬橫向列印明細表 -->
   <div id="printOnlyReportSheet">
     <div class="print-sheet-header">
-      <h1>國二-2 各場次小考成績明細一覽表（含科目與考試日期）</h1>
+      <h1 id="printSheetTitle">國二-2 各場次小考成績明細一覽表（含科目與考試日期）</h1>
       <p id="printDetailTimestamp"></p>
     </div>
     <table>
@@ -787,7 +948,7 @@
     </table>
   </div>
 
-  <!-- 區塊三：雲端原始紀錄庫（預設收合） -->
+  <!-- 區塊三：雲端原始紀錄庫 -->
   <div class="container" id="adminHistorySection">
     <div class="section-header-bar" id="historyHeaderBar">
       <h3>🗂️ 雲端已整合測驗場次</h3>
@@ -803,7 +964,7 @@
     </div>
   </div>
 
-  <!-- 系統開發者專用區塊：首頁公告欄管理（預設收合，支援新增、修改、刪除） -->
+  <!-- 系統開發者專用區塊：登入首頁公告欄管理 -->
   <div class="container dev-container" id="devAnnouncementSection" style="display: none;">
     <div class="section-header-bar" id="devAnnHeaderBar">
       <h3>📢 登入首頁公告欄管理 <span class="dev-badge">系統開發者專用</span></h3>
@@ -811,8 +972,8 @@
     </div>
 
     <div id="devAnnCollapsibleBody" style="display: none;">
-      <div id="annEditingBanner" style="display: none; background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.45); border-radius: 10px; padding: 0.7rem 1rem; margin-bottom: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-        <span style="color: var(--accent-gold); font-weight: 700; font-size: 0.88rem;">✏️ 正在修改既有公告內容</span>
+      <div id="annEditingBanner" style="display: none; background: var(--accent-amber-soft); border: 1px solid var(--accent-amber); border-radius: var(--radius-md); padding: 0.7rem 1rem; margin-bottom: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <span style="color: var(--accent-amber); font-weight: 800; font-size: 0.88rem;">✏️ 正在修改既有公告內容</span>
         <button type="button" class="del-btn" onclick="cancelEditAnnouncement()">取消編輯</button>
       </div>
 
@@ -865,7 +1026,7 @@
     </div>
   </div>
 
-  <!-- 區塊四：學生與家長帳號密碼管理（預設收合） -->
+  <!-- 區塊四：學生與家長帳號密碼管理 -->
   <div class="container" id="adminPasswordSection">
     <div class="section-header-bar" id="pwHeaderBar">
       <h3>🔑 學生與家長帳號密碼管理</h3>
@@ -894,27 +1055,24 @@
 
   <script>
     function applyTheme(theme) {
-      if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-      }
+      document.documentElement.setAttribute('data-theme', theme);
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
     }
     function toggleTheme() {
       const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       localStorage.setItem('nexus-theme', next);
       applyTheme(next);
     }
-    applyTheme(localStorage.getItem('nexus-theme') || 'dark');
+    applyTheme(localStorage.getItem('nexus-theme') || 'light');
 
-    // 通用展開 / 收合控制器
     function toggleSection(bodyId, headerId, openMargin = '1.25rem') {
       const bodyEl = document.getElementById(bodyId);
       const headerEl = document.getElementById(headerId);
       const isHidden = bodyEl.style.display === 'none';
       bodyEl.style.display = isHidden ? 'block' : 'none';
       if (headerEl) {
-        headerEl.style.borderBottom = isHidden ? '1px solid var(--td-border)' : 'none';
+        headerEl.style.borderBottom = isHidden ? '1px solid var(--border-light)' : 'none';
         headerEl.style.paddingBottom = isHidden ? '0.85rem' : '0';
         headerEl.style.marginBottom = isHidden ? openMargin : '0';
       }
@@ -923,17 +1081,46 @@
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SCHOOL_DOMAIN = 'cysh.khc.edu.tw';
 
+    const BOARD_SUBJECTS = ['國文', '英文', '數學', '自然', '社會', '班務'];
+
+    let currentUserId = null;
+    let currentUserLabel = '導師';
+    let currentClassName = '國二-2';
+    let availableClasses = ['國二-2'];
     let students = [];
     let parentAccountsList = [];
     let allScoresCache = [];
     let announcementsCache = [];
+    let applicationsCache = [];
+    let subjectHelpersMap = {};
+    let boardItemsCache = [];
+    let editingHelperSubject = null;
     let editingAnnId = null;
     let myChart = null;
     let parsedExcelState = null;
     let isDeveloperUser = false;
 
+    function getLocalDateStr(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
     document.getElementById('examDate').valueAsDate = new Date();
+    document.getElementById('boardDateInput').value = getLocalDateStr(1);
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
 
     const dropzone = document.getElementById('excelDropzone');
     dropzone.addEventListener('dragover', (e) => {
@@ -955,43 +1142,96 @@
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) { window.location.href = 'index.html'; return; }
 
+      currentUserId = session.user.id;
       const sessionEmail = (session.user.email || '').toLowerCase();
       const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('role, email')
-        .eq('id', session.user.id)
+        .select('role, email, name, class_name')
+        .eq('id', currentUserId)
         .single();
 
       isDeveloperUser = sessionEmail === '202020@cysh.khc.edu.tw' || (profile && profile.role === 'developer');
+      const isTeacherRole = profile && (profile.role === 'admin' || profile.role === 'teacher');
 
-      if (!isDeveloperUser && (!profile || profile.role !== 'admin')) {
+      if (!isDeveloperUser && !isTeacherRole) {
         alert('僅限老師或系統開發者權限帳號存取！');
         window.location.href = 'index.html';
         return;
       }
 
       if (isDeveloperUser) {
-        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V4.2';
-        document.getElementById('commandTitle').innerText = '國二-2 智慧成績系統（系統開發者）';
+        await loadAvailableClasses();
+        currentClassName = availableClasses[0] || '國二-2';
+        currentUserLabel = '系統開發者';
+        document.getElementById('classSwitcherContainer').style.display = 'inline-flex';
+        document.getElementById('devApplicationSection').style.display = 'block';
         document.getElementById('devAnnouncementSection').style.display = 'block';
-        await loadDevAnnouncements();
+        await Promise.all([loadTeacherApplications(), loadDevAnnouncements()]);
       } else {
-        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V4.2';
-        document.getElementById('commandTitle').innerText = '國二-2 成績系統指揮中心（老師專用）';
+        currentClassName = (profile && profile.class_name) ? profile.class_name : '國二-2';
+        currentUserLabel = `${profile.name || '導師'}（導師）`;
       }
 
-      const { data, error } = await supabaseClient
+      updateHeaderTitleByClass();
+      await loadClassScopedData();
+    }
+
+    function updateHeaderTitleByClass() {
+      if (isDeveloperUser) {
+        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V5.0';
+        document.getElementById('commandTitle').innerText = `${currentClassName} 智慧成績系統（系統開發者）`;
+      } else {
+        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V5.0';
+        document.getElementById('commandTitle').innerText = `${currentClassName} 成績系統指揮中心（老師專用）`;
+      }
+      document.getElementById('printSheetTitle').innerText = `${currentClassName} 各場次小考成績明細一覽表（含科目與考試日期）`;
+    }
+
+    async function loadAvailableClasses() {
+      const classSet = new Set(['國二-2']);
+      const [{ data: clsRows }, { data: profRows }] = await Promise.all([
+        supabaseClient.from('classes').select('class_name'),
+        supabaseClient.from('profiles').select('class_name').not('class_name', 'is', null)
+      ]);
+      (clsRows || []).forEach(c => { if (c.class_name) classSet.add(c.class_name); });
+      (profRows || []).forEach(p => { if (p.class_name) classSet.add(p.class_name); });
+
+      availableClasses = Array.from(classSet);
+      const sel = document.getElementById('activeClassSelect');
+      sel.innerHTML = availableClasses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      sel.value = currentClassName;
+    }
+
+    async function handleClassSwitch() {
+      currentClassName = document.getElementById('activeClassSelect').value;
+      updateHeaderTitleByClass();
+      resetEntryFormAfterSubmit();
+      await loadClassScopedData();
+    }
+
+    async function loadClassScopedData() {
+      let query = supabaseClient
         .from('profiles')
-        .select('id, seat_number, name, email, role, parent_of_student_id')
+        .select('id, seat_number, name, email, role, parent_of_student_id, class_name')
         .in('role', ['student', 'parent'])
         .order('seat_number', { ascending: true });
 
+      const { data, error } = await query;
+
+      const scopedUsers = (data || []).filter(u => {
+        const uClass = u.class_name || '國二-2';
+        return uClass === currentClassName;
+      });
+
       const tbody = document.getElementById('studentList');
-      const studentOnly = (data || []).filter(u => u.role === 'student');
-      parentAccountsList = (data || []).filter(u => u.role === 'parent');
+      const studentOnly = scopedUsers.filter(u => u.role === 'student');
+      parentAccountsList = scopedUsers.filter(u => u.role === 'parent');
 
       if (error || studentOnly.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3">目前沒有學生資料</td></tr>';
+        students = [];
+        tbody.innerHTML = `<tr><td colspan="3">「${escapeHtml(currentClassName)}」目前沒有學生資料</td></tr>`;
+        renderStudentAccounts();
+        await Promise.all([refreshScoresData(), loadClassBoard()]);
         return;
       }
 
@@ -1000,16 +1240,341 @@
       tbody.innerHTML = students.map(s => `
         <tr>
           <td>${s.seat_number ?? '-'}</td>
-          <td>${s.name}</td>
+          <td>${escapeHtml(s.name)}</td>
           <td><input type="number" id="score_${s.id}" min="0" max="100" placeholder="輸入分數"></td>
         </tr>
       `).join('');
 
       renderStudentAccounts();
-      await refreshScoresData();
+      await Promise.all([refreshScoresData(), loadClassBoard()]);
     }
 
-    // 系統開發者專用：首頁公告欄管理（載入、新增、修改、刪除）
+    /* ================= 開發者：導師申請開通新班級審核 ================= */
+    async function loadTeacherApplications() {
+      const container = document.getElementById('teacherApplicationList');
+      const badge = document.getElementById('pendingAppCountBadge');
+
+      const { data, error } = await supabaseClient
+        .from('teacher_applications')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        container.innerHTML = `<div style="color:var(--text-muted); font-size:0.85rem;">尚未建立申請表或讀取失敗：${escapeHtml(error.message)}</div>`;
+        return;
+      }
+
+      applicationsCache = data || [];
+      const pendingList = applicationsCache.filter(a => a.status === 'pending');
+      badge.innerText = `${pendingList.length} 筆待審核`;
+
+      if (applicationsCache.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.86rem;">目前尚無導師申請開通紀錄</div>';
+        return;
+      }
+
+      container.innerHTML = applicationsCache.map(app => {
+        const stList = Array.isArray(app.student_list) ? app.student_list : [];
+        const dt = new Date(app.created_at);
+        const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
+        const statusTag = app.status === 'pending'
+          ? '<span class="type-pill-exam" style="background:var(--accent-amber-soft); color:var(--accent-amber);">⏳ 待審核</span>'
+          : app.status === 'approved'
+            ? '<span class="type-pill-hw">✅ 已核准開通</span>'
+            : '<span class="type-pill-exam">✕ 已婉拒</span>';
+
+        const previewNames = stList.slice(0, 6).map(s => `${s.seat_no || '-'}號 ${s.full_name}`).join('、') + (stList.length > 6 ? ` ...等共 ${stList.length} 人` : '');
+
+        return `
+          <div class="app-card">
+            <div style="flex:1; min-width:240px;">
+              <div style="margin-bottom:0.35rem;">
+                ${statusTag}
+                <strong style="font-size:1rem; margin-left:0.45rem;">【${escapeHtml(app.class_name)}】</strong>
+                <span style="font-weight:700; color:var(--accent-blue);">${escapeHtml(app.teacher_name)}</span>
+                <span class="mono" style="font-size:0.8rem; color:var(--text-muted);">(${escapeHtml(app.teacher_email)})</span>
+              </div>
+              <div style="font-size:0.82rem; color:var(--text-secondary);">
+                申請日期：${dateStr} ｜ 名單人數：<strong>${stList.length} 位學生</strong>（將同步建置 ${stList.length} 組家長帳號）
+              </div>
+              <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">名單預覽：${escapeHtml(previewNames)}</div>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              ${app.status === 'pending' ? `
+                <button class="resolve-btn" id="approveAppBtn_${app.id}" style="padding:0.5rem 0.9rem; font-size:0.85rem;" onclick="approveTeacherApplication(${app.id})">✅ 核准並一鍵建檔</button>
+                <button class="del-btn" style="padding:0.5rem 0.85rem; font-size:0.85rem;" onclick="rejectTeacherApplication(${app.id})">✕ 婉拒</button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function approveTeacherApplication(appId) {
+      const app = applicationsCache.find(a => a.id === appId);
+      if (!app) return;
+      const stList = Array.isArray(app.student_list) ? app.student_list : [];
+
+      if (!confirm(`確定要核准「${app.class_name} - ${app.teacher_name}」的申請嗎？\n\n系統將自動建立：\n• 班級：${app.class_name}\n• 導師帳號：${app.teacher_email}\n• 學生與家長帳號：各 ${stList.length} 組（預設密碼 123456）`)) return;
+
+      const btn = document.getElementById(`approveAppBtn_${appId}`);
+      if (btn) { btn.disabled = true; btn.innerText = '正在一鍵建檔中...'; }
+
+      // 1. 優先嘗試呼叫後端 RPC 函數一鍵建置 Auth 與 Profiles
+      const { error: rpcError } = await supabaseClient.rpc('approve_teacher_application', {
+        app_id: appId
+      });
+
+      if (rpcError) {
+        // 若資料庫尚未部署該 RPC，則先更新 classes 與申請狀態，並提示執行 SQL
+        await supabaseClient.from('classes').upsert({
+          class_name: app.class_name,
+          teacher_name: app.teacher_name,
+          teacher_email: app.teacher_email
+        }, { onConflict: 'class_name' });
+
+        await supabaseClient.from('teacher_applications').update({ status: 'approved' }).eq('id', appId);
+        alert(`⚠️ 已標記核准「${app.class_name}」，但自動建立 Auth 帳號需要資料庫 RPC 權限（${rpcError.message}）。請確認已執行後端一鍵建檔 SQL 函數。`);
+      } else {
+        alert(`🎉 已成功核准並完成「${app.class_name}」全班建檔！\n導師、${stList.length} 位學生及 ${stList.length} 位家長現在皆可使用預設密碼 123456 登入。`);
+      }
+
+      await Promise.all([loadTeacherApplications(), loadAvailableClasses()]);
+    }
+
+    async function rejectTeacherApplication(appId) {
+      if (!confirm('確定要婉拒此筆班級開通申請嗎？')) return;
+      const { error } = await supabaseClient
+        .from('teacher_applications')
+        .update({ status: 'rejected' })
+        .eq('id', appId);
+
+      if (error) alert('操作失敗：' + error.message);
+      else await loadTeacherApplications();
+    }
+
+    /* ================= 功課＆考試布告欄 + 明日考試置頂 ================= */
+    function toggleBoardDateRequired() {
+      const t = document.getElementById('boardTypeInput').value;
+      document.getElementById('boardDateLabel').innerText = t === 'exam' ? '考試日期（必填・明天自動置頂）' : '繳交 / 提醒日期';
+    }
+
+    async function loadClassBoard() {
+      const [{ data: subRows }, { data: items }] = await Promise.all([
+        supabaseClient.from('subject_announcements').select('subject, helper_user_ids, class_name'),
+        supabaseClient.from('class_board_items').select('*').order('exam_date', { ascending: true, nullsFirst: false }).order('id', { ascending: false })
+      ]);
+
+      subjectHelpersMap = {};
+      BOARD_SUBJECTS.forEach(s => { subjectHelpersMap[s] = []; });
+      (subRows || []).forEach(r => {
+        const rClass = r.class_name || '國二-2';
+        if (rClass === currentClassName) {
+          subjectHelpersMap[r.subject] = Array.isArray(r.helper_user_ids) ? r.helper_user_ids : [];
+        }
+      });
+
+      boardItemsCache = (items || []).filter(i => (i.class_name || '國二-2') === currentClassName);
+      renderTomorrowExamBanner();
+      renderAdminClassBoard();
+    }
+
+    function renderTomorrowExamBanner() {
+      const tomorrowStr = getLocalDateStr(1);
+      const todayDow = new Date().getDay();
+      const nextMondayStr = todayDow === 5 ? getLocalDateStr(3) : null;
+
+      const urgentExams = boardItemsCache.filter(item => {
+        if (item.item_type !== 'exam' || !item.exam_date) return false;
+        return item.exam_date === tomorrowStr || (nextMondayStr && item.exam_date === nextMondayStr);
+      });
+
+      const banner = document.getElementById('tomorrowExamBanner');
+      const listEl = document.getElementById('tomorrowExamList');
+      const badgeEl = document.getElementById('tomorrowDateBadge');
+
+      if (urgentExams.length === 0) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      badgeEl.innerText = nextMondayStr
+        ? `明日 (${tomorrowStr}) 及下週一 (${nextMondayStr})`
+        : `明日日期：${tomorrowStr}`;
+
+      listEl.innerHTML = urgentExams.map(ex => {
+        const isMon = nextMondayStr && ex.exam_date === nextMondayStr;
+        const dayTag = isMon ? `下週一 ${ex.exam_date}` : `明天 ${ex.exam_date}`;
+        return `
+          <div class="tomorrow-exam-chip">
+            <div>
+              <span class="type-pill-exam">${dayTag}</span>
+              <strong style="margin-left:0.45rem; color:var(--accent-blue);">【${escapeHtml(ex.subject)}】</strong>
+              <span style="font-weight:700;">${escapeHtml(ex.title)}</span>
+            </div>
+            <span style="font-size:0.76rem; color:var(--text-muted);">登錄：${escapeHtml(ex.created_by_name || '師長/小老師')}</span>
+          </div>
+        `;
+      }).join('');
+
+      banner.style.display = 'block';
+    }
+
+    function renderAdminClassBoard() {
+      const grid = document.getElementById('adminBoardGrid');
+      const studentMap = {};
+      students.forEach(s => { studentMap[s.id] = `${s.seat_number ?? '-'}號 ${s.name}`; });
+
+      grid.innerHTML = BOARD_SUBJECTS.map(sub => {
+        const helperIds = subjectHelpersMap[sub] || [];
+        const helperNames = helperIds.map(uid => studentMap[uid] || '未知').join('、') || '尚未指派';
+        const subItems = boardItemsCache.filter(i => i.subject === sub);
+
+        const itemsHtml = subItems.length === 0
+          ? `<div style="font-size:0.82rem; color:var(--text-muted); padding:0.4rem 0;">目前無功課或考試項目</div>`
+          : subItems.map(item => `
+              <div class="board-item-row">
+                <div style="min-width:0; flex:1;">
+                  <div style="margin-bottom:0.25rem;">
+                    ${item.item_type === 'exam' ? '<span class="type-pill-exam">🚨 考試</span>' : '<span class="type-pill-hw">📝 功課</span>'}
+                    ${item.exam_date ? `<span style="font-size:0.76rem; color:var(--accent-amber); font-weight:700; margin-left:0.35rem;">📅 ${item.exam_date}</span>` : ''}
+                  </div>
+                  <div style="font-weight:700; word-break:break-word;">${escapeHtml(item.title)}</div>
+                  <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">發布：${escapeHtml(item.created_by_name || '')}</div>
+                </div>
+                <div style="display:flex; gap:0.25rem; flex-shrink:0;">
+                  <button class="edit-btn" style="padding:0.2rem 0.45rem; font-size:0.75rem;" onclick="editBoardItem(${item.id})">改</button>
+                  <button class="del-btn" style="padding:0.2rem 0.45rem; font-size:0.75rem;" onclick="deleteBoardItem(${item.id})">刪</button>
+                </div>
+              </div>
+            `).join('');
+
+        return `
+          <div class="board-subject-card">
+            <div class="board-subject-top">
+              <div>
+                <strong style="color:var(--accent-blue); font-size:0.98rem;">📚 ${sub}</strong>
+                <div class="board-helper-tags">小老師：${escapeHtml(helperNames)}</div>
+              </div>
+              <button class="pw-edit-btn" style="padding:0.3rem 0.6rem; font-size:0.76rem;" onclick="openHelperAssignModal('${sub}')">👥 設小老師</button>
+            </div>
+            ${itemsHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openHelperAssignModal(subject) {
+      editingHelperSubject = subject;
+      const currentIds = subjectHelpersMap[subject] || [];
+      document.getElementById('helperModalTitle').innerText = `👩‍🏫 指派「${subject}」小老師`;
+      document.getElementById('helperChecklistBody').innerHTML = students.map(s => `
+        <label class="helper-check-item">
+          <input type="checkbox" value="${s.id}" ${currentIds.includes(s.id) ? 'checked' : ''}>
+          <span>${s.seat_number ?? '-'}號 ${escapeHtml(s.name)}</span>
+        </label>
+      `).join('');
+      document.getElementById('helperAssignModal').style.display = 'flex';
+    }
+
+    function closeHelperAssignModal() {
+      document.getElementById('helperAssignModal').style.display = 'none';
+      editingHelperSubject = null;
+    }
+
+    async function saveSubjectHelpers() {
+      if (!editingHelperSubject) return;
+      const checked = Array.from(document.querySelectorAll('#helperChecklistBody input[type="checkbox"]:checked')).map(cb => cb.value);
+
+      const { error } = await supabaseClient
+        .from('subject_announcements')
+        .upsert({
+          subject: editingHelperSubject,
+          class_name: currentClassName,
+          helper_user_ids: checked,
+          updated_by_name: currentUserLabel,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) {
+        alert('儲存小老師名單失敗：' + error.message);
+        return;
+      }
+
+      closeHelperAssignModal();
+      await loadClassBoard();
+    }
+
+    async function addBoardItem() {
+      const subject = document.getElementById('boardSubjectInput').value;
+      const itemType = document.getElementById('boardTypeInput').value;
+      const examDate = document.getElementById('boardDateInput').value || null;
+      const title = document.getElementById('boardTitleInput').value.trim();
+
+      if (!title) {
+        alert('請輸入功課或考試內容說明！');
+        return;
+      }
+      if (itemType === 'exam' && !examDate) {
+        alert('選擇「考試測驗」時，請務必填寫考試日期！');
+        return;
+      }
+
+      const { error } = await supabaseClient
+        .from('class_board_items')
+        .insert([{
+          subject,
+          class_name: currentClassName,
+          item_type: itemType,
+          title,
+          exam_date: examDate,
+          created_by: currentUserId,
+          created_by_name: currentUserLabel
+        }]);
+
+      if (error) {
+        alert('發布失敗：' + error.message);
+        return;
+      }
+
+      document.getElementById('boardTitleInput').value = '';
+      await loadClassBoard();
+    }
+
+    async function editBoardItem(itemId) {
+      const item = boardItemsCache.find(i => i.id === itemId);
+      if (!item) return;
+
+      const newTitle = prompt(`修改【${item.subject}】內容說明：`, item.title);
+      if (newTitle === null) return;
+      const trimmedTitle = newTitle.trim();
+      if (!trimmedTitle) return alert('內容不可為空！');
+
+      const newDate = prompt('修改日期（格式 YYYY-MM-DD，留空則清除日期）：', item.exam_date || '');
+      if (newDate === null) return;
+      const trimmedDate = newDate.trim() || null;
+
+      const { error } = await supabaseClient
+        .from('class_board_items')
+        .update({ title: trimmedTitle, exam_date: trimmedDate })
+        .eq('id', itemId);
+
+      if (error) alert('修改失敗：' + error.message);
+      else await loadClassBoard();
+    }
+
+    async function deleteBoardItem(itemId) {
+      if (!confirm('確定要刪除這則功課／考試項目嗎？')) return;
+      const { error } = await supabaseClient
+        .from('class_board_items')
+        .delete()
+        .eq('id', itemId);
+
+      if (error) alert('刪除失敗：' + error.message);
+      else await loadClassBoard();
+    }
+
+    /* ================= 開發者首頁公告管理 ================= */
     async function loadDevAnnouncements() {
       const tbody = document.getElementById('devAnnouncementList');
       const { data, error } = await supabaseClient
@@ -1035,9 +1600,9 @@
         const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
         return `
           <tr>
-            <td><span class="badge">${item.is_pinned ? '📌 ' : ''}${item.tag}</span></td>
-            <td><strong>${item.title}</strong></td>
-            <td style="max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.content}</td>
+            <td><span class="badge">${item.is_pinned ? '📌 ' : ''}${escapeHtml(item.tag)}</span></td>
+            <td><strong>${escapeHtml(item.title)}</strong></td>
+            <td style="max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(item.content)}</td>
             <td>${dateStr}</td>
             <td>
               <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
@@ -1128,6 +1693,7 @@
       }
     }
 
+    /* ================= Excel 與成績登錄 ================= */
     function handleExcelUpload(event) {
       const file = event.target.files[0];
       if (file) {
@@ -1221,7 +1787,7 @@
           }
 
           if (scoreColumns.length === 0) {
-            msgEl.style.color = '#f43f5e';
+            msgEl.style.color = 'var(--accent-rose)';
             msgEl.innerText = '⚠️ 未偵測到有效的成績直欄（需包含 0~100 的數字分數）！';
             return;
           }
@@ -1235,7 +1801,7 @@
           pickerEl.style.display = scoreColumns.length > 1 ? 'flex' : 'none';
           applySelectedExcelColumn();
         } catch (err) {
-          msgEl.style.color = '#f43f5e';
+          msgEl.style.color = 'var(--accent-rose)';
           msgEl.innerText = '❌ 讀取 Excel 發生錯誤：' + err.message;
         }
       };
@@ -1304,10 +1870,10 @@
       }
 
       if (matchedCount > 0) {
-        msgEl.style.color = '#10b981';
+        msgEl.style.color = 'var(--accent-emerald)';
         msgEl.innerText = `✅ 已從「${fileName}」【${targetCol.label}】自動帶入 ${matchedCount} 位學生的直列成績！請確認上方科目與日期後按「一鍵整合寫入雲端」。`;
       } else {
-        msgEl.style.color = '#f43f5e';
+        msgEl.style.color = 'var(--accent-rose)';
         msgEl.innerText = '⚠️ 此欄位未比對到班上學生的有效分數（0~100），請檢查座號或姓名欄位。';
       }
     }
@@ -1345,16 +1911,16 @@
         <th style="width: 72px;">姓名</th>
         ${examCols.map(c => `
           <th style="text-align:center;">
-            <span class="exam-th-sub">【${c.sub}】</span>
-            <span class="exam-th-name">${c.name}</span>
-            <span class="exam-th-date">📅 ${c.date}</span>
+            <span class="exam-th-sub">【${escapeHtml(c.sub)}】</span>
+            <span class="exam-th-name">${escapeHtml(c.name)}</span>
+            <span class="exam-th-date">📅 ${escapeHtml(c.date)}</span>
           </th>
         `).join('')}
       </tr>`;
 
       const studentRowsHtml = seatSortedStudents.map(st => `<tr>
         <td style="text-align:center;">${st.seat_number ?? '-'}</td>
-        <td><strong>${st.name}</strong></td>
+        <td><strong>${escapeHtml(st.name)}</strong></td>
         ${examCols.map(c => `<td style="text-align:center;">${c.scoresByStudent.has(st.id) ? c.scoresByStudent.get(st.id) : '-'}</td>`).join('')}
       </tr>`).join('');
 
@@ -1370,7 +1936,7 @@
       buildPrintExamDetailTable();
       const now = new Date();
       const timeStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      document.getElementById('printDetailTimestamp').innerText = `報表匯出時間：${timeStr} ｜ 國二-2 班級成績管理系統`;
+      document.getElementById('printDetailTimestamp').innerText = `報表匯出時間：${timeStr} ｜ ${currentClassName} 班級成績管理系統`;
       window.print();
     }
 
@@ -1476,7 +2042,7 @@
       XLSX.utils.book_append_sheet(wb, ws2, '各場次小考明細');
 
       const todayStr = new Date().toISOString().slice(0, 10);
-      XLSX.writeFile(wb, `國二2_小考成績總表_${todayStr}.xlsx`);
+      XLSX.writeFile(wb, `${currentClassName}_小考成績總表_${todayStr}.xlsx`);
     }
 
     async function changeMyPassword() {
@@ -1495,6 +2061,10 @@
 
     function renderStudentAccounts() {
       const accountTbody = document.getElementById('studentAccountList');
+      if (students.length === 0) {
+        accountTbody.innerHTML = '<tr><td colspan="5">目前尚無學生帳號</td></tr>';
+        return;
+      }
       accountTbody.innerHTML = students.map(u => {
         const userCode = u.email ? u.email.split('@')[0] : '-';
         const parentObj = parentAccountsList.find(p => p.parent_of_student_id === u.id) ||
@@ -1504,13 +2074,13 @@
         return `
           <tr>
             <td>${u.seat_number ?? '-'} 號</td>
-            <td><strong>${u.name}</strong></td>
-            <td><span class="badge">${userCode}</span></td>
-            <td><span class="badge" style="color:var(--accent-emerald); border-color:rgba(16,185,129,0.35);">${parentCode}</span></td>
+            <td><strong>${escapeHtml(u.name)}</strong></td>
+            <td><span class="badge mono">${escapeHtml(userCode)}</span></td>
+            <td><span class="badge mono" style="background:var(--accent-emerald-soft); color:var(--accent-emerald);">${escapeHtml(parentCode)}</span></td>
             <td>
               <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-                <button class="pw-edit-btn" onclick="changeUserPassword('${u.id}', '${u.name}')">改學生密碼</button>
-                ${parentObj ? `<button class="pw-edit-btn" style="color:var(--accent-emerald); border-color:rgba(16,185,129,0.4);" onclick="changeUserPassword('${parentObj.id}', '${u.name}的家長')">改家長密碼</button>` : ''}
+                <button class="pw-edit-btn" onclick="changeUserPassword('${u.id}', '${escapeHtml(u.name)}')">改學生密碼</button>
+                ${parentObj ? `<button class="pw-edit-btn" style="color:var(--accent-emerald);" onclick="changeUserPassword('${parentObj.id}', '${escapeHtml(u.name)}的家長')">改家長密碼</button>` : ''}
               </div>
             </td>
           </tr>
@@ -1545,7 +2115,8 @@
         .select('id, semester, exam_stage, exam_name, subject, exam_date, score, class_avg, rank, student_id, created_at, report_note, is_published')
         .order('id', { ascending: false });
 
-      allScoresCache = scores || [];
+      const studentIdSet = new Set(students.map(s => s.id));
+      allScoresCache = (scores || []).filter(s => studentIdSet.has(s.student_id));
       renderReportedAlerts();
 
       const examKeys = [...new Set(allScoresCache.map(s => `${s.semester || '115學年度第1學期'}||${s.exam_stage || '第一次段考'}||${s.exam_name}||${s.subject}||${s.exam_date || ''}`))];
@@ -1553,7 +2124,7 @@
       selectEl.innerHTML = '<option value="">＋ 建立全新測驗場次</option>' +
         examKeys.map(k => {
           const [sem, stage, name, sub, date] = k.split('||');
-          return `<option value="${k}">[${sem}] ${stage} > ${name} - ${sub} (${date})</option>`;
+          return `<option value="${escapeHtml(k)}">[${escapeHtml(sem)}] ${escapeHtml(stage)} > ${escapeHtml(name)} - ${escapeHtml(sub)} (${escapeHtml(date)})</option>`;
         }).join('');
 
       renderAdminRankOverview();
@@ -1576,11 +2147,11 @@
       alertBox.style.display = 'block';
       reportList.innerHTML = reported.map(item => `
         <tr>
-          <td>${studentMap[item.student_id] || '未知學生'}</td>
-          <td><span class="badge">${item.semester || '115-1'}</span> ${item.exam_stage || ''} (${item.exam_name})</td>
-          <td>${item.subject}</td>
+          <td>${escapeHtml(studentMap[item.student_id] || '未知學生')}</td>
+          <td><span class="badge">${escapeHtml(item.semester || '115-1')}</span> ${escapeHtml(item.exam_stage || '')} (${escapeHtml(item.exam_name)})</td>
+          <td>${escapeHtml(item.subject)}</td>
           <td><strong>${item.score}</strong></td>
-          <td style="color: var(--accent-gold); font-weight: 600;">${item.report_note}</td>
+          <td style="color: var(--accent-amber); font-weight: 700;">${escapeHtml(item.report_note)}</td>
           <td><button class="resolve-btn" onclick="resolveReport(${item.id})">核對結案</button></td>
         </tr>
       `).join('');
@@ -1677,8 +2248,8 @@
       const statusEl = document.getElementById('status');
       const submitBtn = document.getElementById('submitBtn');
 
-      if (!examName) { statusEl.style.color = '#f43f5e'; statusEl.innerText = '請輸入測驗細項名稱！'; return; }
-      if (!examDate) { statusEl.style.color = '#f43f5e'; statusEl.innerText = '請選擇考試日期！'; return; }
+      if (!examName) { statusEl.style.color = 'var(--accent-rose)'; statusEl.innerText = '請輸入測驗細項名稱！'; return; }
+      if (!examDate) { statusEl.style.color = 'var(--accent-rose)'; statusEl.innerText = '請選擇考試日期！'; return; }
 
       const entries = [];
       for (const s of students) {
@@ -1686,7 +2257,7 @@
         if (val !== '') {
           const num = Number(val);
           if (isNaN(num) || num < 0 || num > 100) {
-            statusEl.style.color = '#f43f5e';
+            statusEl.style.color = 'var(--accent-rose)';
             statusEl.innerText = `「${s.name}」的分數必須介於 0 到 100 之間！`;
             return;
           }
@@ -1694,7 +2265,7 @@
         }
       }
 
-      if (entries.length === 0) { statusEl.style.color = '#f43f5e'; statusEl.innerText = '請至少輸入一位學生的分數！'; return; }
+      if (entries.length === 0) { statusEl.style.color = 'var(--accent-rose)'; statusEl.innerText = '請至少輸入一位學生的分數！'; return; }
 
       submitBtn.disabled = true;
       statusEl.style.color = 'var(--accent-blue)';
@@ -1703,9 +2274,11 @@
       const avg = Math.round((entries.reduce((sum, e) => sum + e.score, 0) / entries.length) * 10) / 10;
       const sortedScores = [...entries].map(e => e.score).sort((a, b) => b - a);
 
+      const classStudentIds = students.map(s => s.id);
       let delQuery = supabaseClient
         .from('scores')
         .delete()
+        .in('student_id', classStudentIds)
         .eq('semester', semester)
         .eq('exam_stage', examStage)
         .eq('exam_name', examName)
@@ -1730,12 +2303,12 @@
       submitBtn.disabled = false;
 
       if (error) {
-        statusEl.style.color = '#f43f5e';
+        statusEl.style.color = 'var(--accent-rose)';
         statusEl.innerText = '寫入失敗：' + error.message;
       } else {
         await refreshScoresData();
         resetEntryFormAfterSubmit();
-        statusEl.style.color = '#10b981';
+        statusEl.style.color = 'var(--accent-emerald)';
         statusEl.innerText = `✓ 已成功整合並發布「${subject} - ${examName}」共 ${entries.length} 筆成績（班均：${avg} 分），畫面已自動清空可繼續登錄下一場！`;
       }
     }
@@ -1761,7 +2334,7 @@
           : '-';
         return `
           <div class="summary-card">
-            <div class="sub-title">${sub} 科全班均分</div>
+            <div class="sub-title">${escapeHtml(sub)} 科全班均分</div>
             <div class="sub-val">${avg}</div>
           </div>
         `;
@@ -1795,7 +2368,7 @@
         : '-';
 
       subjectCards.push(`
-        <div class="summary-card" style="border-color: var(--card-hi-border); background: var(--card-hi-bg);">
+        <div class="summary-card" style="border-color: var(--accent-blue); background: var(--accent-blue-soft);">
           <div class="sub-title" style="color:var(--accent-blue);">全班跨科總平均</div>
           <div class="sub-val" style="color:var(--accent-blue);">${classOverallAvg}</div>
         </div>
@@ -1814,16 +2387,16 @@
         <th>總排名</th>
         <th>座號</th>
         <th>姓名</th>
-        ${subjects.map(sub => `<th>${sub}均分</th>`).join('')}
+        ${subjects.map(sub => `<th>${escapeHtml(sub)}均分</th>`).join('')}
         <th style="color:var(--accent-blue);">個人總平均</th>
       </tr>`;
 
       tbodyEl.innerHTML = displayList.map(st => `<tr>
-        <td><strong style="color:var(--accent-gold);">${st.overallRank === '-' ? '-' : `第 ${st.overallRank} 名`}</strong></td>
+        <td><strong style="color:var(--accent-amber);">${st.overallRank === '-' ? '-' : `第 ${st.overallRank} 名`}</strong></td>
         <td>${st.seat_number ?? '-'}</td>
-        <td><span class="student-link" onclick="openStudentTrend('${st.id}', '${st.name}')">${st.name}</span></td>
+        <td><span class="student-link" onclick="openStudentTrend('${st.id}', '${escapeHtml(st.name)}')">${escapeHtml(st.name)}</span></td>
         ${subjects.map(sub => `<td>${st.subAvgs[sub] ?? '-'}</td>`).join('')}
-        <td style="font-weight:700; color:var(--accent-blue);">${st.totalAvg ?? '-'}</td>
+        <td style="font-weight:800; color:var(--accent-blue);">${st.totalAvg ?? '-'}</td>
       </tr>`).join('');
     }
 
@@ -1832,9 +2405,9 @@
       document.getElementById('trendModal').style.display = 'flex';
 
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const tickColor = isLight ? '#475569' : '#94a3b8';
-      const gridColor = isLight ? 'rgba(148, 163, 184, 0.25)' : 'rgba(148, 163, 184, 0.1)';
-      const legendColor = isLight ? '#0f172a' : '#f8fafc';
+      const tickColor = isLight ? '#4B5563' : '#9CA3AF';
+      const gridColor = isLight ? '#E5E7EB' : '#374151';
+      const legendColor = isLight ? '#111827' : '#F9FAFB';
 
       const stScores = allScoresCache.filter(s => s.student_id === studentId && s.is_published !== false);
       stScores.sort((a, b) => new Date(a.exam_date || '2026-01-01') - new Date(b.exam_date || '2026-01-01'));
@@ -1854,8 +2427,8 @@
             {
               label: '個人分數',
               data: personalData,
-              borderColor: isLight ? '#0284c7' : '#00f0ff',
-              backgroundColor: isLight ? 'rgba(2, 132, 199, 0.15)' : 'rgba(0, 240, 255, 0.15)',
+              borderColor: isLight ? '#2563EB' : '#60A5FA',
+              backgroundColor: isLight ? 'rgba(37, 99, 235, 0.12)' : 'rgba(96, 165, 250, 0.15)',
               borderWidth: 3,
               pointRadius: 5,
               tension: 0.3
@@ -1863,7 +2436,7 @@
             {
               label: '班級平均',
               data: classAvgData,
-              borderColor: isLight ? '#d97706' : '#f59e0b',
+              borderColor: isLight ? '#D97706' : '#FBBF24',
               borderWidth: 2,
               borderDash: [5, 5],
               pointRadius: 4,
@@ -1920,16 +2493,16 @@
           <div class="acc-item">
             <div class="acc-head">
               <div>
-                <span class="badge">${g.sem}</span> 
-                <span style="color: var(--accent-primary); font-weight: 700; margin-left: 0.45rem;">${g.stage} > ${g.name} (${g.sub})</span>
-                <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 0.45rem;">📅 ${g.date} | 👥 記錄數: ${g.records.length}筆</span>
+                <span class="badge">${escapeHtml(g.sem)}</span> 
+                <span style="color: var(--accent-blue); font-weight: 800; margin-left: 0.45rem;">${escapeHtml(g.stage)} > ${escapeHtml(g.name)} (${escapeHtml(g.sub)})</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 0.45rem;">📅 ${escapeHtml(g.date)} | 👥 記錄數: ${g.records.length}筆</span>
               </div>
               <div style="display: flex; gap: 0.45rem; flex-wrap: wrap;">
                 <button class="pw-edit-btn" onclick="toggleGroupBody('${groupId}')">📂 展開 / 收合</button>
-                <button class="del-btn" onclick="deleteExamGroupBatch('${g.sem}', '${g.stage}', '${g.name}', '${g.sub}', '${g.date}')">🗑️ 刪除整場</button>
+                <button class="del-btn" onclick="deleteExamGroupBatch('${escapeHtml(g.sem)}', '${escapeHtml(g.stage)}', '${escapeHtml(g.name)}', '${escapeHtml(g.sub)}', '${escapeHtml(g.date)}')">🗑️ 刪除整場</button>
               </div>
             </div>
-            <div id="${groupId}" style="display: none; padding: 1rem; border-top: 1px solid var(--td-border);">
+            <div id="${groupId}" style="display: none; padding: 1rem; border-top: 1px solid var(--border-light);">
               <table>
                 <thead>
                   <tr>
@@ -1945,7 +2518,7 @@
                     const sName = nameMap[r.student_id] || '未知學生';
                     return `
                       <tr>
-                        <td>${seat}號 - <strong>${sName}</strong></td>
+                        <td>${seat}號 - <strong>${escapeHtml(sName)}</strong></td>
                         <td><strong>${r.score}</strong> 分</td>
                         <td><button class="del-btn" onclick="deleteScore(${r.id})" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">刪除單筆</button></td>
                       </tr>
@@ -1974,9 +2547,11 @@
 
     async function deleteExamGroupBatch(sem, stage, name, sub, date) {
       if (!confirm(`確定要一鍵刪除「[${sem}] ${stage} > ${name} - ${sub} (${date})」整場考試紀錄嗎？`)) return;
+      const classStudentIds = students.map(s => s.id);
       let query = supabaseClient
         .from('scores')
         .delete()
+        .in('student_id', classStudentIds)
         .eq('semester', sem)
         .eq('exam_stage', stage)
         .eq('exam_name', name)
@@ -1993,7 +2568,7 @@
         alert('目前雲端已經沒有任何測驗成績了！');
         return;
       }
-      if (!confirm(`⚠️ 警告：確定要一鍵清空雲端全部 ${allScoresCache.length} 筆測驗成績嗎？\n此動作無法復原（學生與家長帳號會保留）。`)) return;
+      if (!confirm(`⚠️ 警告：確定要一鍵清空「${currentClassName}」全部 ${allScoresCache.length} 筆測驗成績嗎？\n此動作無法復原（學生與家長帳號會保留）。`)) return;
 
       const checkText = prompt('為避免誤刪，請輸入「CLEAR」確認一鍵清空所有場次：');
       if (checkText === null || checkText.trim().toUpperCase() !== 'CLEAR') {
@@ -2001,15 +2576,16 @@
         return;
       }
 
+      const classStudentIds = students.map(s => s.id);
       const { error } = await supabaseClient
         .from('scores')
         .delete()
-        .gt('id', 0);
+        .in('student_id', classStudentIds);
 
       if (error) {
         alert('一鍵清除失敗：' + error.message);
       } else {
-        alert('✓ 已一鍵清空雲端所有測驗場次！');
+        alert(`✓ 已一鍵清空「${currentClassName}」所有測驗場次！`);
         await refreshScoresData();
       }
     }
