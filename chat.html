@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS DIRECT V5.3.0 // 師生即時聯絡與語音通話</title>
+  <title>NEXUS DIRECT V5.4.1 // 班級即時通訊與語音通話</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -1198,14 +1198,14 @@
     </div>
   </div>
 
-  <!-- 建立自訂群組彈窗（僅限導師或開發者建立師生／親師小組） -->
+  <!-- 建立自訂群組彈窗（導師、開發者、學生皆可建立小組） -->
   <div class="modal-backdrop" id="createRoomModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>👥 建立師生／親師小組</h3>
+        <h3>👥 建立討論小組</h3>
         <button class="modal-close" onclick="closeCreateRoomModal()">✕</button>
       </div>
-      <input type="text" id="newRoomNameInput" class="modal-input" maxlength="30" placeholder="輸入小組名稱（例如：補考輔導組、班親會代表）">
+      <input type="text" id="newRoomNameInput" class="modal-input" maxlength="30" placeholder="輸入小組名稱（例如：數學讀書會、專題小組）">
       <div style="font-size:0.8rem; color:var(--text-secondary); font-weight:600; margin-bottom:0.45rem;">勾選要邀請加入的成員（系統會自動包含您自己）：</div>
       <div class="member-checklist" id="memberChecklist"></div>
       <button class="send-btn" style="width:100%; border-radius:10px;" onclick="createCustomRoom()">確認建立小組</button>
@@ -1234,7 +1234,7 @@
       </div>
 
       <div class="search-box">
-        <input type="text" id="contactSearchInput" placeholder="🔍 搜尋導師、開發者或成員..." oninput="renderThreadList()">
+        <input type="text" id="contactSearchInput" placeholder="🔍 搜尋座號、姓名、導師或小組..." oninput="renderThreadList()">
       </div>
 
       <div class="thread-list" id="threadList">
@@ -1251,7 +1251,7 @@
         </div>
         <div class="chat-title-wrap">
           <div class="chat-title" id="activeChatTitle">班級公告討論區</div>
-          <div class="chat-subtitle" id="activeChatSubtitle">僅限與導師、系統開發者直接聯絡</div>
+          <div class="chat-subtitle" id="activeChatSubtitle">同班同學、導師與開發者即時交流</div>
         </div>
         <button class="header-action-btn call-btn" id="startVoiceCallBtn" onclick="initiateVoiceCall()">📞 語音通話</button>
         <button class="header-action-btn" id="classChatSwitchBtn" onclick="toggleClassFeatureSwitch('is_chat_enabled')">💬 聊天：開</button>
@@ -1261,7 +1261,7 @@
 
       <!-- 導師管控狀態提示列 -->
       <div class="policy-status-bar" id="policyStatusBar">
-        <span>🛡️ 安全聯絡規範：學生與家長僅可與「本班導師」及「系統開發者」一對一聯絡</span>
+        <span id="policyRoleHintText">💬 班級即時交流：支援同班同學互傳訊息、自建小組與導師專線（私人對話受隱私保護）</span>
         <span id="policyFeatureStatusText">💬 班級訊息：開啟中 ｜ 📞 語音通話：開啟中</span>
       </div>
 
@@ -1308,7 +1308,7 @@
           <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
         </div>
 
-        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（僅限聯絡導師或系統開發者）..." autocomplete="off" oninput="handleInputChanged()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
+        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息傳送給同學、小組或導師..." autocomplete="off" oninput="handleInputChanged()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
         <button type="button" class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
       </div>
     </div>
@@ -1369,7 +1369,7 @@
     let me = null;
     let currentClassName = '國二-2';
     let isDevUser = false;
-    let isStaffUser = false; // 導師或開發者
+    let isStaffUser = false;
     let classSwitches = { is_chat_enabled: true, is_call_enabled: true };
 
     let contacts = [];
@@ -1395,10 +1395,9 @@
     let stopTypingTimer = null;
     const activeTypers = new Map();
 
-    // WebRTC 語音通話狀態（P2P 加密，不錄音，僅同步通聯名單與狀態到 call_logs）
     let peerConnection = null;
     let localAudioStream = null;
-    let activeCallState = null; // { logId, roomKey, peerId, peerName, isCaller, status, timerInterval, startedSec }
+    let activeCallState = null;
     let isLocalMicMuted = false;
 
     const RTC_CONFIG = {
@@ -1435,7 +1434,7 @@
             seat_number: profile.seat_number ?? null,
             role: profile.role || 'student',
             class_name: profile.class_name || '國二-2',
-            page: '師生即時聯絡',
+            page: '班級即時通訊',
             online_at: new Date().toISOString()
           });
         }
@@ -1926,7 +1925,6 @@
       if (pinnedId) scrollToMessage(pinnedId);
     }
 
-    // 導師／開發者從聊天室頂部或 admin.html 一鍵開關班級聊天與語音通話
     async function toggleClassFeatureSwitch(field) {
       if (!isStaffUser) return;
       const nextVal = !classSwitches[field];
@@ -1942,7 +1940,7 @@
         }, { onConflict: 'class_name' });
 
       if (error) {
-        alert('更新班級開關失敗（請確認已執行 classes 欄位 SQL）：' + error.message);
+        alert('更新班級開關失敗：' + error.message);
       }
     }
 
@@ -1971,7 +1969,6 @@
         }
       }
 
-      // 一對一私聊時顯示語音通話按鈕（導師與開發者隨時可用；學生與家長僅在通話開關開啟時可用）
       if (voiceCallBtn) {
         if (activeChannel.type === 'dm' && activeChannel.targetUser) {
           voiceCallBtn.style.display = 'inline-block';
@@ -1984,10 +1981,10 @@
       }
 
       const inputBar = document.getElementById('chatInputBar');
-      const isBlockedForStudent = !isStaffUser && !classSwitches.is_chat_enabled;
+      const isBlockedForNonStaff = !isStaffUser && !classSwitches.is_chat_enabled;
 
-      if (isBlockedForStudent) {
-        inputBar.innerHTML = '<div class="readonly-banner muted-banner">🔒 導師目前已暫停一般訊息發送（僅可閱讀導師通知與歷史紀錄）</div>';
+      if (isBlockedForNonStaff) {
+        inputBar.innerHTML = '<div class="readonly-banner muted-banner">🔒 導師目前已暫停訊息發送（僅可閱讀導師通知與歷史紀錄）</div>';
       } else if (!document.getElementById('messageInput')) {
         inputBar.innerHTML = `
           <div class="media-btns-wrap" id="mediaBtnsWrap">
@@ -1996,7 +1993,7 @@
             <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(this)">
             <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
           </div>
-          <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（僅限聯絡導師或系統開發者）..." autocomplete="off" oninput="handleInputChanged()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
+          <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息傳送給同學、小組或導師..." autocomplete="off" oninput="handleInputChanged()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
           <button type="button" class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
         `;
         restoreDraftForCurrentChannel();
@@ -2174,28 +2171,52 @@
       isDevUser = isDeveloperProfile(me);
       isStaffUser = isStaffProfile(me);
 
-      // 支援網址參數指定班級與直接私訊對象（例如從 admin.html 點擊直接聯絡某位學生）
       const params = new URLSearchParams(window.location.search);
       const queryClass = params.get('class');
       const targetDmUid = params.get('dm');
 
       currentClassName = (isDevUser && queryClass) ? queryClass : (me.class_name || '國二-2');
-      document.title = `NEXUS DIRECT V5.3.0 // ${currentClassName} 師生即時聯絡`;
+
+      // 檢查所屬機構是否為補習班（補習班為無聊天室純淨版）
+      const { data: classRow } = await supabaseClient
+        .from('classes')
+        .select('org_type, is_chat_enabled, is_call_enabled')
+        .eq('class_name', currentClassName)
+        .maybeSingle();
+
+      if (classRow) {
+        if (!isDevUser && classRow.org_type === 'cram_school') {
+          alert('本補習班採用「無聊天室純淨專注版」，系統將為您返回主畫面！');
+          goBackPortal();
+          return;
+        }
+        classSwitches.is_chat_enabled = classRow.is_chat_enabled !== false;
+        classSwitches.is_call_enabled = classRow.is_call_enabled !== false;
+      }
+
+      document.title = `NEXUS DIRECT V5.4.1 // ${currentClassName} 班級即時通訊`;
       pinnedContactIds = Array.isArray(me.pinned_contacts) ? me.pinned_contacts.slice(0, 3) : [];
 
       initGlobalOnlinePresence(me);
 
-      if (isStaffUser) {
+      // 導師、開發者、學生皆可建立小組（家長不可建組）
+      if (isStaffUser || me.role === 'student') {
         document.getElementById('openCreateRoomBtn').style.display = 'inline-block';
-      } else if (!isMobileDevice()) {
+      }
+      if (!isMobileDevice()) {
         const camBtn = document.getElementById('cameraBtn');
         if (camBtn) camBtn.remove();
       }
 
-      // 載入所有使用者，並嚴格套用權限過濾：
-      // 1. 學生 / 家長：只能看到「本班導師」與「系統開發者」（完全隱藏其他學生與家長）
-      // 2. 導師：可看到「本班全體學生、家長」與「系統開發者」
-      // 3. 系統開發者：可看到「全站所有導師、學生、家長」
+      if (me.role === 'parent') {
+        document.getElementById('policyRoleHintText').innerText = '🛡️ 親師聯絡專線：家長可與本班導師、系統開發者及自己孩子聯絡';
+      }
+
+      // 載入使用者並設定合理聯絡範圍：
+      // 1. 系統開發者：可聯絡所有導師，以及目前檢視班級的學生與家長
+      // 2. 導師：可聯絡本班全體學生、家長，以及系統開發者
+      // 3. 學生：可聯絡同班同學、本班導師，以及系統開發者（不顯示其他同學的家長）
+      // 4. 家長：可聯絡本班導師、系統開發者，以及自己的孩子
       const { data: users } = await supabaseClient
         .from('profiles')
         .select('*')
@@ -2211,19 +2232,24 @@
         const sameClass = (u.class_name || '國二-2') === currentClassName;
 
         if (isDevUser) {
-          // 開發者可聯絡所有導師，以及目前檢視班級的學生與家長
           return uIsTeacher || uIsDev || sameClass;
         }
         if (isTeacherRole(me.role)) {
-          // 導師可聯絡本班學生、家長，以及系統開發者
           return uIsDev || sameClass;
         }
-        // 學生與家長：僅可聯絡「本班導師」或「系統開發者」
-        return uIsDev || (uIsTeacher && sameClass);
+        if (me.role === 'student') {
+          // 學生可與同班同學、本班導師及系統開發者互傳訊息
+          return uIsDev || (sameClass && (u.role === 'student' || uIsTeacher));
+        }
+        if (me.role === 'parent') {
+          // 家長可聯絡本班導師、系統開發者及自己的孩子
+          const isMyChild = me.parent_of_student_id === u.id;
+          return uIsDev || (uIsTeacher && sameClass) || isMyChild;
+        }
+        return false;
       });
 
       await Promise.all([
-        loadClassSwitches(),
         loadRoomsAndMembers(),
         loadGroupReadStatus(),
         loadChannelSettings(),
@@ -2232,8 +2258,7 @@
 
       if (targetDmUid && contacts.some(c => c.id === targetDmUid)) {
         await selectDmChannel(targetDmUid);
-      } else if (!isStaffUser && contacts.length > 0) {
-        // 學生與家長預設直接開啟與導師的一對一聯絡視窗
+      } else if (me.role === 'parent' && contacts.length > 0) {
         const classTeacher = contacts.find(c => isTeacherRole(c.role)) || contacts[0];
         await selectDmChannel(classTeacher.id);
       } else {
@@ -2338,13 +2363,12 @@
       if (!error && data) {
         allMessages = data.reverse().filter(m => {
           if (m.channel_type === 'group') {
-            return (m.class_name || '國二-2') === currentClassName;
+            return (m.class_name || '國二-2') === currentClassName && me.role !== 'parent';
           }
           if (m.channel_type === 'room') {
             return customRooms.some(r => r.id === m.room_id);
           }
           if (m.channel_type === 'dm') {
-            // 僅載入與自己相關且對方在允許聯絡名單中的私聊
             const isMineOrToMe = m.sender_id === me.id || m.receiver_id === me.id;
             if (!isMineOrToMe) return false;
             const otherId = m.sender_id === me.id ? m.receiver_id : m.sender_id;
@@ -2360,11 +2384,13 @@
     function updateDocumentTitleUnread() {
       if (!me) return;
       const dmUnread = allMessages.filter(m => m.channel_type === 'dm' && m.receiver_id === me.id && !m.is_read).length;
-      const groupUnread = allMessages.filter(m => m.channel_type === 'group' && m.sender_id !== me.id && m.created_at > groupLastReadAt).length;
+      const groupUnread = me.role !== 'parent'
+        ? allMessages.filter(m => m.channel_type === 'group' && m.sender_id !== me.id && m.created_at > groupLastReadAt).length
+        : 0;
       const total = dmUnread + groupUnread;
       document.title = total > 0
         ? `(${total}) NEXUS DIRECT // ${currentClassName}`
-        : `NEXUS DIRECT V5.3.0 // ${currentClassName} 師生即時聯絡`;
+        : `NEXUS DIRECT V5.4.1 // ${currentClassName} 班級即時通訊`;
     }
 
     function subscribeRealtime() {
@@ -2393,7 +2419,6 @@
           updateTypingIndicatorUI();
           renderThreadList();
         })
-        // WebRTC 語音通話信令監聽（P2P 加密建立，音訊不經由伺服器）
         .on('broadcast', { event: 'webrtc-signal' }, async ({ payload }) => {
           if (!payload || payload.to !== me.id) return;
           await handleIncomingWebRTCSignal(payload);
@@ -2428,8 +2453,7 @@
         })
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, payload => {
           const newMsg = payload.new;
-          if (newMsg.channel_type === 'group' && (newMsg.class_name || '國二-2') !== currentClassName) return;
-          if (newMsg.channel_type === 'student_group') return;
+          if (newMsg.channel_type === 'group' && ((newMsg.class_name || '國二-2') !== currentClassName || me.role === 'parent')) return;
           if (newMsg.channel_type === 'room' && !customRooms.some(r => r.id === newMsg.room_id)) return;
           if (newMsg.channel_type === 'dm') {
             const isMineOrToMe = newMsg.sender_id === me.id || newMsg.receiver_id === me.id;
@@ -2484,7 +2508,7 @@
         .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_rooms' }, async () => {
           await loadRoomsAndMembers();
           if (activeChannel.type === 'room' && !customRooms.some(r => r.id === activeChannel.roomId)) {
-            selectGroupChannel(false);
+            if (me.role !== 'parent') selectGroupChannel(false);
           } else {
             updatePinnedBannerUI();
             renderThreadList();
@@ -2495,7 +2519,7 @@
           if (activeChannel.type === 'room') {
             const mems = roomMembersMap[activeChannel.roomId] || [];
             if (!mems.some(m => m.user_id === me.id)) {
-              selectGroupChannel(false);
+              if (me.role !== 'parent') selectGroupChannel(false);
               return;
             }
             updateRoomHeaderSubtitle(activeChannel.roomId);
@@ -2518,8 +2542,8 @@
         const isOnline = onlineUserIds.has(activeChannel.targetUser.id);
         dot.style.display = isOnline ? 'block' : 'none';
         sub.innerText = isOnline
-          ? '🟢 目前在線上・1 對 1 師生／親師專線（支援語音通話）'
-          : '⚫ 離線・1 對 1 師生／親師專線';
+          ? '🟢 目前在線上・1 對 1 加密私訊（支援語音通話）'
+          : '⚫ 離線・1 對 1 加密私訊';
       } else {
         dot.style.display = 'none';
       }
@@ -2573,9 +2597,8 @@
       }
 
       const peer = activeChannel.targetUser;
-      // 再次校驗權限：學生與家長僅可撥打給導師或系統開發者
-      if (!isStaffUser && !isStaffProfile(peer)) {
-        alert('依班級規範，僅可與導師或系統開發者進行語音通話！');
+      if (!contacts.some(c => c.id === peer.id)) {
+        alert('無法撥打給不在聯絡名單中的對象！');
         return;
       }
 
@@ -2678,8 +2701,8 @@
           sendWebRTCSignal(from, 'busy', { logId });
           return;
         }
+        if (!contacts.some(c => c.id === from)) return;
         const callerUser = userMap[from];
-        if (!isStaffUser && !isStaffProfile(callerUser)) return;
 
         activeCallState = {
           logId: logId || null,
@@ -2828,7 +2851,7 @@
     }
 
     function openCreateRoomModal() {
-      if (!isStaffUser) return;
+      if (!isStaffUser && me.role !== 'student') return;
       document.getElementById('newRoomNameInput').value = '';
       const listEl = document.getElementById('memberChecklist');
       listEl.innerHTML = contacts.map(c => {
@@ -2850,7 +2873,7 @@
     }
 
     async function createCustomRoom() {
-      if (!isStaffUser) return;
+      if (!isStaffUser && me.role !== 'student') return;
       const roomName = document.getElementById('newRoomNameInput').value.trim();
       if (!roomName) {
         alert('請輸入小組名稱！');
@@ -3103,7 +3126,7 @@
       document.getElementById('activeAvatar').className = 'avatar group-av';
       document.getElementById('activeAvatar').innerText = '📢';
       document.getElementById('activeChatTitle').innerText = `${currentClassName} 班級公告討論區`;
-      document.getElementById('activeChatSubtitle').innerText = '班級重要公告與師生公開問答';
+      document.getElementById('activeChatSubtitle').innerText = '班級重要公告與全班同學、導師公開交流';
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
       updateInputBarPermissions();
       updatePinnedBannerUI();
@@ -3204,7 +3227,7 @@
             ? (lastDm.sender_id === me.id
                 ? `你：${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`
                 : `${lastDm.image_url ? '[圖片] ' : ''}${lastDm.content}`)
-            : (isOnline ? '🟢 在線上・點擊傳訊或語音通話' : '點擊開始一對一聯絡...'));
+            : (isOnline ? '🟢 在線上・點擊私訊或語音通話' : '點擊開始一對一私訊...'));
 
       const isActive = activeChannel.type === 'dm' && activeChannel.targetUser && activeChannel.targetUser.id === c.id;
       const nickHtml = (c.nickname && c.nickname.trim())
@@ -3249,39 +3272,42 @@
       const listEl = document.getElementById('threadList');
       const now = Date.now();
 
-      const groupTypers = Array.from(activeTypers.values()).filter(t => t.expiresAt > now && t.channel_type === 'group');
-      const groupMsgs = allMessages.filter(m => m.channel_type === 'group');
-      const lastGroup = groupMsgs[groupMsgs.length - 1];
-      const groupUnread = (activeChannel.type !== 'group')
-        ? groupMsgs.filter(m => m.sender_id !== me.id && m.created_at > groupLastReadAt).length
-        : 0;
-      const groupHasMention = groupUnread > 0 && checkUnreadHasMention(groupMsgs, groupLastReadAt);
+      let html = '';
 
-      const groupPreview = groupTypers.length > 0
-        ? `✍️ ${groupTypers[0].sender_label} 正在輸入...`
-        : (lastGroup
-            ? `${groupHasMention ? '[有人 @ 你] ' : ''}${lastGroup.sender_name}：${lastGroup.image_url ? '[圖片] ' : ''}${lastGroup.content}`
-            : '點擊進入班級公告討論區...');
+      if (me.role !== 'parent') {
+        const groupTypers = Array.from(activeTypers.values()).filter(t => t.expiresAt > now && t.channel_type === 'group');
+        const groupMsgs = allMessages.filter(m => m.channel_type === 'group');
+        const lastGroup = groupMsgs[groupMsgs.length - 1];
+        const groupUnread = (activeChannel.type !== 'group')
+          ? groupMsgs.filter(m => m.sender_id !== me.id && m.created_at > groupLastReadAt).length
+          : 0;
+        const groupHasMention = groupUnread > 0 && checkUnreadHasMention(groupMsgs, groupLastReadAt);
 
-      let html = `
-        <div class="section-label">${escapeHtml(currentClassName)} 官方頻道</div>
-        <div class="thread-item ${activeChannel.type === 'group' ? 'active' : ''}" onclick="selectGroupChannel(true)">
-          <div class="avatar-wrap">
-            <div class="avatar group-av">📢</div>
+        const groupPreview = groupTypers.length > 0
+          ? `✍️ ${groupTypers[0].sender_label} 正在輸入...`
+          : (lastGroup
+              ? `${groupHasMention ? '[有人 @ 你] ' : ''}${lastGroup.sender_name}：${lastGroup.image_url ? '[圖片] ' : ''}${lastGroup.content}`
+              : '點擊進入班級公告討論區...');
+
+        html += `
+          <div class="section-label">${escapeHtml(currentClassName)} 官方頻道</div>
+          <div class="thread-item ${activeChannel.type === 'group' ? 'active' : ''}" onclick="selectGroupChannel(true)">
+            <div class="avatar-wrap">
+              <div class="avatar group-av">📢</div>
+            </div>
+            <div class="thread-info">
+              <div class="thread-name">${escapeHtml(currentClassName)} 班級公告討論區</div>
+              <div class="thread-preview ${groupTypers.length > 0 ? 'typing-active' : ''} ${groupHasMention ? 'mention-tag-pill' : ''}">${escapeHtml(groupPreview)}</div>
+            </div>
+            ${groupUnread > 0 ? `<span class="unread-badge">${groupUnread}</span>` : ''}
           </div>
-          <div class="thread-info">
-            <div class="thread-name">${escapeHtml(currentClassName)} 班級公告討論區</div>
-            <div class="thread-preview ${groupTypers.length > 0 ? 'typing-active' : ''} ${groupHasMention ? 'mention-tag-pill' : ''}">${escapeHtml(groupPreview)}</div>
-          </div>
-          ${groupUnread > 0 ? `<span class="unread-badge">${groupUnread}</span>` : ''}
-        </div>
-      `;
+        `;
+      }
 
-      // 若有被導師邀請加入的師生／親師小組則顯示
       if (customRooms.length > 0) {
         const filteredRooms = customRooms.filter(r => !keyword || r.name.toLowerCase().includes(keyword));
         if (filteredRooms.length > 0) {
-          html += `<div class="section-label">我的師生／親師小組</div>`;
+          html += `<div class="section-label">我的討論小組（${filteredRooms.length} 個）</div>`;
           html += filteredRooms.map(r => {
             const rMsgs = allMessages.filter(m => m.channel_type === 'room' && m.room_id === r.id);
             const lastR = rMsgs[rMsgs.length - 1];
@@ -3294,7 +3320,7 @@
               : 0;
             const preview = lastR
               ? `${lastR.sender_name}：${lastR.image_url ? '[圖片] ' : ''}${lastR.content}`
-              : `小組成員 ${mems.length} 人・點擊開始聯絡`;
+              : `小組成員 ${mems.length} 人・點擊開始聊天`;
 
             return `
               <div class="thread-item ${isActive ? 'active' : ''}" onclick="selectCustomRoom(${r.id}, true)">
@@ -3330,22 +3356,20 @@
 
       const unpinnedList = filtered.filter(c => !pinnedContactIds.includes(c.id));
 
-      // 優先顯示導師與系統開發者
       const staffContacts = unpinnedList.filter(c => isStaffProfile(c));
       if (staffContacts.length > 0) {
-        html += `<div class="section-label">👑 導師與系統開發者專線（支援語音通話）</div>`;
+        html += `<div class="section-label">👑 導師與系統開發者</div>`;
         html += staffContacts.map(c => buildContactItemHtml(c, false, now)).join('');
       }
 
-      // 若登入者是導師或開發者，下方列出本班學生與家長
-      if (isStaffUser) {
-        const studentContacts = unpinnedList.filter(c => c.role === 'student');
-        const parentContacts = unpinnedList.filter(c => c.role === 'parent');
+      const studentContacts = unpinnedList.filter(c => c.role === 'student');
+      if (studentContacts.length > 0) {
+        html += `<div class="section-label">🎒 ${me.role === 'parent' ? '我的孩子' : `同班同學名單（${studentContacts.length} 人）`}</div>`;
+        html += studentContacts.map(c => buildContactItemHtml(c, false, now)).join('');
+      }
 
-        if (studentContacts.length > 0) {
-          html += `<div class="section-label">🎒 本班學生名單（${studentContacts.length} 人）</div>`;
-          html += studentContacts.map(c => buildContactItemHtml(c, false, now)).join('');
-        }
+      if (isStaffUser) {
+        const parentContacts = unpinnedList.filter(c => c.role === 'parent');
         if (parentContacts.length > 0) {
           html += `<div class="section-label">👪 本班家長名單（${parentContacts.length} 人）</div>`;
           html += parentContacts.map(c => buildContactItemHtml(c, false, now)).join('');
@@ -3382,7 +3406,7 @@
       }
 
       if (msgs.length === 0) {
-        area.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:2.5rem; font-size:0.88rem;">目前還沒有訊息紀錄，輸入文字或點擊右上角「📞 語音通話」即可開始聯絡</div>';
+        area.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:2.5rem; font-size:0.88rem;">目前還沒有訊息紀錄，輸入文字或點擊右上角「📞 語音通話」即可開始交流</div>';
         return;
       }
 
@@ -3554,7 +3578,7 @@
     async function uploadAndSendImageFile(file, caption = '') {
       if (!file) return;
       if (!isStaffUser && !classSwitches.is_chat_enabled) {
-        alert('導師目前已暫停一般訊息發送！');
+        alert('導師目前已暫停訊息發送！');
         return;
       }
 
@@ -3655,15 +3679,14 @@
     async function sendMessage() {
       if (isSending) return;
       if (!isStaffUser && !classSwitches.is_chat_enabled) {
-        alert('導師目前已暫停一般訊息發送！');
+        alert('導師目前已暫停訊息發送！');
         return;
       }
 
-      // 安全校驗：一對一私聊對象必須在允許聯絡名單中（學生／家長僅可傳訊給導師或開發者）
       if (activeChannel.type === 'dm') {
         const target = activeChannel.targetUser;
-        if (!target || (!isStaffUser && !isStaffProfile(target))) {
-          alert('依班級規範，僅可與導師或系統開發者一對一聯絡！');
+        if (!target || !contacts.some(c => c.id === target.id)) {
+          alert('無法傳送訊息給不在聯絡名單中的對象！');
           return;
         }
       }

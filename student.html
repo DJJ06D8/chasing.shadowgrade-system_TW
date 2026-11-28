@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE V5.2.1 // 學生學習終端</title>
+  <title>NEXUS GRADE V5.4.5 // 學生與學員學習終端</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -72,7 +72,6 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* 🚨 明日考試自動置頂橫幅 */
     .tomorrow-exam-banner {
       max-width: 960px;
       margin: 0 auto 1.4rem auto;
@@ -230,7 +229,6 @@
       font-size: 0.84rem;
     }
 
-    /* 📋 功課＆考試布告欄樣式 */
     .helper-editor-box {
       background: var(--accent-blue-soft);
       border: 1.5px solid var(--accent-blue);
@@ -512,7 +510,14 @@
   </style>
 </head>
 <body>
-  <!-- 🚨 明日考試自動置頂提醒（免點開直接看到） -->
+  <!-- ⏳ 月租到期提醒（僅在機構月租過期時自動顯示） -->
+  <div class="tomorrow-exam-banner" id="subscriptionExpiredBanner" style="display: none; background: var(--accent-amber-soft); border-color: var(--accent-amber);">
+    <div class="tomorrow-exam-header" style="margin-bottom:0;">
+      <div class="tomorrow-exam-title" style="color: var(--accent-amber);">⏳ 本機構月租服務已到期，請通知班主任或櫃檯續約以維持最新成績同步</div>
+    </div>
+  </div>
+
+  <!-- 🚨 明日考試自動置頂提醒（僅學校模式顯示，補習班自動隱藏） -->
   <div class="tomorrow-exam-banner" id="tomorrowExamBanner" style="display: none;">
     <div class="tomorrow-exam-header">
       <div class="tomorrow-exam-title">🚨 明日考試提醒（自動置頂・記得複習！）</div>
@@ -521,17 +526,16 @@
     <div class="tomorrow-exam-list" id="tomorrowExamList"></div>
   </div>
 
-  <!-- 📋 功課＆考試布告欄（全班可看，小老師可維護負責科目） -->
+  <!-- 📋 功課＆考試布告欄（僅學校模式顯示，補習班自動整塊移除） -->
   <div class="container" id="studentBoardContainer">
     <div class="header" style="margin-bottom: 1.1rem;">
       <div>
-        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // V5.2.1</span>
+        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // V5.4.5</span>
         <h2 style="font-size: 1.22rem;">📋 功課＆考試布告欄</h2>
       </div>
       <span class="badge" id="myHelperBadge" style="display:none;">👩‍🏫 小老師權限已啟用</span>
     </div>
 
-    <!-- 若本帳號為某科小老師，自動顯示專屬發布列 -->
     <div class="helper-editor-box" id="helperEditorBox" style="display: none;">
       <div style="font-size: 0.85rem; font-weight: 800; color: var(--accent-blue); margin-bottom: 0.6rem;">
         ✍️ 小老師快捷登錄區（可新增負責科目的功課或考試，考試日期為明天時將自動置頂）
@@ -568,11 +572,11 @@
   <div class="container">
     <div class="header">
       <div>
-        <span class="role-tag" id="studentRoleTag">STUDENT ANALYTICS PORTAL // V5.2.1</span>
+        <span class="role-tag" id="studentRoleTag">STUDENT ANALYTICS PORTAL // V5.4.5</span>
         <h2 id="studentHeaderTitle">載入學生資料中...</h2>
       </div>
       <div class="btn-group">
-        <button class="chat-portal-btn" onclick="window.location.href='chat.html'">
+        <button class="chat-portal-btn" id="studentChatBtn" onclick="window.location.href='chat.html'">
           💬 班級聊天室 <span class="unread-dot" id="chatUnreadDot">0</span>
         </button>
         <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
@@ -585,17 +589,17 @@
     <div class="summary-grid" id="subjectSummaryGrid"></div>
 
     <div class="scratch-box-wrapper" id="scratchWrapper">
-      <div class="rank-reveal-label">🏆 全班總排名</div>
+      <div class="rank-reveal-label" id="rankBoxLabel">🏆 全班總排名</div>
       <div class="rank-reveal-num" id="overallRankText">第 - 名</div>
       <div class="rank-reveal-sub" id="totalParticipantsText">共 - 人參與</div>
       <canvas id="scratchCanvas" width="230" height="118"></canvas>
     </div>
 
-    <h3>📊 全班成績組距分布（了解自己在全班的落點區間）</h3>
+    <h3 id="distSectionHeading">📊 全班成績組距分布（了解自己在全班的落點區間）</h3>
     <div class="dist-section-grid">
       <div class="dist-card">
         <div class="dist-card-header">
-          <span class="dist-card-title">📚 單科全班組距分布</span>
+          <span class="dist-card-title" id="subDistTitle">📚 單科全班組距分布</span>
           <select id="subjectDistSelect" class="dist-select" onchange="renderSubjectDistribution()"></select>
         </div>
         <div id="subjectDistBars"></div>
@@ -603,14 +607,14 @@
 
       <div class="dist-card">
         <div class="dist-card-header">
-          <span class="dist-card-title">🏆 全班總平均組距分布</span>
+          <span class="dist-card-title" id="overallDistTitle">🏆 全班總平均組距分布</span>
           <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">跨科總均落點</span>
         </div>
         <div id="overallDistBars"></div>
       </div>
     </div>
 
-    <h3>📜 歷次小考單科明細</h3>
+    <h3 id="scoreDetailHeading">📜 歷次小考單科明細</h3>
     <div style="overflow-x: auto;">
       <table>
         <thead>
@@ -619,8 +623,8 @@
             <th>科目</th>
             <th>測驗名稱</th>
             <th>我的分數</th>
-            <th>單科班均</th>
-            <th>單科名次</th>
+            <th id="thClassAvg">單科班均</th>
+            <th id="thSubRank">單科名次</th>
             <th>分數異常回報</th>
           </tr>
         </thead>
@@ -653,6 +657,7 @@
     let currentUserId = null;
     let currentUserLabel = '';
     let currentClassName = '國二-2';
+    let isCramMode = false;
     let classStudentIdSet = null;
     let myHelperSubjects = [];
     let boardItemsCache = [];
@@ -673,7 +678,7 @@
             seat_number: profile.seat_number ?? null,
             role: profile.role || 'student',
             class_name: profile.class_name || '國二-2',
-            page: '成績與布告欄',
+            page: isCramMode ? '學員成績檔案' : '成績與布告欄',
             online_at: new Date().toISOString()
           });
         }
@@ -798,6 +803,7 @@
     }
 
     async function checkUnreadDms() {
+      if (isCramMode) return;
       const { count } = await supabaseClient
         .from('chat_messages')
         .select('id', { count: 'exact', head: true })
@@ -809,6 +815,33 @@
       if (dot && count && count > 0) {
         dot.style.display = 'inline-block';
         dot.innerText = count > 99 ? '99+' : count;
+      }
+    }
+
+    function applyStudentOrgModeUI(profile) {
+      const chatBtn = document.getElementById('studentChatBtn');
+      const boardContainer = document.getElementById('studentBoardContainer');
+      const examBanner = document.getElementById('tomorrowExamBanner');
+
+      if (isCramMode) {
+        // 補習班模式：移除班級聊天室按鈕、功課＆考試布告欄、明日考試置頂提醒
+        if (chatBtn) chatBtn.remove();
+        if (boardContainer) boardContainer.remove();
+        if (examBanner) examBanner.remove();
+
+        document.getElementById('studentRoleTag').innerText = `CRAM SCHOOL PORTAL // ${currentClassName} // V5.4.5`;
+        document.getElementById('studentHeaderTitle').innerText = `[${currentClassName}・編號 ${profile.seat_number ?? '-'}] ${profile.name} 的學習檔案`;
+        document.getElementById('rankBoxLabel').innerText = '🏆 班別總排名';
+        document.getElementById('distSectionHeading').innerText = '📊 班別成績組距分布（了解自己在班上的落點區間）';
+        document.getElementById('subDistTitle').innerText = '📚 單科班別組距分布';
+        document.getElementById('overallDistTitle').innerText = '🏆 班別總平均組距分布';
+        document.getElementById('scoreDetailHeading').innerText = '📜 歷次週考／模考單科明細';
+        document.getElementById('thClassAvg').innerText = '班別平均';
+        document.getElementById('thSubRank').innerText = '單科名次';
+      } else {
+        if (chatBtn) chatBtn.style.display = 'inline-flex';
+        document.getElementById('studentRoleTag').innerText = `STUDENT ANALYTICS PORTAL // ${currentClassName} // V5.4.5`;
+        document.getElementById('studentHeaderTitle').innerText = `[${currentClassName}・${profile.seat_number ?? '-'}號] ${profile.name} 的成績檔案`;
       }
     }
 
@@ -830,15 +863,31 @@
       if (profile.role === 'admin' || profile.role === 'developer' || profile.role === 'teacher') { window.location.href = 'admin.html'; return; }
       if (profile.role === 'parent') { window.location.href = 'parent.html'; return; }
 
+      currentClassName = profile.class_name || '國二-2';
+
+      // 查詢機構類型（學校 vs 補習班）與月租效期
+      const { data: clsInfo } = await supabaseClient
+        .from('classes')
+        .select('org_type, is_chat_enabled, expires_at, subscription_expires_at, billing_status')
+        .eq('class_name', currentClassName)
+        .maybeSingle();
+
+      isCramMode = Boolean(clsInfo && (clsInfo.org_type === 'cram_school' || clsInfo.is_chat_enabled === false));
+
+      const expiryRaw = clsInfo?.subscription_expires_at || clsInfo?.expires_at;
+      if (clsInfo && clsInfo.billing_status !== 'free_forever' && expiryRaw && new Date(expiryRaw) < new Date()) {
+        document.getElementById('subscriptionExpiredBanner').style.display = 'block';
+      }
+
+      applyStudentOrgModeUI(profile);
       initGlobalOnlinePresence(profile);
 
-      currentClassName = profile.class_name || '國二-2';
-      currentUserLabel = `${profile.seat_number ?? '-'}號 ${profile.name}（小老師）`;
-      document.getElementById('studentRoleTag').innerText = `STUDENT ANALYTICS PORTAL // ${currentClassName} // V5.2.1`;
-      document.getElementById('studentHeaderTitle').innerText = `[${currentClassName}・${profile.seat_number ?? '-'}號] ${profile.name} 的成績檔案`;
-      document.getElementById('helperDateInput').value = getLocalDateStr(1);
+      if (!isCramMode) {
+        currentUserLabel = `${profile.seat_number ?? '-'}號 ${profile.name}（小老師）`;
+        const dateInput = document.getElementById('helperDateInput');
+        if (dateInput) dateInput.value = getLocalDateStr(1);
+      }
 
-      // 取得同班學生 ID 名單（若資料庫尚未新增 class_name 欄位則自動相容全部學生）
       const { data: allStudents } = await supabaseClient
         .from('profiles')
         .select('*')
@@ -852,11 +901,16 @@
       }
 
       initScratchCard();
-      await Promise.all([loadClassBoard(), loadMyScores(), checkUnreadDms()]);
+
+      if (isCramMode) {
+        await loadMyScores();
+      } else {
+        await Promise.all([loadClassBoard(), loadMyScores(), checkUnreadDms()]);
+      }
     }
 
-    /* ================= 📋 功課＆考試布告欄 + 明日考試置頂 ================= */
     async function loadClassBoard() {
+      if (isCramMode) return;
       const [{ data: subRows }, { data: items }] = await Promise.all([
         supabaseClient.from('subject_announcements').select('*'),
         supabaseClient.from('class_board_items').select('*').order('exam_date', { ascending: true, nullsFirst: false }).order('id', { ascending: false })
@@ -875,16 +929,18 @@
 
       const badge = document.getElementById('myHelperBadge');
       const editorBox = document.getElementById('helperEditorBox');
-      if (myHelperSubjects.length > 0) {
-        badge.style.display = 'inline-block';
-        badge.innerText = `👩‍🏫 ${myHelperSubjects.join('、')} 小老師`;
-        editorBox.style.display = 'block';
-        document.getElementById('helperSubjectSelect').innerHTML = myHelperSubjects
-          .map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`)
-          .join('');
-      } else {
-        badge.style.display = 'none';
-        editorBox.style.display = 'none';
+      if (badge && editorBox) {
+        if (myHelperSubjects.length > 0) {
+          badge.style.display = 'inline-block';
+          badge.innerText = `👩‍🏫 ${myHelperSubjects.join('、')} 小老師`;
+          editorBox.style.display = 'block';
+          document.getElementById('helperSubjectSelect').innerHTML = myHelperSubjects
+            .map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`)
+            .join('');
+        } else {
+          badge.style.display = 'none';
+          editorBox.style.display = 'none';
+        }
       }
 
       boardItemsCache = (items || []).filter(i => (i.class_name || '國二-2') === currentClassName);
@@ -893,6 +949,7 @@
     }
 
     function renderTomorrowExamBanner() {
+      if (isCramMode) return;
       const tomorrowStr = getLocalDateStr(1);
       const todayDow = new Date().getDay();
       const nextMondayStr = todayDow === 5 ? getLocalDateStr(3) : null;
@@ -905,6 +962,7 @@
       const banner = document.getElementById('tomorrowExamBanner');
       const listEl = document.getElementById('tomorrowExamList');
       const badgeEl = document.getElementById('tomorrowDateBadge');
+      if (!banner || !listEl || !badgeEl) return;
 
       if (urgentExams.length === 0) {
         banner.style.display = 'none';
@@ -934,7 +992,9 @@
     }
 
     function renderStudentBoardGrid() {
+      if (isCramMode) return;
       const grid = document.getElementById('studentBoardGrid');
+      if (!grid) return;
 
       grid.innerHTML = BOARD_SUBJECTS.map(sub => {
         const canEditSub = myHelperSubjects.includes(sub);
@@ -974,6 +1034,7 @@
     }
 
     async function submitHelperBoardItem() {
+      if (isCramMode) return;
       const subject = document.getElementById('helperSubjectSelect').value;
       if (!myHelperSubjects.includes(subject)) return;
 
@@ -1006,6 +1067,7 @@
     }
 
     async function editHelperBoardItem(itemId) {
+      if (isCramMode) return;
       const item = boardItemsCache.find(i => i.id === itemId);
       if (!item || !myHelperSubjects.includes(item.subject)) return;
 
@@ -1028,6 +1090,7 @@
     }
 
     async function deleteHelperBoardItem(itemId) {
+      if (isCramMode) return;
       const item = boardItemsCache.find(i => i.id === itemId);
       if (!item || !myHelperSubjects.includes(item.subject)) return;
       if (!confirm('確定要刪除這則公告嗎？')) return;
@@ -1041,7 +1104,6 @@
       else await loadClassBoard();
     }
 
-    /* ================= 成績總覽 ================= */
     async function loadMyScores() {
       const { data: allScores, error } = await supabaseClient
         .from('scores')
@@ -1123,7 +1185,7 @@
         <div class="summary-card" style="border-color: var(--accent-blue); background: var(--accent-blue-soft);">
           <div class="sub-title" style="color: var(--accent-blue);">個人總平均</div>
           <div class="sub-val" style="color: var(--accent-blue);">${myOverallAvg}</div>
-          <div class="sub-avg">全班總均 ${classOverallAvg}</div>
+          <div class="sub-avg">${isCramMode ? '班別總均' : '全班總均'} ${classOverallAvg}</div>
         </div>
       `);
 
@@ -1173,7 +1235,7 @@
     function renderScoreDetailTable(myScores) {
       const tbody = document.getElementById('scoreDetailBody');
       if (myScores.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">目前尚無小考紀錄</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">目前尚無測驗紀錄</td></tr>';
         return;
       }
 

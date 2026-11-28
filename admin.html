@@ -2,8 +2,8 @@
 <html lang="zh-TW" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE V5.3.0 // 老師與系統開發者指揮終端</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NEXUS GRADE V5.4.1 // 老師、補習班與系統開發者指揮終端</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -64,21 +64,30 @@
       --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 4px 10px -6px rgba(0, 0, 0, 0.25);
     }
 
-    * { box-sizing: border-box; font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    body {
+    html, body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       background-color: var(--bg-main);
       color: var(--text-primary);
-      padding: 1.5rem;
+      overflow-x: hidden;
       transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body {
+      padding: 1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom)) 1.5rem;
     }
 
     .container {
       max-width: 980px;
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto 1.35rem auto;
       background: var(--bg-card);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-xl);
@@ -103,12 +112,12 @@
       font-size: 0.74rem;
       font-weight: 800;
       margin-left: 0.45rem;
+      vertical-align: middle;
     }
 
-    /* 🟢 開發者即時在線人員監控樣式 */
     .live-presence-box {
       max-width: 980px;
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto 1.35rem auto;
       background: var(--accent-emerald-soft);
       border: 1.5px solid var(--accent-emerald);
       border-radius: var(--radius-xl);
@@ -122,6 +131,7 @@
       border-radius: 50%;
       background: #10B981;
       margin-right: 6px;
+      flex-shrink: 0;
       box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       animation: livePulse 1.6s infinite;
     }
@@ -132,7 +142,7 @@
     }
     .online-user-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 0.75rem;
     }
     .online-user-card {
@@ -147,7 +157,7 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     }
 
-    /* 📞 師生即時聯絡控制台＋通聯狀態＋內建對話窗 */
+    /* 📞 師生／親師即時聯絡控制台＋通聯狀態＋內建對話窗（無偷看訊息功能） */
     .comm-control-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -165,13 +175,15 @@
       gap: 0.75rem;
     }
     .switch-toggle-btn {
-      padding: 0.45rem 0.95rem;
+      padding: 0.5rem 0.95rem;
+      min-height: 40px;
       border-radius: 999px;
       font-weight: 800;
       font-size: 0.82rem;
       cursor: pointer;
       border: none;
       white-space: nowrap;
+      flex-shrink: 0;
       transition: all 0.2s ease;
     }
     .switch-toggle-btn.is-on {
@@ -202,8 +214,10 @@
       font-size: 0.8rem;
       font-weight: 800;
       margin: 0.25rem 0.4rem 0 0;
+      word-break: break-word;
     }
 
+    /* 💬 後台內建師生／親師一對一直接聯絡面板 */
     .embedded-comm-shell {
       display: grid;
       grid-template-columns: 280px 1fr;
@@ -217,20 +231,22 @@
       background: var(--bg-subtle);
       border-right: 1px solid var(--border-light);
       overflow-y: auto;
-      padding: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+      padding: 0.55rem;
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.3rem;
     }
     .embedded-contact-item {
-      padding: 0.58rem 0.72rem;
+      padding: 0.68rem 0.8rem;
+      min-height: 44px;
       border-radius: 10px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.45rem;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 700;
     }
     .embedded-contact-item:hover { background: var(--bg-card); }
@@ -245,29 +261,42 @@
       overflow: hidden;
     }
     .embedded-chat-top {
-      padding: 0.68rem 1rem;
+      padding: 0.7rem 0.95rem;
       border-bottom: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
       background: var(--bg-card);
+      flex-wrap: wrap;
+    }
+    .mobile-back-contacts-btn {
+      display: none;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
+      padding: 0.42rem 0.72rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
     }
     .embedded-msg-stream {
       flex: 1;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding: 0.95rem;
       display: flex;
       flex-direction: column;
-      gap: 0.55rem;
+      gap: 0.6rem;
       background: var(--bg-subtle);
     }
     .emb-msg {
-      max-width: 78%;
-      padding: 0.52rem 0.85rem;
+      max-width: 82%;
+      padding: 0.58rem 0.88rem;
       border-radius: 14px;
-      font-size: 0.88rem;
-      line-height: 1.4;
+      font-size: 0.92rem;
+      line-height: 1.45;
       word-break: break-word;
     }
     .emb-msg.mine {
@@ -284,17 +313,19 @@
       border-bottom-left-radius: 4px;
     }
     .embedded-input-row {
-      padding: 0.65rem 0.85rem;
+      padding: 0.65rem 0.8rem;
       border-top: 1px solid var(--border-light);
       display: flex;
       gap: 0.5rem;
+      align-items: center;
       background: var(--bg-card);
     }
     .embedded-input-row input {
       flex: 1;
       border-radius: 999px;
-      padding: 0.52rem 0.95rem;
-      font-size: 0.88rem;
+      padding: 0.58rem 0.95rem;
+      font-size: 16px;
+      min-height: 42px;
     }
 
     /* 語音通話彈窗 */
@@ -320,7 +351,7 @@
 
     .alert-box {
       max-width: 980px;
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto 1.35rem auto;
       background: var(--accent-amber-soft);
       border: 1.5px solid var(--accent-amber);
       padding: 1.5rem 2rem;
@@ -334,10 +365,9 @@
       padding-bottom: 0.6rem;
     }
 
-    /* 明日考試自動置頂提醒橫幅 */
     .tomorrow-exam-banner {
       max-width: 980px;
-      margin: 0 auto 1.5rem auto;
+      margin: 0 auto 1.35rem auto;
       background: var(--accent-rose-soft);
       border: 1.5px solid var(--accent-rose);
       border-radius: var(--radius-xl);
@@ -418,6 +448,7 @@
       font-weight: 900;
       color: var(--text-primary);
       letter-spacing: -0.4px;
+      line-height: 1.3;
     }
 
     h3 {
@@ -427,9 +458,10 @@
       padding-bottom: 0.75rem;
       font-size: 1.08rem;
       font-weight: 800;
+      line-height: 1.4;
     }
 
-    .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .btn-group { display: flex; gap: 0.55rem; flex-wrap: wrap; align-items: center; }
 
     .class-switcher-box {
       display: inline-flex;
@@ -438,6 +470,7 @@
       background: var(--bg-subtle);
       border: 1px solid var(--border-light);
       padding: 0.35rem 0.75rem;
+      min-height: 40px;
       border-radius: var(--radius-md);
     }
 
@@ -454,23 +487,25 @@
     .chat-portal-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.35rem;
       background: var(--accent-blue);
       color: #FFFFFF;
       border: none;
-      padding: 0.5rem 0.95rem;
+      padding: 0.55rem 0.95rem;
+      min-height: 40px;
       border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
     }
 
     .theme-btn {
       background: var(--bg-subtle);
       border: 1px solid var(--border-light);
       color: var(--text-primary);
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-md);
       cursor: pointer;
       display: flex;
@@ -483,40 +518,45 @@
     .excel-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.4rem;
       background: var(--accent-emerald);
       color: #ffffff;
       border: none;
-      padding: 0.5rem 0.95rem;
+      padding: 0.55rem 0.95rem;
+      min-height: 40px;
       border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
     }
 
     .pdf-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.4rem;
       background: var(--accent-purple);
       color: #ffffff;
       border: none;
-      padding: 0.5rem 0.95rem;
+      padding: 0.55rem 0.95rem;
+      min-height: 40px;
       border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
     }
 
     .logout-btn {
       background: var(--accent-rose-soft);
       color: var(--accent-rose);
       border: 1px solid rgba(220, 38, 38, 0.3);
-      padding: 0.5rem 1rem;
+      padding: 0.55rem 1rem;
+      min-height: 40px;
       border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.84rem;
+      font-size: 0.85rem;
     }
 
     .excel-dropzone {
@@ -587,8 +627,9 @@
       border: 1.5px solid var(--border-light);
       border-radius: var(--radius-md);
       color: var(--text-primary);
-      font-size: 0.95rem;
+      font-size: 16px;
       font-weight: 600;
+      min-height: 44px;
     }
 
     input:focus, select:focus, textarea:focus {
@@ -596,7 +637,12 @@
       border-color: var(--border-focus);
     }
 
-    .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; }
+    .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; line-height: 1.45; }
+    .table-scroll-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
     th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid var(--border-light); }
     th {
@@ -605,6 +651,7 @@
       font-size: 0.8rem;
       letter-spacing: 0.03em;
       font-weight: 800;
+      white-space: nowrap;
     }
     tr:hover td { background: var(--bg-subtle); }
 
@@ -630,15 +677,17 @@
       max-width: 650px;
       max-height: 88vh;
       overflow-y: auto;
-      padding: 2rem;
+      -webkit-overflow-scrolling: touch;
+      padding: 1.75rem;
       position: relative;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     }
-    .close-modal { position: absolute; top: 1.1rem; right: 1.35rem; font-size: 1.4rem; color: var(--text-muted); cursor: pointer; }
+    .close-modal { position: absolute; top: 1.1rem; right: 1.35rem; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; padding: 0.25rem; }
 
     .submit-btn {
       width: 100%;
       padding: 0.9rem;
+      min-height: 46px;
       background: var(--accent-primary);
       color: var(--accent-btn-text);
       border: none;
@@ -652,33 +701,36 @@
       background: var(--accent-amber-soft);
       color: var(--accent-amber);
       border: 1px solid rgba(217, 119, 6, 0.35);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
+      padding: 0.4rem 0.78rem;
+      min-height: 36px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
     }
 
     .del-btn {
       background: var(--accent-rose-soft);
       color: var(--accent-rose);
       border: 1px solid rgba(220, 38, 38, 0.35);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
+      padding: 0.4rem 0.78rem;
+      min-height: 36px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
     }
 
     .pw-edit-btn {
       background: var(--bg-subtle);
       color: var(--text-primary);
       border: 1px solid var(--border-light);
-      padding: 0.45rem 0.85rem;
+      padding: 0.5rem 0.85rem;
+      min-height: 40px;
       border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.83rem;
     }
     .pw-edit-btn:hover {
       border-color: var(--text-primary);
@@ -688,18 +740,19 @@
       background: var(--accent-emerald-soft);
       color: var(--accent-emerald);
       border: 1px solid rgba(5, 150, 105, 0.35);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
+      padding: 0.4rem 0.78rem;
+      min-height: 36px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
     }
 
     .badge {
       display: inline-block;
       background: var(--accent-blue-soft);
       color: var(--accent-blue);
-      padding: 0.2rem 0.55rem;
+      padding: 0.22rem 0.58rem;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 700;
@@ -727,7 +780,7 @@
 
     .board-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
       gap: 1rem;
       margin-top: 1rem;
     }
@@ -760,17 +813,18 @@
       background: var(--bg-card);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
-      padding: 0.6rem 0.75rem;
+      padding: 0.65rem 0.78rem;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 0.5rem;
-      font-size: 0.86rem;
+      font-size: 0.88rem;
     }
 
     .helper-checklist {
       max-height: 250px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       border: 1px solid var(--border-light);
       border-radius: var(--radius-md);
       padding: 0.5rem;
@@ -782,7 +836,8 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      padding: 0.45rem 0.6rem;
+      padding: 0.55rem 0.65rem;
+      min-height: 42px;
       border-radius: 8px;
       cursor: pointer;
     }
@@ -791,23 +846,22 @@
       background: var(--bg-card);
     }
 
-    .summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .summary-grid { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
     .summary-card {
       flex: 1;
-      min-width: 140px;
+      min-width: 130px;
       background: var(--bg-subtle);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-lg);
-      padding: 1rem;
+      padding: 0.9rem;
       text-align: center;
     }
     .summary-card .sub-title { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.3rem; font-weight: 700; }
-    .summary-card .sub-val { font-family: 'JetBrains Mono', monospace; font-size: 1.45rem; font-weight: 800; color: var(--text-primary); }
+    .summary-card .sub-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 800; color: var(--text-primary); }
 
     .acc-item { background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-lg); margin-bottom: 0.75rem; overflow: hidden; }
     .acc-head { padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
 
-    /* 申請開通審核卡片 */
     .app-card {
       background: var(--bg-subtle);
       border: 1px solid var(--border-light);
@@ -826,14 +880,76 @@
     #printOnlyReportSheet { display: none; }
 
     @media (max-width: 768px) {
-      body { padding: 0.85rem; }
-      .container, .alert-box, .tomorrow-exam-banner, .live-presence-box { padding: 1.25rem 1rem; border-radius: 16px; }
-      h2 { font-size: 1.18rem; }
+      body {
+        padding: 0.65rem 0.65rem calc(1.25rem + env(safe-area-inset-bottom)) 0.65rem;
+      }
+      .container, .alert-box, .tomorrow-exam-banner, .live-presence-box {
+        padding: 1.15rem 0.95rem;
+        border-radius: 16px;
+        margin-bottom: 1rem;
+      }
+      h2 { font-size: 1.15rem; }
+      h3 { font-size: 1rem; }
+
+      .header .btn-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem;
+      }
+      .header .class-switcher-box {
+        grid-column: 1 / -1;
+        justify-content: space-between;
+      }
+      .header .chat-portal-btn {
+        grid-column: 1 / -1;
+      }
+
+      .section-header-bar .btn-group {
+        width: 100%;
+      }
+      .section-header-bar .btn-group button {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .embedded-comm-shell {
+        display: block;
+        height: 460px;
+      }
+      .embedded-contact-list {
+        height: 100%;
+        max-height: none;
+        border-right: none;
+      }
+      .embedded-chat-pane {
+        display: none;
+        height: 100%;
+      }
+      .embedded-comm-shell.mobile-chat-open .embedded-contact-list {
+        display: none;
+      }
+      .embedded-comm-shell.mobile-chat-open .embedded-chat-pane {
+        display: flex;
+      }
+      .mobile-back-contacts-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .switch-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .switch-toggle-btn {
+        width: 100%;
+        text-align: center;
+      }
+
       .form-group { min-width: 100%; }
-      input[type="text"], input[type="number"], input[type="date"], select, textarea { font-size: 16px; }
-      th, td { padding: 0.55rem 0.45rem; font-size: 0.85rem; }
-      .embedded-comm-shell { grid-template-columns: 1fr; height: 520px; }
-      .embedded-contact-list { max-height: 155px; border-right: none; border-bottom: 1px solid var(--border-light); }
+      th, td { padding: 0.6rem 0.45rem; font-size: 0.86rem; }
+      .summary-card { min-width: calc(50% - 0.4rem); }
     }
 
     @page {
@@ -851,6 +967,7 @@
       #devLivePresenceSection,
       #commCommandSection,
       #tomorrowExamBanner,
+      #subscriptionExpiredBanner,
       #reportAlertSection,
       #devApplicationSection,
       #entrySection,
@@ -926,13 +1043,13 @@
 <body>
   <audio id="adminRemoteAudio" autoplay playsinline></audio>
 
-  <!-- 📞 後台語音通話彈窗（點對點加密，絕不錄音，僅同步通聯名單與時間） -->
+  <!-- 📞 後台語音通話彈窗 -->
   <div class="modal" id="adminVoiceCallModal">
     <div class="modal-content call-modal-card">
       <div class="call-avatar-pulse" id="adminCallAvatar">📞</div>
       <h3 id="adminCallPeerName" style="border:none; padding:0; margin-bottom:0.35rem; font-size:1.12rem;">正在連線...</h3>
       <div id="adminCallStatusText" class="mono" style="font-size:0.88rem; font-weight:700; color:var(--accent-emerald);">正在撥號中...</div>
-      <div class="hint" style="margin-top:0.65rem;">🔒 點對點加密語音・系統僅記錄通聯名單與秒數，絕不錄音</div>
+      <div class="hint" style="margin-top:0.65rem;">🔒 點對點加密語音・系統僅記錄通聯狀態與秒數，絕不錄音</div>
 
       <div id="adminIncomingCallControls" style="display:none; gap:0.75rem; margin-top:1.25rem;">
         <button type="button" class="del-btn" style="flex:1; padding:0.72rem; border-radius:999px; font-size:0.88rem;" onclick="adminRejectIncomingCall()">📵 拒接</button>
@@ -950,27 +1067,35 @@
     <div class="modal-content">
       <span class="close-modal" onclick="closeTrendModal()">&times;</span>
       <h3 id="modalTitle" style="color: var(--accent-blue); margin-bottom: 1rem;">📈 個人成績趨勢分析</h3>
-      <div style="position: relative; height: 300px; width: 100%;">
+      <div style="position: relative; height: 280px; width: 100%;">
         <canvas id="trendChart"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- 指派各科小老師彈窗（導師與開發者皆可調整） -->
+  <!-- 指派各科小老師彈窗 -->
   <div class="modal" id="helperAssignModal">
     <div class="modal-content" style="max-width: 480px;">
       <span class="close-modal" onclick="closeHelperAssignModal()">&times;</span>
       <h3 id="helperModalTitle" style="color: var(--accent-blue); margin-bottom: 0.75rem;">👩‍🏫 指派科目小老師</h3>
-      <p class="hint" style="margin-bottom: 0.85rem;">勾選的同學將在學生端獲得「該科目功課＆考試」的新增與編輯權限：</p>
+      <p class="hint" style="margin-bottom: 0.85rem;">勾選的人員將在學生端獲得「該科目功課＆考試」的新增與編輯權限：</p>
       <div class="helper-checklist" id="helperChecklistBody"></div>
       <button class="submit-btn" onclick="saveSubjectHelpers()">💾 儲存小老師名單</button>
+    </div>
+  </div>
+
+  <!-- ⏳ 補習班月租到期提醒橫幅 -->
+  <div class="tomorrow-exam-banner" id="subscriptionExpiredBanner" style="display: none; background: var(--accent-amber-soft); border-color: var(--accent-amber);">
+    <div class="tomorrow-exam-header" style="margin-bottom: 0;">
+      <div class="tomorrow-exam-title" id="subscriptionExpiredText" style="color: var(--accent-amber);">⏳ 本補習班月租服務已到期，請聯繫系統開發者辦理續約</div>
+      <button type="button" class="resolve-btn" id="devQuickRenewBannerBtn" style="display:none;" onclick="renewClassSubscription(currentClassName, 1)">➕ 立即續約 1 個月</button>
     </div>
   </div>
 
   <!-- 🟢 系統開發者專用：全站即時在線人員與所在頁面監控 -->
   <div class="live-presence-box" id="devLivePresenceSection" style="display: none;">
     <div class="section-header-bar" style="margin-bottom: 0.85rem;">
-      <div style="font-size: 1.02rem; font-weight: 900; color: var(--accent-emerald); display: flex; align-items: center;">
+      <div style="font-size: 1rem; font-weight: 900; color: var(--accent-emerald); display: flex; align-items: center;">
         <span class="live-pulse-dot"></span>開發者即時在線監控（全站 LIVE）
       </div>
       <span class="badge mono" id="liveOnlineCountBadge" style="background: var(--bg-card); color: var(--accent-emerald); border: 1px solid var(--accent-emerald);">目前在線：0 人</span>
@@ -980,7 +1105,7 @@
     </div>
   </div>
 
-  <!-- 🚨 明日考試自動置頂提醒（免點開直接顯示） -->
+  <!-- 🚨 明日考試自動置頂提醒（免點開直接顯示；補習班模式自動隱藏） -->
   <div class="tomorrow-exam-banner" id="tomorrowExamBanner" style="display: none;">
     <div class="tomorrow-exam-header">
       <div class="tomorrow-exam-title">🚨 明日考試提醒（自動置頂・免點開）</div>
@@ -990,12 +1115,12 @@
   </div>
 
   <div class="alert-box" id="reportAlertSection" style="display: none;">
-    <h3>⚠️ 學生成績異常回報警報</h3>
-    <div style="overflow-x: auto;">
+    <h3 id="reportAlertHeading">⚠️ 學生成績異常回報警報</h3>
+    <div class="table-scroll-wrap">
       <table style="margin-bottom: 0;">
         <thead>
           <tr>
-            <th>座號 / 姓名</th>
+            <th id="thAlertStudent">座號 / 姓名</th>
             <th>範圍 / 階段</th>
             <th>科目</th>
             <th>目前分數</th>
@@ -1012,18 +1137,19 @@
   <div class="container" id="entrySection">
     <div class="header" id="entryHeader">
       <div>
-        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V5.3.0</span>
+        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V5.4.1</span>
         <h2 id="commandTitle">國二-2 成績系統指揮中心（老師專用）</h2>
+        <div id="cramSubscriptionBadge" style="display:none; margin-top: 0.4rem;"></div>
       </div>
       <div class="btn-group">
         <div class="class-switcher-box" id="classSwitcherContainer" style="display:none;">
-          <span style="font-size:0.78rem; font-weight:800; color:var(--text-secondary);">🏫 檢視班級：</span>
+          <span style="font-size:0.8rem; font-weight:800; color:var(--text-secondary);">🏫 檢視機構/班級：</span>
           <select id="activeClassSelect" onchange="handleClassSwitch()"></select>
         </div>
-        <button class="chat-portal-btn" onclick="window.location.href='chat.html'">💬 進入完整訊息中心</button>
-        <button class="pw-edit-btn" onclick="toggleSection('entryCollapsibleBody', 'entryHeader', '1.5rem')">📂 展開 / 收合成績登錄區</button>
+        <button class="chat-portal-btn" id="adminChatPortalBtn" onclick="window.location.href='chat.html'">💬 進入完整訊息中心</button>
+        <button class="pw-edit-btn" onclick="toggleSection('entryCollapsibleBody', 'entryHeader', '1.5rem')">📂 成績登錄區</button>
+        <button class="pw-edit-btn" onclick="changeMyPassword()">修改密碼</button>
         <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
-        <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
         <button class="logout-btn" onclick="logout()">登出終端</button>
       </div>
     </div>
@@ -1031,16 +1157,16 @@
     <div id="entryCollapsibleBody" style="display: none;">
       <div class="excel-dropzone" id="excelDropzone">
         <div class="dropzone-info">
-          <strong>📥 直接匯入小老師打的直列 Excel（免套用範本）</strong>
-          <span>支援現有「直列座號 / 姓名 ＋ 單欄或多欄小考成績」的 .xlsx / .xls / .csv 檔，直接拖曳至此即可自動比對帶入</span>
+          <strong id="excelDropTitle">📥 直接匯入小老師打的直列 Excel（免套用範本）</strong>
+          <span id="excelDropSub">支援現有「直列座號 / 姓名 ＋ 單欄或多欄小考成績」的 .xlsx / .xls / .csv 檔，直接選擇檔案或拖曳至此即可自動帶入</span>
         </div>
         <div class="dropzone-actions">
           <button type="button" class="excel-btn" onclick="document.getElementById('excelFileInput').click()">📂 選擇 Excel 檔案直接匯入</button>
           <input type="file" id="excelFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleExcelUpload(event)">
         </div>
         <div id="excelColumnPicker">
-          <label for="excelScoreColSelect" style="margin:0; white-space:nowrap; color:var(--accent-blue);">📑 偵測到多欄成績，請選擇要帶入哪一欄：</label>
-          <select id="excelScoreColSelect" style="width:auto; min-width:220px;" onchange="applySelectedExcelColumn()"></select>
+          <label for="excelScoreColSelect" style="margin:0; color:var(--accent-blue);">📑 偵測到多欄成績，請選擇要帶入哪一欄：</label>
+          <select id="excelScoreColSelect" onchange="applySelectedExcelColumn()"></select>
         </div>
         <div id="excelImportMsg"></div>
       </div>
@@ -1054,7 +1180,7 @@
           <div class="hint">選擇現有場次可直接覆蓋修改該場成績</div>
         </div>
         <div class="form-group">
-          <label for="semesterSelect">學期選擇</label>
+          <label for="semesterSelect">學期 / 梯次選擇</label>
           <select id="semesterSelect">
             <option value="115學年度第1學期">115學年度 第1學期</option>
             <option value="115學年度第2學期">115學年度 第2學期</option>
@@ -1071,11 +1197,14 @@
             <option value="第一次段考">第一次段考範圍</option>
             <option value="第二次段考">第二次段考範圍</option>
             <option value="第三次段考">第三次段考範圍</option>
+            <option value="暑期先修班">暑期先修班</option>
+            <option value="寒假衝刺班">寒假衝刺班</option>
+            <option value="會考模擬考">會考模擬考</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="examName">測驗細項名稱 (例如：第1次平時考)</label>
-          <input type="text" id="examName" placeholder="例如：第1次平時考 / 單字小考" required>
+          <label for="examName">測驗細項名稱 (例如：第1次平時考 / 週考)</label>
+          <input type="text" id="examName" placeholder="例如：第1次平時考 / 單字週考" required>
         </div>
         <div class="form-group">
           <label for="subjectSelect">測驗科目</label>
@@ -1084,6 +1213,7 @@
             <option value="英文">英文</option>
             <option value="數學">數學</option>
             <option value="理化">理化</option>
+            <option value="自然">自然</option>
             <option value="歷史">歷史</option>
             <option value="地理">地理</option>
             <option value="公民">公民</option>
@@ -1096,42 +1226,43 @@
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>座號</th>
-            <th>學生姓名</th>
-            <th>分數 (0-100)</th>
-          </tr>
-        </thead>
-        <tbody id="studentList">
-          <tr><td colspan="3">載入學生名單中...</td></tr>
-        </tbody>
-      </table>
+      <div class="table-scroll-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th id="thEntrySeat">座號</th>
+              <th id="thEntryName">學生姓名</th>
+              <th>分數 (0-100)</th>
+            </tr>
+          </thead>
+          <tbody id="studentList">
+            <tr><td colspan="3">載入名單中...</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <button class="submit-btn" id="submitBtn" onclick="submitScores()">確認無誤，一鍵整合寫入雲端並正式發布</button>
       <div id="status"></div>
     </div>
   </div>
 
-  <!-- 📞 師生／親師即時聯絡控管、通話狀態監控與內建一對一專線（導師與開發者專用） -->
+  <!-- 📞 師生／親師即時聯絡與通話控制台（保障隱私：老師不檢視學生間私人對話；補習班模式自動隱藏） -->
   <div class="container comm-container" id="commCommandSection">
     <div class="section-header-bar" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.85rem; margin-bottom: 1.15rem;">
       <div>
         <h3>📞 師生／親師即時聯絡與通話控制台</h3>
-        <div class="hint">系統已鎖定學生與家長「僅能與本班導師及系統開發者聯絡」；您可在此即時開關權限、檢視通聯狀態（絕不錄音）或直接傳訊／撥號</div>
+        <div class="hint">保障學生隱私（老師端不顯示學生間私人對話內容）；您可在此控管班級訊息與通話開關，並直接與學生或家長一對一聯絡</div>
       </div>
       <span class="badge mono" id="commUnreadBadge">未讀訊息：0 則</span>
     </div>
 
-    <!-- 1. 班級訊息與語音通話即時雙開關 -->
     <div class="comm-control-grid">
       <div class="switch-card">
         <div>
           <div style="font-weight: 800; font-size: 0.94rem; color: var(--text-primary);">💬 班級訊息發送開關</div>
           <div class="hint" style="margin-top: 2px;">關閉後學生與家長將無法發送新訊息（導師仍可發送）</div>
         </div>
-        <button type="button" class="switch-toggle-btn is-on" id="adminChatSwitchBtn" onclick="toggleAdminClassSwitch('is_chat_enabled')">開啟中</button>
+        <button type="button" class="switch-toggle-btn is-on" id="adminChatSwitchBtn" onclick="toggleAdminClassSwitch('is_chat_enabled')">🟢 訊息：開啟中</button>
       </div>
 
       <div class="switch-card">
@@ -1139,68 +1270,72 @@
           <div style="font-weight: 800; font-size: 0.94rem; color: var(--text-primary);">📞 一對一語音通話開關</div>
           <div class="hint" style="margin-top: 2px;">關閉後學生與家長無法主動撥打語音電話</div>
         </div>
-        <button type="button" class="switch-toggle-btn is-on" id="adminCallSwitchBtn" onclick="toggleAdminClassSwitch('is_call_enabled')">開啟中</button>
+        <button type="button" class="switch-toggle-btn is-on" id="adminCallSwitchBtn" onclick="toggleAdminClassSwitch('is_call_enabled')">🟢 通話：開啟中</button>
       </div>
     </div>
 
-    <!-- 2. 全站即時通話狀態監控（僅同步誰與誰通話，絕不錄音） -->
     <div class="live-call-monitor-bar">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-        <span style="font-size:0.84rem; font-weight:800; color:var(--text-primary);">📡 即時通話狀態（僅同步通聯雙方・點對點加密絕不錄音）：</span>
-        <span style="font-size:0.75rem; color:var(--text-muted);" id="recentCallSummaryText">近期無通話紀錄</span>
+        <span style="font-size:0.84rem; font-weight:800; color:var(--text-primary);">📡 即時通話狀態（僅顯示連線中狀態・點對點加密絕不錄音）：</span>
+        <span style="font-size:0.76rem; color:var(--text-muted);" id="recentCallSummaryText">近期無通話紀錄</span>
       </div>
       <div id="liveActiveCallsList" style="margin-top: 0.45rem;">
-        <span style="font-size: 0.8rem; color: var(--text-muted);">目前無進行中的語音通話</span>
+        <span style="font-size: 0.82rem; color: var(--text-muted);">目前無進行中的語音通話</span>
       </div>
     </div>
 
-    <!-- 3. 後台內建師生／親師直接聯絡面板 -->
-    <div class="embedded-comm-shell">
+    <div class="embedded-comm-shell" id="embeddedCommShell">
       <div class="embedded-contact-list" id="embeddedContactList">
-        <div style="padding:0.75rem; color:var(--text-muted); font-size:0.82rem;">載入聯絡名單...</div>
+        <div style="padding:0.75rem; color:var(--text-muted); font-size:0.84rem;">載入聯絡名單...</div>
       </div>
       <div class="embedded-chat-pane">
         <div class="embedded-chat-top">
-          <div>
-            <strong id="embChatPeerTitle" style="font-size:0.94rem;">請從左側選擇學生、家長或開發者</strong>
-            <div id="embChatPeerSub" style="font-size:0.74rem; color:var(--text-muted);">點選成員即可直接傳訊或撥打語音電話</div>
+          <div style="display:flex; align-items:center; gap:0.55rem; min-width:0; flex:1;">
+            <button type="button" class="mobile-back-contacts-btn" onclick="closeMobileEmbeddedChat()">← 名單</button>
+            <div style="min-width:0;">
+              <strong id="embChatPeerTitle" style="font-size:0.94rem; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">請選擇學生、家長或開發者</strong>
+              <div id="embChatPeerSub" style="font-size:0.74rem; color:var(--text-muted);">點選成員即可直接傳訊或語音通話</div>
+            </div>
           </div>
-          <div style="display:flex; gap:0.4rem;">
-            <button type="button" class="excel-btn" id="embVoiceCallBtn" style="padding:0.38rem 0.78rem; font-size:0.8rem; display:none;" onclick="adminInitiateVoiceCall()">📞 語音通話</button>
-            <button type="button" class="pw-edit-btn" id="embFullChatBtn" style="padding:0.38rem 0.72rem; font-size:0.78rem; display:none;" onclick="openFullChatWithPeer()">完整視窗 ↗</button>
+          <div style="display:flex; gap:0.4rem; flex-shrink:0;">
+            <button type="button" class="excel-btn" id="embVoiceCallBtn" style="padding:0.4rem 0.78rem; min-height:36px; font-size:0.8rem; display:none;" onclick="adminInitiateVoiceCall()">📞 通話</button>
+            <button type="button" class="pw-edit-btn" id="embFullChatBtn" style="padding:0.4rem 0.72rem; min-height:36px; font-size:0.78rem; display:none;" onclick="openFullChatWithPeer()">完整頁 ↗</button>
           </div>
         </div>
         <div class="embedded-msg-stream" id="embMessageStream">
-          <div style="text-align:center; color:var(--text-muted); margin-top:4rem; font-size:0.85rem;">👈 點選左側任一成員即可在後台直接一對一聯絡</div>
+          <div style="text-align:center; color:var(--text-muted); margin-top:4rem; font-size:0.86rem;">👈 點選任一成員即可在後台直接一對一聯絡</div>
         </div>
         <div class="embedded-input-row">
-          <input type="text" id="embMessageInput" maxlength="500" placeholder="輸入訊息直接傳送給對方..." disabled onkeydown="if(event.key==='Enter'){event.preventDefault();sendEmbeddedMessage();}">
+          <input type="text" id="embMessageInput" maxlength="500" placeholder="輸入訊息傳送給對方..." disabled onkeydown="if(event.key==='Enter'){event.preventDefault();sendEmbeddedMessage();}">
           <button type="button" class="chat-portal-btn" id="embSendBtn" disabled onclick="sendEmbeddedMessage()">傳送</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 🏫 系統開發者專用：導師申請開通新班級審核與一鍵建檔 -->
+  <!-- 🏫 系統開發者專用：申請開通新班級／補習班審核與月租訂閱管理 -->
   <div class="container dev-container" id="devApplicationSection" style="display: none;">
     <div class="section-header-bar" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
       <div>
-        <h3>🏫 導師申請開通新班級審核 <span class="dev-badge">系統開發者專用</span></h3>
-        <div class="hint">核准後系統將自動建立新班級、導師帳號，以及全班所有學生與家長帳號（預設密碼皆為 123456）</div>
+        <h3>🏫 申請開通新班級／補習班審核與月租管控 <span class="dev-badge">系統開發者專用</span></h3>
+        <div class="hint">核准補習班時將自動建立「無聊天室純淨版」並啟用 30 天月租效期；您亦可隨時為各補習班一鍵續約</div>
       </div>
       <span class="badge mono" id="pendingAppCountBadge">0 筆待審核</span>
     </div>
+
+    <div id="devCramSubscriptionPanel" style="margin-bottom: 1.25rem;"></div>
+
     <div id="teacherApplicationList">
       <div style="color: var(--text-muted); font-size: 0.88rem;">載入申請紀錄中...</div>
     </div>
   </div>
 
-  <!-- 📋 功課＆考試布告欄（老師與開發者皆可指派小老師、新增/編輯/刪除） -->
+  <!-- 📋 功課＆考試布告欄（補習班模式自動隱藏） -->
   <div class="container" id="classBoardSection">
     <div class="section-header-bar" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.85rem; margin-bottom: 1.25rem;">
       <div>
-        <h3>📋 功課＆考試布告欄（老師 / 開發者 / 各科小老師共同維護）</h3>
-        <div class="hint">設定為「考試」且日期為明天時，學生端、家長端與導師端最上方會自動跳出提醒</div>
+        <h3 id="boardSectionHeading">📋 功課＆考試布告欄（老師 / 開發者 / 各科小老師共同維護）</h3>
+        <div class="hint">設定為「考試」且日期為明天時，學生端、家長端與管理端最上方會自動跳出提醒</div>
       </div>
     </div>
 
@@ -1239,20 +1374,20 @@
     </div>
   </div>
 
-  <!-- 區塊二：全班各科平均與總平均總排名總覽 -->
+  <!-- 區塊二：各科平均與總平均總排名總覽 -->
   <div class="container" id="adminRankSection">
     <div class="section-header-bar" id="rankHeaderBar">
-      <h3>📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-blue); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span></h3>
+      <h3 id="rankSectionHeading">📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-blue); font-weight:normal;">(💡 點擊姓名可查看個人趨勢圖)</span></h3>
       <div class="btn-group no-print">
-        <button class="pw-edit-btn" onclick="toggleSection('rankCollapsibleBody', 'rankHeaderBar', '1.25rem')">📂 展開 / 收合排名矩陣</button>
-        <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel (.xlsx)</button>
-        <button class="pdf-btn" onclick="printRankReport()">🖨️ 列印 / 匯出 PDF（橫向明細表）</button>
+        <button class="pw-edit-btn" onclick="toggleSection('rankCollapsibleBody', 'rankHeaderBar', '1.25rem')">📂 展開 / 收合</button>
+        <button class="excel-btn" onclick="exportToExcel()">📥 匯出 Excel</button>
+        <button class="pdf-btn" onclick="printRankReport()">🖨️ 列印 / PDF</button>
       </div>
     </div>
 
     <div id="rankCollapsibleBody" style="display: none;">
       <div class="summary-grid" id="classSubjectSummary"></div>
-      <div style="overflow-x: auto;">
+      <div class="table-scroll-wrap">
         <table style="margin-bottom: 0;">
           <thead id="rankTableHead"></thead>
           <tbody id="rankTableBody"></tbody>
@@ -1277,7 +1412,7 @@
     <div class="section-header-bar" id="historyHeaderBar">
       <h3>🗂️ 雲端已整合測驗場次</h3>
       <div class="btn-group">
-        <button class="pw-edit-btn" onclick="toggleSection('historyCollapsibleBody', 'historyHeaderBar', '1.25rem')">📂 展開 / 收合場次列表</button>
+        <button class="pw-edit-btn" onclick="toggleSection('historyCollapsibleBody', 'historyHeaderBar', '1.25rem')">📂 展開 / 收合</button>
         <button class="del-btn" onclick="deleteAllExams()" style="padding: 0.45rem 0.9rem; font-size: 0.84rem;">💥 一鍵清除所有場次</button>
       </div>
     </div>
@@ -1292,7 +1427,7 @@
   <div class="container dev-container" id="devAnnouncementSection" style="display: none;">
     <div class="section-header-bar" id="devAnnHeaderBar">
       <h3>📢 登入首頁公告欄管理 <span class="dev-badge">系統開發者專用</span></h3>
-      <button class="pw-edit-btn" onclick="toggleSection('devAnnCollapsibleBody', 'devAnnHeaderBar', '1.25rem')">📂 展開 / 收合公告管理</button>
+      <button class="pw-edit-btn" onclick="toggleSection('devAnnCollapsibleBody', 'devAnnHeaderBar', '1.25rem')">📂 展開 / 收合</button>
     </div>
 
     <div id="devAnnCollapsibleBody" style="display: none;">
@@ -1331,7 +1466,7 @@
 
       <button class="submit-btn" id="annSubmitBtn" onclick="saveAnnouncement()" style="margin-bottom: 1.5rem;">📤 發布公告至登入首頁</button>
 
-      <div style="overflow-x: auto;">
+      <div class="table-scroll-wrap">
         <table style="margin-bottom: 0;">
           <thead>
             <tr>
@@ -1353,19 +1488,19 @@
   <!-- 區塊四：學生與家長帳號密碼管理 -->
   <div class="container" id="adminPasswordSection">
     <div class="section-header-bar" id="pwHeaderBar">
-      <h3>🔑 學生與家長帳號密碼管理</h3>
-      <button class="pw-edit-btn" onclick="toggleSection('passwordBody', 'pwHeaderBar', '1.25rem')">📂 展開 / 收合帳號密碼管理</button>
+      <h3 id="pwSectionHeading">🔑 學生與家長帳號密碼管理</h3>
+      <button class="pw-edit-btn" onclick="toggleSection('passwordBody', 'pwHeaderBar', '1.25rem')">📂 展開 / 收合</button>
     </div>
     <div id="passwordBody" style="display: none;">
-      <p class="hint" style="margin-bottom: 1rem;">學生或家長若忘記密碼，老師可直接在此為其設定新密碼（預設皆為 123456）。</p>
-      <div style="overflow-x: auto;">
+      <p class="hint" id="pwSectionHint" style="margin-bottom: 1rem;">學生或家長若忘記密碼，老師可直接在此為其設定新密碼（預設皆為 123456）。</p>
+      <div class="table-scroll-wrap">
         <table style="margin-bottom: 0;">
           <thead>
             <tr>
-              <th>座號</th>
-              <th>學生姓名</th>
-              <th>學生學號</th>
-              <th>家長帳號 (F+學號)</th>
+              <th id="thPwSeat">座號</th>
+              <th id="thPwName">學生姓名</th>
+              <th id="thPwCode">學生帳號</th>
+              <th>家長帳號 (F+編號)</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -1413,7 +1548,11 @@
     let currentUserProfile = null;
     let currentUserLabel = '導師';
     let currentClassName = '國二-2';
+    let currentClassMeta = { org_type: 'school', monthly_fee: 0, expires_at: null, is_chat_enabled: true, is_call_enabled: true };
+    let isCramMode = false;
     let availableClasses = ['國二-2'];
+    let classesMetaMap = {};
+    let allProfilesCache = [];
     let students = [];
     let parentAccountsList = [];
     let allScoresCache = [];
@@ -1428,7 +1567,6 @@
     let isDeveloperUser = false;
     let globalPresenceChannel = null;
 
-    // 師生聯絡控管與內建私聊＋語音通話狀態
     let classCommSwitches = { is_chat_enabled: true, is_call_enabled: true };
     let commContacts = [];
     let selectedEmbPeer = null;
@@ -1453,6 +1591,13 @@
       const m = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
       return `${y}-${m}-${day}`;
+    }
+
+    function formatDateYMD(isoStr) {
+      if (!isoStr) return '永久有效';
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return '永久有效';
+      return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
     }
 
     document.getElementById('examDate').valueAsDate = new Date();
@@ -1487,10 +1632,10 @@
       }
 
       const roleLabelMap = {
-        student: '學生',
+        student: '學生/學員',
         parent: '家長',
-        teacher: '導師',
-        admin: '導師',
+        teacher: '導師/班主任',
+        admin: '導師/班主任',
         developer: '開發者'
       };
 
@@ -1536,7 +1681,7 @@
             seat_number: (profile && profile.seat_number != null) ? profile.seat_number : null,
             role: (profile && profile.role) ? profile.role : (devMode ? 'developer' : 'teacher'),
             class_name: (profile && profile.class_name) ? profile.class_name : '國二-2',
-            page: devMode ? '系統開發者終端' : '導師管理後台',
+            page: devMode ? '系統開發者終端' : '教務管理後台',
             online_at: new Date().toISOString()
           });
         }
@@ -1576,15 +1721,15 @@
       const isTeacherRole = profile && (profile.role === 'admin' || profile.role === 'teacher');
 
       if (!isDeveloperUser && !isTeacherRole) {
-        alert('僅限老師或系統開發者權限帳號存取！');
+        alert('僅限老師、補習班主任或系統開發者權限帳號存取！');
         window.location.href = 'index.html';
         return;
       }
 
       initGlobalOnlinePresence(currentUserId, profile, isDeveloperUser);
+      await loadAvailableClasses();
 
       if (isDeveloperUser) {
-        await loadAvailableClasses();
         currentClassName = availableClasses[0] || '國二-2';
         currentUserLabel = `${profile?.name || '系統開發者'}（開發者）`;
         document.getElementById('devLivePresenceSection').style.display = 'block';
@@ -1594,56 +1739,170 @@
         await Promise.all([loadTeacherApplications(), loadDevAnnouncements()]);
       } else {
         currentClassName = (profile && profile.class_name) ? profile.class_name : '國二-2';
-        currentUserLabel = `${profile.name || '導師'}（導師）`;
+        currentUserLabel = `${profile.name || '導師'}（管理端）`;
       }
 
-      updateHeaderTitleByClass();
       await loadClassScopedData();
       subscribeDirectRealtime();
     }
 
-    function updateHeaderTitleByClass() {
-      if (isDeveloperUser) {
-        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V5.3.0';
-        document.getElementById('commandTitle').innerText = `${currentClassName} 智慧成績系統（系統開發者）`;
+    function applyAdminOrgModeUI() {
+      isCramMode = Boolean(
+        currentClassMeta &&
+        (currentClassMeta.org_type === 'cram_school' || currentClassMeta.is_chat_enabled === false)
+      );
+
+      const chatPortalBtn = document.getElementById('adminChatPortalBtn');
+      const commSection = document.getElementById('commCommandSection');
+      const classBoardSection = document.getElementById('classBoardSection');
+      const tomorrowBanner = document.getElementById('tomorrowExamBanner');
+
+      if (chatPortalBtn) chatPortalBtn.style.display = isCramMode ? 'none' : 'inline-flex';
+      if (commSection) commSection.style.display = isCramMode ? 'none' : 'block';
+      // 補習班模式全面移除功課＆考試布告欄與明日考試置頂提醒
+      if (classBoardSection) classBoardSection.style.display = isCramMode ? 'none' : 'block';
+      if (tomorrowBanner && isCramMode) tomorrowBanner.style.display = 'none';
+
+      const subBadgeEl = document.getElementById('cramSubscriptionBadge');
+      const expiredBanner = document.getElementById('subscriptionExpiredBanner');
+      const quickRenewBtn = document.getElementById('devQuickRenewBannerBtn');
+
+      if (isCramMode && currentClassMeta.expires_at) {
+        const expDate = new Date(currentClassMeta.expires_at);
+        const isExpired = expDate < new Date();
+        const feeText = currentClassMeta.monthly_fee ? `NT$ ${currentClassMeta.monthly_fee}/月` : '月租方案';
+        subBadgeEl.style.display = 'block';
+        subBadgeEl.innerHTML = isExpired
+          ? `<span class="type-pill-exam">⏳ 月租已到期（${formatDateYMD(currentClassMeta.expires_at)}）｜${feeText}</span>`
+          : `<span class="type-pill-hw">🏢 補習班月租版（無聊天室）｜效期至 ${formatDateYMD(currentClassMeta.expires_at)}｜${feeText}</span>`;
+
+        if (isExpired) {
+          expiredBanner.style.display = 'block';
+          document.getElementById('subscriptionExpiredText').innerText = `⏳ 「${currentClassName}」月租服務已於 ${formatDateYMD(currentClassMeta.expires_at)} 到期，請聯繫系統開發者續約`;
+          if (quickRenewBtn) quickRenewBtn.style.display = isDeveloperUser ? 'inline-flex' : 'none';
+        } else {
+          expiredBanner.style.display = 'none';
+        }
       } else {
-        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V5.3.0';
+        subBadgeEl.style.display = 'none';
+        expiredBanner.style.display = 'none';
+      }
+
+      if (isDeveloperUser) {
+        document.getElementById('commandRoleTag').innerText = isCramMode ? 'SYSTEM DEVELOPER // 補習班月租模式 // V5.4.1' : 'SYSTEM DEVELOPER // V5.4.1';
+        document.getElementById('commandTitle').innerText = isCramMode
+          ? `${currentClassName} 補習班成績與落點系統（系統開發者）`
+          : `${currentClassName} 智慧成績系統（系統開發者）`;
+      } else if (isCramMode) {
+        document.getElementById('commandRoleTag').innerText = 'CRAM SCHOOL COMMAND OS // 月租無聊天室版 // V5.4.1';
+        document.getElementById('commandTitle').innerText = `${currentClassName} 補習班教務與成績分析系統`;
+      } else {
+        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V5.4.1';
         document.getElementById('commandTitle').innerText = `${currentClassName} 成績系統指揮中心（老師專用）`;
       }
-      document.getElementById('printSheetTitle').innerText = `${currentClassName} 各場次小考成績明細一覽表（含科目與考試日期）`;
+
+      if (isCramMode) {
+        document.getElementById('reportAlertHeading').innerText = '⚠️ 學員成績異常回報警報';
+        document.getElementById('thAlertStudent').innerText = '編號 / 姓名';
+        document.getElementById('excelDropTitle').innerText = '📥 直接匯入助教打的直列 Excel（免套用範本）';
+        document.getElementById('excelDropSub').innerText = '支援現有「直列學員編號 / 姓名 ＋ 單欄或多欄週考成績」的 .xlsx / .xls / .csv 檔，拖曳至此即可自動帶入';
+        document.getElementById('thEntrySeat').innerText = '學員編號';
+        document.getElementById('thEntryName').innerText = '學員姓名';
+        document.getElementById('rankSectionHeading').innerHTML = '📊 班別各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-blue); font-weight:normal;">(💡 點擊學員姓名可查看個人趨勢圖)</span>';
+        document.getElementById('printSheetTitle').innerText = `${currentClassName} 各場次週考／模考成績明細一覽表`;
+        document.getElementById('pwSectionHeading').innerText = '🔑 學員與家長帳號密碼管理';
+        document.getElementById('pwSectionHint').innerText = '學員或家長若忘記密碼，班主任可直接在此為其設定新密碼（預設皆為 123456）。';
+        document.getElementById('thPwSeat').innerText = '編號';
+        document.getElementById('thPwName').innerText = '學員姓名';
+        document.getElementById('thPwCode').innerText = '學員帳號';
+      } else {
+        document.getElementById('reportAlertHeading').innerText = '⚠️ 學生成績異常回報警報';
+        document.getElementById('thAlertStudent').innerText = '座號 / 姓名';
+        document.getElementById('excelDropTitle').innerText = '📥 直接匯入小老師打的直列 Excel（免套用範本）';
+        document.getElementById('excelDropSub').innerText = '支援現有「直列座號 / 姓名 ＋ 單欄或多欄小考成績」的 .xlsx / .xls / .csv 檔，直接選擇檔案或拖曳至此即可自動帶入';
+        document.getElementById('thEntrySeat').innerText = '座號';
+        document.getElementById('thEntryName').innerText = '學生姓名';
+        document.getElementById('boardSectionHeading').innerText = '📋 功課＆考試布告欄（老師 / 開發者 / 各科小老師共同維護）';
+        document.getElementById('rankSectionHeading').innerHTML = '📊 全班各科均分與總平均排名矩陣 <span style="font-size:0.8rem; color:var(--accent-blue); font-weight:normal;">(💡 點擊學生姓名可查看個人趨勢圖)</span>';
+        document.getElementById('printSheetTitle').innerText = `${currentClassName} 各場次小考成績明細一覽表（含科目與考試日期）`;
+        document.getElementById('pwSectionHeading').innerText = '🔑 學生與家長帳號密碼管理';
+        document.getElementById('pwSectionHint').innerText = '學生或家長若忘記密碼，老師可直接在此為其設定新密碼（預設皆為 123456）。';
+        document.getElementById('thPwSeat').innerText = '座號';
+        document.getElementById('thPwName').innerText = '學生姓名';
+        document.getElementById('thPwCode').innerText = '學生學號';
+      }
     }
 
     async function loadAvailableClasses() {
       const classSet = new Set(['國二-2']);
+      classesMetaMap = {
+        '國二-2': { class_name: '國二-2', org_type: 'school', monthly_fee: 0, expires_at: null, is_chat_enabled: true, is_call_enabled: true }
+      };
+
       const [{ data: clsRows }, { data: profRows }] = await Promise.all([
-        supabaseClient.from('classes').select('class_name'),
+        supabaseClient.from('classes').select('*'),
         supabaseClient.from('profiles').select('class_name').not('class_name', 'is', null)
       ]);
-      (clsRows || []).forEach(c => { if (c.class_name) classSet.add(c.class_name); });
+      (clsRows || []).forEach(c => {
+        if (c.class_name) {
+          classSet.add(c.class_name);
+          classesMetaMap[c.class_name] = c;
+        }
+      });
       (profRows || []).forEach(p => { if (p.class_name) classSet.add(p.class_name); });
 
       availableClasses = Array.from(classSet);
       const sel = document.getElementById('activeClassSelect');
-      sel.innerHTML = availableClasses.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-      sel.value = currentClassName;
+      if (sel) {
+        sel.innerHTML = availableClasses.map(c => {
+          const meta = classesMetaMap[c];
+          const tag = (meta && meta.org_type === 'cram_school') ? ' [🏢補習班]' : ' [🏫學校]';
+          return `<option value="${escapeHtml(c)}">${escapeHtml(c)}${tag}</option>`;
+        }).join('');
+        sel.value = currentClassName;
+      }
+      renderDevCramSubscriptions();
     }
 
     async function handleClassSwitch() {
       currentClassName = document.getElementById('activeClassSelect').value;
-      updateHeaderTitleByClass();
       resetEntryFormAfterSubmit();
       selectedEmbPeer = null;
+      closeMobileEmbeddedChat();
       await loadClassScopedData();
     }
 
     async function loadClassScopedData() {
+      const { data: latestMeta } = await supabaseClient
+        .from('classes')
+        .select('*')
+        .eq('class_name', currentClassName)
+        .maybeSingle();
+
+      if (latestMeta) {
+        currentClassMeta = latestMeta;
+        classesMetaMap[currentClassName] = latestMeta;
+      } else {
+        currentClassMeta = classesMetaMap[currentClassName] || {
+          class_name: currentClassName,
+          org_type: 'school',
+          monthly_fee: 0,
+          expires_at: null,
+          is_chat_enabled: true,
+          is_call_enabled: true
+        };
+      }
+
+      applyAdminOrgModeUI();
+
       const { data, error } = await supabaseClient
         .from('profiles')
         .select('id, seat_number, name, email, role, parent_of_student_id, class_name')
         .order('seat_number', { ascending: true });
 
-      const allProfiles = data || [];
-      const scopedUsers = allProfiles.filter(u => {
+      allProfilesCache = data || [];
+
+      const scopedUsers = allProfilesCache.filter(u => {
         const uClass = u.class_name || '國二-2';
         return uClass === currentClassName;
       });
@@ -1652,8 +1911,7 @@
       const studentOnly = scopedUsers.filter(u => u.role === 'student');
       parentAccountsList = scopedUsers.filter(u => u.role === 'parent');
 
-      // 建立後台內建聯絡名單（包含系統開發者/導師、本班學生、本班家長）
-      commContacts = allProfiles.filter(u => {
+      commContacts = allProfilesCache.filter(u => {
         if (u.id === currentUserId) return false;
         const uIsDev = u.role === 'developer' || (u.email || '').toLowerCase() === DEV_EMAIL;
         const uIsTeacher = u.role === 'admin' || u.role === 'teacher';
@@ -1664,7 +1922,7 @@
 
       if (error || studentOnly.length === 0) {
         students = [];
-        tbody.innerHTML = `<tr><td colspan="3">「${escapeHtml(currentClassName)}」目前沒有學生資料</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3">「${escapeHtml(currentClassName)}」目前沒有${isCramMode ? '學員' : '學生'}資料</td></tr>`;
         renderStudentAccounts();
         await Promise.all([refreshScoresData(), loadClassBoard(), loadClassCommSwitches(), loadEmbeddedDmMessages(), loadLiveCallLogs()]);
         return;
@@ -1684,23 +1942,10 @@
       await Promise.all([refreshScoresData(), loadClassBoard(), loadClassCommSwitches(), loadEmbeddedDmMessages(), loadLiveCallLogs()]);
     }
 
-    /* ================= 師生／親師即時聯絡控制台＋通聯狀態＋內建對話窗 ================= */
+    /* ================= 師生／親師即時聯絡控制台＋通聯狀態＋內建一對一對話窗 ================= */
     async function loadClassCommSwitches() {
-      try {
-        const { data } = await supabaseClient
-          .from('classes')
-          .select('is_chat_enabled, is_call_enabled')
-          .eq('class_name', currentClassName)
-          .maybeSingle();
-
-        if (data) {
-          classCommSwitches.is_chat_enabled = data.is_chat_enabled !== false;
-          classCommSwitches.is_call_enabled = data.is_call_enabled !== false;
-        } else {
-          classCommSwitches.is_chat_enabled = true;
-          classCommSwitches.is_call_enabled = true;
-        }
-      } catch (e) {}
+      classCommSwitches.is_chat_enabled = currentClassMeta.is_chat_enabled !== false;
+      classCommSwitches.is_call_enabled = currentClassMeta.is_call_enabled !== false;
       renderCommSwitchButtons();
     }
 
@@ -1731,14 +1976,14 @@
         }, { onConflict: 'class_name' });
 
       if (error) {
-        alert('更新班級開關失敗（請確認已執行 classes 欄位 SQL）：' + error.message);
+        alert('更新班級開關失敗：' + error.message);
       }
     }
 
     async function loadLiveCallLogs() {
       const activeListEl = document.getElementById('liveActiveCallsList');
       const summaryEl = document.getElementById('recentCallSummaryText');
-      if (!activeListEl) return;
+      if (!activeListEl || isCramMode) return;
 
       try {
         let query = supabaseClient
@@ -1756,7 +2001,7 @@
 
         const ongoing = data.filter(c => c.status === 'ringing' || c.status === 'active');
         if (ongoing.length === 0) {
-          activeListEl.innerHTML = '<span style="font-size: 0.8rem; color: var(--text-muted);">目前無進行中的語音通話</span>';
+          activeListEl.innerHTML = '<span style="font-size: 0.82rem; color: var(--text-muted);">目前無進行中的語音通話</span>';
         } else {
           activeListEl.innerHTML = ongoing.map(c => {
             const stateTag = c.status === 'active' ? '🟢 通話中' : '🔔 響鈴中';
@@ -1772,6 +2017,7 @@
     }
 
     async function loadEmbeddedDmMessages() {
+      if (isCramMode) return;
       const { data } = await supabaseClient
         .from('chat_messages')
         .select('*')
@@ -1803,7 +2049,7 @@
       if (badgeEl) badgeEl.innerText = `未讀訊息：${totalUnread} 則`;
 
       if (commContacts.length === 0) {
-        listEl.innerHTML = '<div style="padding:0.75rem; color:var(--text-muted); font-size:0.82rem;">目前無可聯絡成員</div>';
+        listEl.innerHTML = '<div style="padding:0.75rem; color:var(--text-muted); font-size:0.84rem;">目前無可聯絡成員</div>';
         return;
       }
 
@@ -1819,19 +2065,26 @@
       }).join('');
     }
 
+    function closeMobileEmbeddedChat() {
+      const shell = document.getElementById('embeddedCommShell');
+      if (shell) shell.classList.remove('mobile-chat-open');
+    }
+
     async function selectEmbeddedPeer(peerId) {
       const peer = commContacts.find(c => c.id === peerId);
       if (!peer) return;
       selectedEmbPeer = peer;
 
+      const shell = document.getElementById('embeddedCommShell');
+      if (shell) shell.classList.add('mobile-chat-open');
+
       document.getElementById('embChatPeerTitle').innerText = formatCommContactName(peer);
-      document.getElementById('embChatPeerSub').innerText = '1 對 1 師生／親師專線（支援即時語音通話）';
+      document.getElementById('embChatPeerSub').innerText = '1 對 1 師生／親師專線';
       document.getElementById('embVoiceCallBtn').style.display = 'inline-flex';
-      document.getElementById('embFullChatBtn').style.display = 'inline-block';
+      document.getElementById('embFullChatBtn').style.display = 'inline-flex';
       document.getElementById('embMessageInput').disabled = false;
       document.getElementById('embSendBtn').disabled = false;
 
-      // 標記已讀
       const unreadIds = embDmMessages
         .filter(m => m.sender_id === peer.id && m.receiver_id === currentUserId && !m.is_read)
         .map(m => m.id);
@@ -1862,7 +2115,7 @@
       );
 
       if (msgs.length === 0) {
-        streamEl.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:4rem; font-size:0.84rem;">尚無對話紀錄，輸入文字或點擊右上角「📞 語音通話」即可開始聯絡</div>';
+        streamEl.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:4rem; font-size:0.85rem;">尚無對話紀錄，輸入文字或點擊右上角「📞 通話」即可開始聯絡</div>';
         return;
       }
 
@@ -1874,7 +2127,7 @@
         return `
           <div class="emb-msg ${isMine ? 'mine' : 'others'}">
             <div>${escapeHtml(contentTxt)}</div>
-            <div style="font-size:0.68rem; opacity:0.75; margin-top:2px; text-align:right;">${tStr}${isMine && m.is_read ? ' · 已讀' : ''}</div>
+            <div style="font-size:0.7rem; opacity:0.78; margin-top:2px; text-align:right;">${tStr}${isMine && m.is_read ? ' · 已讀' : ''}</div>
           </div>
         `;
       }).join('');
@@ -1921,24 +2174,27 @@
       directRealtimeChannel = supabaseClient.channel('nexus-direct-realtime');
       directRealtimeChannel
         .on('broadcast', { event: 'webrtc-signal' }, async ({ payload }) => {
-          if (!payload || payload.to !== currentUserId) return;
+          if (!payload || payload.to !== currentUserId || isCramMode) return;
           await handleAdminWebRTCSignal(payload);
         })
         .on('postgres_changes', { event: '*', schema: 'public', table: 'call_logs' }, async () => {
-          await loadLiveCallLogs();
+          if (!isCramMode) await loadLiveCallLogs();
         })
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, async payload => {
+          if (isCramMode) return;
           const m = payload.new;
-          if (m.channel_type !== 'dm') return;
-          if (m.sender_id !== currentUserId && m.receiver_id !== currentUserId) return;
-          if (!embDmMessages.some(x => x.id === m.id)) {
-            embDmMessages.push(m);
-            if (selectedEmbPeer && m.sender_id === selectedEmbPeer.id) {
-              m.is_read = true;
-              await supabaseClient.from('chat_messages').update({ is_read: true }).eq('id', m.id);
+
+          // 僅接收傳給老師/開發者本人的私訊（完全不讀取學生與學生間的私人對話）
+          if (m.channel_type === 'dm' && (m.sender_id === currentUserId || m.receiver_id === currentUserId)) {
+            if (!embDmMessages.some(x => x.id === m.id)) {
+              embDmMessages.push(m);
+              if (selectedEmbPeer && m.sender_id === selectedEmbPeer.id) {
+                m.is_read = true;
+                await supabaseClient.from('chat_messages').update({ is_read: true }).eq('id', m.id);
+              }
+              renderEmbeddedContactList();
+              renderEmbeddedChatStream();
             }
-            renderEmbeddedContactList();
-            renderEmbeddedChatStream();
           }
         })
         .subscribe();
@@ -2195,7 +2451,70 @@
       document.getElementById('adminVoiceCallModal').style.display = 'none';
     }
 
-    /* ================= 開發者：導師申請開通新班級審核 ================= */
+    /* ================= 開發者：補習班月租效期列表與一鍵續約 ================= */
+    function renderDevCramSubscriptions() {
+      const panelEl = document.getElementById('devCramSubscriptionPanel');
+      if (!panelEl || !isDeveloperUser) return;
+
+      const cramList = Object.values(classesMetaMap).filter(c => c.org_type === 'cram_school');
+      if (cramList.length === 0) {
+        panelEl.innerHTML = '';
+        return;
+      }
+
+      panelEl.innerHTML = `
+        <div style="background:var(--bg-subtle); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:0.95rem 1.1rem;">
+          <div style="font-weight:900; font-size:0.9rem; color:var(--accent-blue); margin-bottom:0.65rem;">💳 已開通補習班月租訂閱狀態（無聊天室純淨版）</div>
+          ${cramList.map(c => {
+            const expDate = c.expires_at ? new Date(c.expires_at) : null;
+            const isExpired = expDate && expDate < new Date();
+            const statusPill = isExpired
+              ? `<span class="type-pill-exam">⏳ 已到期（${formatDateYMD(c.expires_at)}）</span>`
+              : `<span class="type-pill-hw">✅ 啟用中（至 ${formatDateYMD(c.expires_at)}）</span>`;
+            return `
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; padding:0.55rem 0; border-bottom:1px solid var(--border-light);">
+                <div>
+                  <strong>🏢 ${escapeHtml(c.class_name)}</strong>
+                  <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:0.4rem;">班主任：${escapeHtml(c.teacher_name || '-')}｜月租 NT$ ${c.monthly_fee || 990}/月</span>
+                  <span style="margin-left:0.45rem;">${statusPill}</span>
+                </div>
+                <div style="display:flex; gap:0.4rem;">
+                  <button type="button" class="resolve-btn" onclick="renewClassSubscription('${escapeHtml(c.class_name)}', 1)">➕ 續約 1 個月</button>
+                  <button type="button" class="pw-edit-btn" style="padding:0.35rem 0.65rem; min-height:34px; font-size:0.78rem;" onclick="renewClassSubscription('${escapeHtml(c.class_name)}', 3)">➕ 季繳 3 個月</button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    async function renewClassSubscription(className, months = 1) {
+      if (!isDeveloperUser) return;
+      const meta = classesMetaMap[className] || {};
+      const now = new Date();
+      const baseDate = (meta.expires_at && new Date(meta.expires_at) > now) ? new Date(meta.expires_at) : now;
+      baseDate.setDate(baseDate.getDate() + (months * 30));
+      const nextIso = baseDate.toISOString();
+
+      const { error } = await supabaseClient
+        .from('classes')
+        .update({ expires_at: nextIso })
+        .eq('class_name', className);
+
+      if (error) {
+        alert('續約更新失敗：' + error.message);
+        return;
+      }
+
+      alert(`✅ 已為「${className}」續約 ${months} 個月！\n最新有效期限至：${formatDateYMD(nextIso)}`);
+      await loadAvailableClasses();
+      if (currentClassName === className) {
+        await loadClassScopedData();
+      }
+    }
+
+    /* ================= 開發者：申請開通新班級／補習班審核 ================= */
     async function loadTeacherApplications() {
       const container = document.getElementById('teacherApplicationList');
       const badge = document.getElementById('pendingAppCountBadge');
@@ -2215,12 +2534,17 @@
       badge.innerText = `${pendingList.length} 筆待審核`;
 
       if (applicationsCache.length === 0) {
-        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.86rem;">目前尚無導師申請開通紀錄</div>';
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:0.86rem;">目前尚無申請開通紀錄</div>';
         return;
       }
 
       container.innerHTML = applicationsCache.map(app => {
         const stList = Array.isArray(app.student_list) ? app.student_list : [];
+        const isCramApp = app.org_type === 'cram_school';
+        const orgTag = isCramApp
+          ? `<span class="badge" style="background:var(--accent-blue-soft); color:var(--accent-blue);">🏢 補習班月租版（無聊天室・NT$${app.monthly_fee || 990}/月）</span>`
+          : `<span class="badge" style="background:var(--accent-emerald-soft); color:var(--accent-emerald);">🏫 學校班級版</span>`;
+
         const dt = new Date(app.created_at);
         const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
         const statusTag = app.status === 'pending'
@@ -2233,15 +2557,16 @@
 
         return `
           <div class="app-card">
-            <div style="flex:1; min-width:240px;">
+            <div style="flex:1; min-width:220px;">
               <div style="margin-bottom:0.35rem;">
                 ${statusTag}
+                ${orgTag}
                 <strong style="font-size:1rem; margin-left:0.45rem;">【${escapeHtml(app.class_name)}】</strong>
                 <span style="font-weight:700; color:var(--accent-blue);">${escapeHtml(app.teacher_name)}</span>
                 <span class="mono" style="font-size:0.8rem; color:var(--text-muted);">(${escapeHtml(app.teacher_email)})</span>
               </div>
               <div style="font-size:0.82rem; color:var(--text-secondary);">
-                申請日期：${dateStr} ｜ 名單人數：<strong>${stList.length} 位學生</strong>（將同步建置 ${stList.length} 組家長帳號）
+                申請日期：${dateStr} ｜ 名單人數：<strong>${stList.length} 位${isCramApp ? '學員' : '學生'}</strong>（同步建置 ${stList.length} 組家長帳號）
               </div>
               <div style="font-size:0.78rem; color:var(--text-muted); margin-top:4px;">名單預覽：${escapeHtml(previewNames)}</div>
             </div>
@@ -2261,8 +2586,9 @@
       const app = applicationsCache.find(a => a.id === appId);
       if (!app) return;
       const stList = Array.isArray(app.student_list) ? app.student_list : [];
+      const isCramApp = app.org_type === 'cram_school';
 
-      if (!confirm(`確定要核准「${app.class_name} - ${app.teacher_name}」的申請嗎？\n\n系統將自動建立：\n• 班級：${app.class_name}\n• 導師帳號：${app.teacher_email}\n• 學生與家長帳號：各 ${stList.length} 組（預設密碼 123456）`)) return;
+      if (!confirm(`確定要核准「${app.class_name} - ${app.teacher_name}」的申請嗎？\n\n系統將自動建立：\n• 機構類型：${isCramApp ? '補習班月租版（自動關閉聊天室・首月 30 天效期）' : '學校班級版'}\n• 管理者帳號：${app.teacher_email}\n• 學員與家長帳號：各 ${stList.length} 組（預設密碼 123456）`)) return;
 
       const btn = document.getElementById(`approveAppBtn_${appId}`);
       if (btn) { btn.disabled = true; btn.innerText = '正在一鍵建檔中...'; }
@@ -2271,24 +2597,30 @@
         app_id: appId
       });
 
-      if (rpcError) {
-        await supabaseClient.from('classes').upsert({
-          class_name: app.class_name,
-          teacher_name: app.teacher_name,
-          teacher_email: app.teacher_email
-        }, { onConflict: 'class_name' });
+      const nextMonthIso = isCramApp ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : null;
+      await supabaseClient.from('classes').upsert({
+        class_name: app.class_name,
+        teacher_name: app.teacher_name,
+        teacher_email: app.teacher_email,
+        org_type: isCramApp ? 'cram_school' : 'school',
+        monthly_fee: isCramApp ? (app.monthly_fee || 990) : 0,
+        expires_at: nextMonthIso,
+        is_chat_enabled: !isCramApp,
+        is_call_enabled: !isCramApp
+      }, { onConflict: 'class_name' });
 
+      if (rpcError) {
         await supabaseClient.from('teacher_applications').update({ status: 'approved' }).eq('id', appId);
         alert(`⚠️ 已標記核准「${app.class_name}」，但自動建立 Auth 帳號需要資料庫 RPC 權限（${rpcError.message}）。請確認已執行後端一鍵建檔 SQL 函數。`);
       } else {
-        alert(`🎉 已成功核准並完成「${app.class_name}」全班建檔！\n導師、${stList.length} 位學生及 ${stList.length} 位家長現在皆可使用預設密碼 123456 登入。`);
+        alert(`🎉 已成功核准並完成「${app.class_name}」建檔！\n管理者、${stList.length} 位${isCramApp ? '學員' : '學生'}及 ${stList.length} 位家長現在皆可使用預設密碼 123456 登入。`);
       }
 
       await Promise.all([loadTeacherApplications(), loadAvailableClasses()]);
     }
 
     async function rejectTeacherApplication(appId) {
-      if (!confirm('確定要婉拒此筆班級開通申請嗎？')) return;
+      if (!confirm('確定要婉拒此筆開通申請嗎？')) return;
       const { error } = await supabaseClient
         .from('teacher_applications')
         .update({ status: 'rejected' })
@@ -2315,13 +2647,19 @@
       }
     }
 
-    /* ================= 功課＆考試布告欄 + 明日考試置頂 ================= */
+    /* ================= 功課＆考試布告欄 + 明日考試置頂（補習班模式停用） ================= */
     function toggleBoardDateRequired() {
       const t = document.getElementById('boardTypeInput').value;
       document.getElementById('boardDateLabel').innerText = t === 'exam' ? '考試日期（必填・明天自動置頂）' : '繳交 / 提醒日期';
     }
 
     async function loadClassBoard() {
+      if (isCramMode) {
+        const banner = document.getElementById('tomorrowExamBanner');
+        if (banner) banner.style.display = 'none';
+        return;
+      }
+
       const [{ data: subRows }, { data: items }] = await Promise.all([
         supabaseClient.from('subject_announcements').select('subject, helper_user_ids, class_name'),
         supabaseClient.from('class_board_items').select('*').order('exam_date', { ascending: true, nullsFirst: false }).order('id', { ascending: false })
@@ -2342,6 +2680,12 @@
     }
 
     function renderTomorrowExamBanner() {
+      const banner = document.getElementById('tomorrowExamBanner');
+      if (isCramMode) {
+        if (banner) banner.style.display = 'none';
+        return;
+      }
+
       const tomorrowStr = getLocalDateStr(1);
       const todayDow = new Date().getDay();
       const nextMondayStr = todayDow === 5 ? getLocalDateStr(3) : null;
@@ -2351,7 +2695,6 @@
         return item.exam_date === tomorrowStr || (nextMondayStr && item.exam_date === nextMondayStr);
       });
 
-      const banner = document.getElementById('tomorrowExamBanner');
       const listEl = document.getElementById('tomorrowExamList');
       const badgeEl = document.getElementById('tomorrowDateBadge');
 
@@ -2384,6 +2727,7 @@
 
     function renderAdminClassBoard() {
       const grid = document.getElementById('adminBoardGrid');
+      if (!grid || isCramMode) return;
       const studentMap = {};
       students.forEach(s => { studentMap[s.id] = `${s.seat_number ?? '-'}號 ${s.name}`; });
 
@@ -2405,8 +2749,8 @@
                   <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">發布：${escapeHtml(item.created_by_name || '')}</div>
                 </div>
                 <div style="display:flex; gap:0.25rem; flex-shrink:0;">
-                  <button class="edit-btn" style="padding:0.2rem 0.45rem; font-size:0.75rem;" onclick="editBoardItem(${item.id})">改</button>
-                  <button class="del-btn" style="padding:0.2rem 0.45rem; font-size:0.75rem;" onclick="deleteBoardItem(${item.id})">刪</button>
+                  <button class="edit-btn" style="padding:0.25rem 0.5rem; min-height:32px; font-size:0.78rem;" onclick="editBoardItem(${item.id})">改</button>
+                  <button class="del-btn" style="padding:0.25rem 0.5rem; min-height:32px; font-size:0.78rem;" onclick="deleteBoardItem(${item.id})">刪</button>
                 </div>
               </div>
             `).join('');
@@ -2418,7 +2762,7 @@
                 <strong style="color:var(--accent-blue); font-size:0.98rem;">📚 ${sub}</strong>
                 <div class="board-helper-tags">小老師：${escapeHtml(helperNames)}</div>
               </div>
-              <button class="pw-edit-btn" style="padding:0.3rem 0.6rem; font-size:0.76rem;" onclick="openHelperAssignModal('${sub}')">👥 設小老師</button>
+              <button class="pw-edit-btn" style="padding:0.35rem 0.65rem; min-height:34px; font-size:0.78rem;" onclick="openHelperAssignModal('${sub}')">👥 設小老師</button>
             </div>
             ${itemsHtml}
           </div>
@@ -2427,6 +2771,7 @@
     }
 
     function openHelperAssignModal(subject) {
+      if (isCramMode) return;
       editingHelperSubject = subject;
       const currentIds = subjectHelpersMap[subject] || [];
       document.getElementById('helperModalTitle').innerText = `👩‍🏫 指派「${subject}」小老師`;
@@ -2445,7 +2790,7 @@
     }
 
     async function saveSubjectHelpers() {
-      if (!editingHelperSubject) return;
+      if (!editingHelperSubject || isCramMode) return;
       const checked = Array.from(document.querySelectorAll('#helperChecklistBody input[type="checkbox"]:checked')).map(cb => cb.value);
 
       const { error } = await supabaseClient
@@ -2459,7 +2804,7 @@
         });
 
       if (error) {
-        alert('儲存小老師名單失敗：' + error.message);
+        alert('儲存名單失敗：' + error.message);
         return;
       }
 
@@ -2468,6 +2813,7 @@
     }
 
     async function addBoardItem() {
+      if (isCramMode) return;
       const subject = document.getElementById('boardSubjectInput').value;
       const itemType = document.getElementById('boardTypeInput').value;
       const examDate = document.getElementById('boardDateInput').value || null;
@@ -2504,6 +2850,7 @@
     }
 
     async function editBoardItem(itemId) {
+      if (isCramMode) return;
       const item = boardItemsCache.find(i => i.id === itemId);
       if (!item) return;
 
@@ -2526,6 +2873,7 @@
     }
 
     async function deleteBoardItem(itemId) {
+      if (isCramMode) return;
       if (!confirm('確定要刪除這則功課／考試項目嗎？')) return;
       const { error } = await supabaseClient
         .from('class_board_items')
@@ -2691,8 +3039,8 @@
 
           for (let r = 0; r < Math.min(rows.length, 12); r++) {
             const row = rows[r].map(cell => String(cell).trim());
-            const sIdx = row.findIndex(c => /^(座號|號碼|編號|no\.?|seat)$/i.test(c) || c.includes('座號'));
-            const nIdx = row.findIndex(c => /^(姓名|名字|學生|name)$/i.test(c) || c.includes('姓名'));
+            const sIdx = row.findIndex(c => /^(座號|號碼|編號|no\.?|seat)$/i.test(c) || c.includes('座號') || c.includes('編號'));
+            const nIdx = row.findIndex(c => /^(姓名|名字|學生|學員|name)$/i.test(c) || c.includes('姓名'));
             if (sIdx !== -1 || nIdx !== -1) {
               headerRowIdx = r;
               seatCol = sIdx;
@@ -2833,10 +3181,10 @@
 
       if (matchedCount > 0) {
         msgEl.style.color = 'var(--accent-emerald)';
-        msgEl.innerText = `✅ 已從「${fileName}」【${targetCol.label}】自動帶入 ${matchedCount} 位學生的直列成績！請確認上方科目與日期後按「一鍵整合寫入雲端」。`;
+        msgEl.innerText = `✅ 已從「${fileName}」【${targetCol.label}】自動帶入 ${matchedCount} 位${isCramMode ? '學員' : '學生'}的直列成績！請確認上方科目與日期後按「一鍵整合寫入雲端」。`;
       } else {
         msgEl.style.color = 'var(--accent-rose)';
-        msgEl.innerText = '⚠️ 此欄位未比對到班上學生的有效分數（0~100），請檢查座號或姓名欄位。';
+        msgEl.innerText = '⚠️ 此欄位未比對到名單中的有效分數（0~100），請檢查編號或姓名欄位。';
       }
     }
 
@@ -2869,7 +3217,7 @@
       const seatSortedStudents = [...students].sort((a, b) => (a.seat_number ?? 999) - (b.seat_number ?? 999));
 
       theadEl.innerHTML = `<tr>
-        <th style="width: 42px; text-align:center;">座號</th>
+        <th style="width: 42px; text-align:center;">${isCramMode ? '編號' : '座號'}</th>
         <th style="width: 72px;">姓名</th>
         ${examCols.map(c => `
           <th style="text-align:center;">
@@ -2887,7 +3235,7 @@
       </tr>`).join('');
 
       const avgRowHtml = `<tr>
-        <td colspan="2" style="text-align:center; background:#e2e8f0 !important;"><strong>單場班級平均</strong></td>
+        <td colspan="2" style="text-align:center; background:#e2e8f0 !important;"><strong>${isCramMode ? '單場班別平均' : '單場班級平均'}</strong></td>
         ${examCols.map(c => `<td style="text-align:center; background:#e2e8f0 !important;"><strong>${c.avg}</strong></td>`).join('')}
       </tr>`;
 
@@ -2898,7 +3246,7 @@
       buildPrintExamDetailTable();
       const now = new Date();
       const timeStr = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      document.getElementById('printDetailTimestamp').innerText = `報表匯出時間：${timeStr} ｜ ${currentClassName} 班級成績管理系統`;
+      document.getElementById('printDetailTimestamp').innerText = `報表匯出時間：${timeStr} ｜ ${currentClassName} 成績管理系統`;
       window.print();
     }
 
@@ -2947,7 +3295,7 @@
       });
 
       const rankSortedStudents = [...studentStats].sort((a, b) => (b.totalAvg === '' ? -1 : b.totalAvg) - (a.totalAvg === '' ? -1 : a.totalAvg));
-      const sheet1Headers = ['總排名', '座號', '姓名', ...subjects.map(s => `${s}科平均`), '跨科總平均'];
+      const sheet1Headers = ['總排名', isCramMode ? '編號' : '座號', '姓名', ...subjects.map(s => `${s}科平均`), '跨科總平均'];
       const sheet1Rows = rankSortedStudents.map(st => [
         st.overallRank,
         st.seat_number ?? '',
@@ -2956,7 +3304,7 @@
         st.totalAvg
       ]);
 
-      const classSubAvgsRow = ['', '', '全班平均'];
+      const classSubAvgsRow = ['', '', isCramMode ? '班別平均' : '全班平均'];
       subjects.forEach(sub => {
         const subScores = publishedScores.filter(s => s.subject === sub);
         const avg = subScores.length > 0 ? Math.round((subScores.reduce((sum, item) => sum + item.score, 0) / subScores.length) * 10) / 10 : '';
@@ -2969,7 +3317,7 @@
       sheet1Rows.push(classSubAvgsRow);
 
       const ws1 = XLSX.utils.aoa_to_sheet([sheet1Headers, ...sheet1Rows]);
-      XLSX.utils.book_append_sheet(wb, ws1, '全班總排名矩陣');
+      XLSX.utils.book_append_sheet(wb, ws1, '總排名矩陣');
 
       const examGroupsMap = new Map();
       [...publishedScores].reverse().forEach(s => {
@@ -2992,19 +3340,19 @@
 
       const examCols = Array.from(examGroupsMap.values());
       const seatSortedStudents = [...students].sort((a, b) => (a.seat_number ?? 999) - (b.seat_number ?? 999));
-      const sheet2Headers = ['座號', '姓名', ...examCols.map(c => c.label)];
+      const sheet2Headers = [isCramMode ? '編號' : '座號', '姓名', ...examCols.map(c => c.label)];
       const sheet2Rows = seatSortedStudents.map(st => [
         st.seat_number ?? '',
         st.name,
         ...examCols.map(c => (c.scoresByStudent.has(st.id) ? c.scoresByStudent.get(st.id) : ''))
       ]);
-      sheet2Rows.push(['', '單場班級平均', ...examCols.map(c => c.avg)]);
+      sheet2Rows.push(['', isCramMode ? '單場班別平均' : '單場班級平均', ...examCols.map(c => c.avg)]);
 
       const ws2 = XLSX.utils.aoa_to_sheet([sheet2Headers, ...sheet2Rows]);
-      XLSX.utils.book_append_sheet(wb, ws2, '各場次小考明細');
+      XLSX.utils.book_append_sheet(wb, ws2, '各場次測驗明細');
 
       const todayStr = new Date().toISOString().slice(0, 10);
-      XLSX.writeFile(wb, `${currentClassName}_小考成績總表_${todayStr}.xlsx`);
+      XLSX.writeFile(wb, `${currentClassName}_成績總表_${todayStr}.xlsx`);
     }
 
     async function changeMyPassword() {
@@ -3024,7 +3372,7 @@
     function renderStudentAccounts() {
       const accountTbody = document.getElementById('studentAccountList');
       if (students.length === 0) {
-        accountTbody.innerHTML = '<tr><td colspan="5">目前尚無學生帳號</td></tr>';
+        accountTbody.innerHTML = `<tr><td colspan="5">目前尚無${isCramMode ? '學員' : '學生'}帳號</td></tr>`;
         return;
       }
       accountTbody.innerHTML = students.map(u => {
@@ -3041,7 +3389,7 @@
             <td><span class="badge mono" style="background:var(--accent-emerald-soft); color:var(--accent-emerald);">${escapeHtml(parentCode)}</span></td>
             <td>
               <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-                <button class="pw-edit-btn" onclick="changeUserPassword('${u.id}', '${escapeHtml(u.name)}')">改學生密碼</button>
+                <button class="pw-edit-btn" onclick="changeUserPassword('${u.id}', '${escapeHtml(u.name)}')">改${isCramMode ? '學員' : '學生'}密碼</button>
                 ${parentObj ? `<button class="pw-edit-btn" style="color:var(--accent-emerald);" onclick="changeUserPassword('${parentObj.id}', '${escapeHtml(u.name)}的家長')">改家長密碼</button>` : ''}
               </div>
             </td>
@@ -3109,7 +3457,7 @@
       alertBox.style.display = 'block';
       reportList.innerHTML = reported.map(item => `
         <tr>
-          <td>${escapeHtml(studentMap[item.student_id] || '未知學生')}</td>
+          <td>${escapeHtml(studentMap[item.student_id] || '未知成員')}</td>
           <td><span class="badge">${escapeHtml(item.semester || '115-1')}</span> ${escapeHtml(item.exam_stage || '')} (${escapeHtml(item.exam_name)})</td>
           <td>${escapeHtml(item.subject)}</td>
           <td><strong>${item.score}</strong></td>
@@ -3227,11 +3575,11 @@
         }
       }
 
-      if (entries.length === 0) { statusEl.style.color = 'var(--accent-rose)'; statusEl.innerText = '請至少輸入一位學生的分數！'; return; }
+      if (entries.length === 0) { statusEl.style.color = 'var(--accent-rose)'; statusEl.innerText = `請至少輸入一位${isCramMode ? '學員' : '學生'}的分數！`; return; }
 
       submitBtn.disabled = true;
       statusEl.style.color = 'var(--accent-blue)';
-      statusEl.innerText = '正在寫入雲端並運算班級平均與排名...';
+      statusEl.innerText = '正在寫入雲端並運算平均與排名...';
 
       const avg = Math.round((entries.reduce((sum, e) => sum + e.score, 0) / entries.length) * 10) / 10;
       const sortedScores = [...entries].map(e => e.score).sort((a, b) => b - a);
@@ -3271,7 +3619,7 @@
         await refreshScoresData();
         resetEntryFormAfterSubmit();
         statusEl.style.color = 'var(--accent-emerald)';
-        statusEl.innerText = `✓ 已成功整合並發布「${subject} - ${examName}」共 ${entries.length} 筆成績（班均：${avg} 分），畫面已自動清空可繼續登錄下一場！`;
+        statusEl.innerText = `✓ 已成功整合並發布「${subject} - ${examName}」共 ${entries.length} 筆成績（平均：${avg} 分），畫面已自動清空可繼續登錄下一場！`;
       }
     }
 
@@ -3296,7 +3644,7 @@
           : '-';
         return `
           <div class="summary-card">
-            <div class="sub-title">${escapeHtml(sub)} 科全班均分</div>
+            <div class="sub-title">${escapeHtml(sub)} 科${isCramMode ? '班別' : '全班'}均分</div>
             <div class="sub-val">${avg}</div>
           </div>
         `;
@@ -3331,7 +3679,7 @@
 
       subjectCards.push(`
         <div class="summary-card" style="border-color: var(--accent-blue); background: var(--accent-blue-soft);">
-          <div class="sub-title" style="color:var(--accent-blue);">全班跨科總平均</div>
+          <div class="sub-title" style="color:var(--accent-blue);">${isCramMode ? '班別跨科總平均' : '全班跨科總平均'}</div>
           <div class="sub-val" style="color:var(--accent-blue);">${classOverallAvg}</div>
         </div>
       `);
@@ -3347,7 +3695,7 @@
 
       theadEl.innerHTML = `<tr>
         <th>總排名</th>
-        <th>座號</th>
+        <th>${isCramMode ? '編號' : '座號'}</th>
         <th>姓名</th>
         ${subjects.map(sub => `<th>${escapeHtml(sub)}均分</th>`).join('')}
         <th style="color:var(--accent-blue);">個人總平均</th>
@@ -3396,7 +3744,7 @@
               tension: 0.3
             },
             {
-              label: '班級平均',
+              label: isCramMode ? '班別平均' : '班級平均',
               data: classAvgData,
               borderColor: isLight ? '#D97706' : '#FBBF24',
               borderWidth: 2,
@@ -3465,29 +3813,31 @@
               </div>
             </div>
             <div id="${groupId}" style="display: none; padding: 1rem; border-top: 1px solid var(--border-light);">
-              <table>
-                <thead>
-                  <tr>
-                    <th>座號 / 學生姓名</th>
-                    <th>分數</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${g.records.map(r => {
-                    const st = students.find(s => s.id === r.student_id);
-                    const seat = st ? (st.seat_number ?? '-') : '-';
-                    const sName = nameMap[r.student_id] || '未知學生';
-                    return `
-                      <tr>
-                        <td>${seat}號 - <strong>${escapeHtml(sName)}</strong></td>
-                        <td><strong>${r.score}</strong> 分</td>
-                        <td><button class="del-btn" onclick="deleteScore(${r.id})" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">刪除單筆</button></td>
-                      </tr>
-                    `;
-                  }).join('')}
-                </tbody>
-              </table>
+              <div class="table-scroll-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>${isCramMode ? '編號 / 學員姓名' : '座號 / 學生姓名'}</th>
+                      <th>分數</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${g.records.map(r => {
+                      const st = students.find(s => s.id === r.student_id);
+                      const seat = st ? (st.seat_number ?? '-') : '-';
+                      const sName = nameMap[r.student_id] || '未知成員';
+                      return `
+                        <tr>
+                          <td>${seat}號 - <strong>${escapeHtml(sName)}</strong></td>
+                          <td><strong>${r.score}</strong> 分</td>
+                          <td><button class="del-btn" onclick="deleteScore(${r.id})" style="padding: 0.25rem 0.55rem; min-height:32px; font-size: 0.78rem;">刪除單筆</button></td>
+                        </tr>
+                      `;
+                    }).join('')}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         `;
@@ -3530,7 +3880,7 @@
         alert('目前雲端已經沒有任何測驗成績了！');
         return;
       }
-      if (!confirm(`⚠️ 警告：確定要一鍵清空「${currentClassName}」全部 ${allScoresCache.length} 筆測驗成績嗎？\n此動作無法復原（學生與家長帳號會保留）。`)) return;
+      if (!confirm(`⚠️ 警告：確定要一鍵清空「${currentClassName}」全部 ${allScoresCache.length} 筆測驗成績嗎？\n此動作無法復原（帳號會保留）。`)) return;
 
       const checkText = prompt('為避免誤刪，請輸入「CLEAR」確認一鍵清空所有場次：');
       if (checkText === null || checkText.trim().toUpperCase() !== 'CLEAR') {

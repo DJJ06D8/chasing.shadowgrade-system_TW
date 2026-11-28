@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE V5.2.1 // 家長關懷終端</title>
+  <title>NEXUS GRADE V5.4.0 // 家長關懷終端</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -72,7 +72,6 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* 🚨 明日考試自動置頂提醒橫幅 */
     .tomorrow-exam-banner {
       max-width: 960px;
       margin: 0 auto 1.4rem auto;
@@ -204,7 +203,6 @@
       font-size: 0.84rem;
     }
 
-    /* 📋 功課＆考試布告欄 */
     .board-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
@@ -435,7 +433,14 @@
   </style>
 </head>
 <body>
-  <!-- 🚨 明日考試自動置頂提醒（家長一開啟直接看到） -->
+  <!-- ⏳ 月租到期提醒（僅在機構月租過期時自動顯示） -->
+  <div class="tomorrow-exam-banner" id="subscriptionExpiredBanner" style="display: none; background: var(--accent-amber-soft); border-color: var(--accent-amber);">
+    <div class="tomorrow-exam-header" style="margin-bottom:0;">
+      <div class="tomorrow-exam-title" style="color: var(--accent-amber);">⏳ 本補習班／機構月租服務已到期，請聯繫班主任確認續約狀態</div>
+    </div>
+  </div>
+
+  <!-- 🚨 明日考試自動置頂提醒（僅學校模式顯示，補習班自動移除） -->
   <div class="tomorrow-exam-banner" id="tomorrowExamBanner" style="display: none;">
     <div class="tomorrow-exam-header">
       <div class="tomorrow-exam-title">🚨 孩子明日考試提醒（自動置頂）</div>
@@ -444,11 +449,11 @@
     <div class="tomorrow-exam-list" id="tomorrowExamList"></div>
   </div>
 
-  <!-- 📋 功課＆考試布告欄（家長同步檢視孩子每日功課與考試進度） -->
-  <div class="container">
+  <!-- 📋 功課＆考試布告欄（僅學校模式顯示，補習班自動整塊移除） -->
+  <div class="container" id="parentBoardContainer">
     <div class="header" style="margin-bottom: 1.1rem;">
       <div>
-        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // V5.2.1</span>
+        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // V5.4.0</span>
         <h2 style="font-size: 1.22rem;">📋 功課＆考試布告欄</h2>
       </div>
     </div>
@@ -460,7 +465,7 @@
   <div class="container">
     <div class="header">
       <div>
-        <span class="role-tag" id="parentRoleTag">PARENT GUARDIAN PORTAL // V5.2.1</span>
+        <span class="role-tag" id="parentRoleTag">PARENT GUARDIAN PORTAL // V5.4.0</span>
         <h2 id="parentHeaderTitle">載入家長與學生資料中...</h2>
       </div>
       <div class="btn-group">
@@ -470,20 +475,20 @@
       </div>
     </div>
 
-    <h3>⚡ 孩子各科數據與全班總排名</h3>
+    <h3 id="summaryHeading">⚡ 孩子各科數據與全班總排名</h3>
     <div class="summary-grid" id="subjectSummaryGrid"></div>
 
     <div class="rank-direct-card">
-      <div class="rank-reveal-label">🏆 全班總排名</div>
+      <div class="rank-reveal-label" id="rankBoxLabel">🏆 全班總排名</div>
       <div class="rank-reveal-num" id="overallRankText">第 - 名</div>
       <div class="rank-reveal-sub" id="totalParticipantsText">共 - 人參與</div>
     </div>
 
-    <h3>📊 全班成績組距分布（了解班級整體落點）</h3>
+    <h3 id="distHeading">📊 全班成績組距分布（了解班級整體落點）</h3>
     <div class="dist-section-grid">
       <div class="dist-card">
         <div class="dist-card-header">
-          <span class="dist-card-title">📚 單科全班組距分布</span>
+          <span class="dist-card-title" id="subDistTitle">📚 單科全班組距分布</span>
           <select id="subjectDistSelect" class="dist-select" onchange="renderSubjectDistribution()"></select>
         </div>
         <div id="subjectDistBars"></div>
@@ -491,14 +496,14 @@
 
       <div class="dist-card">
         <div class="dist-card-header">
-          <span class="dist-card-title">🏆 全班總平均組距分布</span>
+          <span class="dist-card-title" id="overallDistTitle">🏆 全班總平均組距分布</span>
           <span style="font-size:0.78rem; color:var(--text-muted); font-weight:600;">跨科總均落點</span>
         </div>
         <div id="overallDistBars"></div>
       </div>
     </div>
 
-    <h3>📜 孩子歷次小考單科明細</h3>
+    <h3 id="detailHeading">📜 孩子歷次小考單科明細</h3>
     <div style="overflow-x: auto;">
       <table>
         <thead>
@@ -507,7 +512,7 @@
             <th>科目</th>
             <th>測驗名稱</th>
             <th>孩子分數</th>
-            <th>單科班均</th>
+            <th id="thClassAvg">單科班均</th>
             <th>單科名次</th>
             <th>回報狀態</th>
           </tr>
@@ -540,6 +545,7 @@
 
     let targetStudentId = null;
     let currentClassName = '國二-2';
+    let isCramMode = false;
     let classStudentIdSet = null;
     let publishedScoresCache = [];
     let studentTotalsCache = [];
@@ -609,6 +615,30 @@
       }).join('');
     }
 
+    function applyParentOrgModeUI(childSeat, childName) {
+      const boardContainer = document.getElementById('parentBoardContainer');
+      const examBanner = document.getElementById('tomorrowExamBanner');
+
+      if (isCramMode) {
+        // 補習班模式：移除功課＆考試布告欄與明日考試置頂提醒
+        if (boardContainer) boardContainer.remove();
+        if (examBanner) examBanner.remove();
+
+        document.getElementById('parentRoleTag').innerText = `CRAM SCHOOL PARENT PORTAL // ${currentClassName} // V5.4.0`;
+        document.getElementById('parentHeaderTitle').innerText = `[${currentClassName}・編號 ${childSeat}] ${childName} 的家長檢視終端`;
+        document.getElementById('summaryHeading').innerText = '⚡ 孩子各科數據與班別總排名';
+        document.getElementById('rankBoxLabel').innerText = '🏆 班別總排名';
+        document.getElementById('distHeading').innerText = '📊 班別成績組距分布（了解孩子在班上的落點區間）';
+        document.getElementById('subDistTitle').innerText = '📚 單科班別組距分布';
+        document.getElementById('overallDistTitle').innerText = '🏆 班別總平均組距分布';
+        document.getElementById('detailHeading').innerText = '📜 孩子歷次週考／模考單科明細';
+        document.getElementById('thClassAvg').innerText = '班別平均';
+      } else {
+        document.getElementById('parentRoleTag').innerText = `PARENT GUARDIAN PORTAL // ${currentClassName} // V5.4.0`;
+        document.getElementById('parentHeaderTitle').innerText = `[${currentClassName}・${childSeat}號] ${childName} 的家長終端`;
+      }
+    }
+
     async function init() {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
@@ -646,7 +676,7 @@
       }
 
       if (!targetStudentId) {
-        alert('找不到對應的學生資料，請聯繫導師確認帳號綁定！');
+        alert('找不到對應的學生資料，請聯繫班主任或導師確認帳號綁定！');
         return;
       }
 
@@ -659,8 +689,22 @@
       currentClassName = childProfile?.class_name || parentProfile.class_name || '國二-2';
       const childSeat = childProfile?.seat_number ?? parentProfile.seat_number ?? '-';
       const childName = childProfile?.name ?? parentProfile.name.replace(' 家長', '');
-      document.getElementById('parentRoleTag').innerText = `PARENT GUARDIAN PORTAL // ${currentClassName} // V5.2.1`;
-      document.getElementById('parentHeaderTitle').innerText = `[${currentClassName}・${childSeat}號] ${childName} 的家長終端`;
+
+      // 查詢機構類型（學校 vs 補習班）與月租效期
+      const { data: clsInfo } = await supabaseClient
+        .from('classes')
+        .select('org_type, is_chat_enabled, expires_at, subscription_expires_at, billing_status')
+        .eq('class_name', currentClassName)
+        .maybeSingle();
+
+      isCramMode = Boolean(clsInfo && (clsInfo.org_type === 'cram_school' || clsInfo.is_chat_enabled === false));
+
+      const expiryRaw = clsInfo?.subscription_expires_at || clsInfo?.expires_at;
+      if (clsInfo && clsInfo.billing_status !== 'free_forever' && expiryRaw && new Date(expiryRaw) < new Date()) {
+        document.getElementById('subscriptionExpiredBanner').style.display = 'block';
+      }
+
+      applyParentOrgModeUI(childSeat, childName);
 
       initGlobalOnlinePresence(
         session.user.id,
@@ -669,7 +713,6 @@
         currentClassName
       );
 
-      // 取得同班學生 ID 名單（若資料庫尚未新增 class_name 欄位則自動相容全部學生）
       const { data: allStudents } = await supabaseClient
         .from('profiles')
         .select('*')
@@ -682,11 +725,15 @@
         }
       }
 
-      await Promise.all([loadParentClassBoard(), loadChildScores()]);
+      if (isCramMode) {
+        await loadChildScores();
+      } else {
+        await Promise.all([loadParentClassBoard(), loadChildScores()]);
+      }
     }
 
-    /* ================= 📋 功課＆考試布告欄 + 明日考試置頂 ================= */
     async function loadParentClassBoard() {
+      if (isCramMode) return;
       const { data: items } = await supabaseClient
         .from('class_board_items')
         .select('*')
@@ -707,6 +754,7 @@
       const banner = document.getElementById('tomorrowExamBanner');
       const listEl = document.getElementById('tomorrowExamList');
       const badgeEl = document.getElementById('tomorrowDateBadge');
+      if (!banner || !listEl || !badgeEl) return;
 
       if (urgentExams.length > 0) {
         badgeEl.innerText = nextMondayStr
@@ -733,6 +781,7 @@
       }
 
       const grid = document.getElementById('parentBoardGrid');
+      if (!grid) return;
       grid.innerHTML = BOARD_SUBJECTS.map(sub => {
         const subItems = boardItems.filter(i => i.subject === sub);
         const itemsHtml = subItems.length === 0
@@ -839,7 +888,7 @@
         <div class="summary-card" style="border-color: var(--accent-blue); background: var(--accent-blue-soft);">
           <div class="sub-title" style="color: var(--accent-blue);">跨科總平均</div>
           <div class="sub-val" style="color: var(--accent-blue);">${childOverallAvg}</div>
-          <div class="sub-avg">全班總均 ${classOverallAvg}</div>
+          <div class="sub-avg">${isCramMode ? '班別總均' : '全班總均'} ${classOverallAvg}</div>
         </div>
       `);
 
@@ -872,28 +921,32 @@
       const studentIds = [...new Set(subScores.map(s => s.student_id))];
 
       const perStudentAvgs = [];
-      let childSubAvg = null;
+      let mySubAvg = null;
 
       studentIds.forEach(sid => {
         const items = subScores.filter(s => s.student_id === sid);
         if (items.length > 0) {
           const avg = Math.round((items.reduce((sum, x) => sum + x.score, 0) / items.length) * 10) / 10;
           perStudentAvgs.push(avg);
-          if (sid === targetStudentId) childSubAvg = avg;
+          if (sid === targetStudentId) mySubAvg = avg;
         }
       });
 
-      document.getElementById('subjectDistBars').innerHTML = buildDistributionHtml(perStudentAvgs, childSubAvg);
+      document.getElementById('subjectDistBars').innerHTML = buildDistributionHtml(perStudentAvgs, mySubAvg);
     }
 
     function renderScoreDetailTable(childScores) {
       const tbody = document.getElementById('scoreDetailBody');
       if (childScores.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">目前尚無小考紀錄</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">目前尚無測驗紀錄</td></tr>';
         return;
       }
 
-      tbody.innerHTML = childScores.map(item => `
+      tbody.innerHTML = myScoresHtml(childScores);
+    }
+
+    function myScoresHtml(childScores) {
+      return childScores.map(item => `
         <tr>
           <td><span class="date-tag">${escapeHtml(item.exam_date || '未填日期')}</span></td>
           <td><span class="badge">${escapeHtml(item.subject)}</span></td>
