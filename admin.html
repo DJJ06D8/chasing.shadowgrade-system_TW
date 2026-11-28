@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE V5.2.1 // 老師與系統開發者指揮終端</title>
+  <title>NEXUS GRADE V5.3.0 // 老師與系統開發者指揮終端</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -90,6 +90,10 @@
       border: 1.5px solid var(--accent-purple);
     }
 
+    .comm-container {
+      border: 1.5px solid var(--accent-blue);
+    }
+
     .dev-badge {
       display: inline-block;
       background: var(--accent-purple-soft);
@@ -141,6 +145,177 @@
       align-items: center;
       gap: 0.5rem;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    /* 📞 師生即時聯絡控制台＋通聯狀態＋內建對話窗 */
+    .comm-control-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1.15rem;
+    }
+    .switch-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .switch-toggle-btn {
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .switch-toggle-btn.is-on {
+      background: var(--accent-emerald);
+      color: #FFFFFF;
+    }
+    .switch-toggle-btn.is-off {
+      background: var(--accent-rose);
+      color: #FFFFFF;
+    }
+
+    .live-call-monitor-bar {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 0.85rem 1.05rem;
+      margin-bottom: 1.15rem;
+    }
+    .active-call-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--accent-emerald-soft);
+      border: 1px solid var(--accent-emerald);
+      color: var(--accent-emerald);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin: 0.25rem 0.4rem 0 0;
+    }
+
+    .embedded-comm-shell {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--bg-card);
+      height: 440px;
+    }
+    .embedded-contact-list {
+      background: var(--bg-subtle);
+      border-right: 1px solid var(--border-light);
+      overflow-y: auto;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .embedded-contact-item {
+      padding: 0.58rem 0.72rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.45rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .embedded-contact-item:hover { background: var(--bg-card); }
+    .embedded-contact-item.active {
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
+    }
+    .embedded-chat-pane {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+    .embedded-chat-top {
+      padding: 0.68rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      background: var(--bg-card);
+    }
+    .embedded-msg-stream {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      background: var(--bg-subtle);
+    }
+    .emb-msg {
+      max-width: 78%;
+      padding: 0.52rem 0.85rem;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .emb-msg.mine {
+      align-self: flex-end;
+      background: var(--accent-blue);
+      color: #FFFFFF;
+      border-bottom-right-radius: 4px;
+    }
+    .emb-msg.others {
+      align-self: flex-start;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+    }
+    .embedded-input-row {
+      padding: 0.65rem 0.85rem;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-card);
+    }
+    .embedded-input-row input {
+      flex: 1;
+      border-radius: 999px;
+      padding: 0.52rem 0.95rem;
+      font-size: 0.88rem;
+    }
+
+    /* 語音通話彈窗 */
+    .call-modal-card {
+      text-align: center;
+      max-width: 380px !important;
+    }
+    .call-avatar-pulse {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      margin: 0 auto 0.85rem;
+      background: var(--accent-emerald-soft);
+      border: 3px solid var(--accent-emerald);
+      color: var(--accent-emerald);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.85rem;
+      font-weight: 800;
+      animation: livePulse 1.6s infinite;
     }
 
     .alert-box {
@@ -657,6 +832,8 @@
       .form-group { min-width: 100%; }
       input[type="text"], input[type="number"], input[type="date"], select, textarea { font-size: 16px; }
       th, td { padding: 0.55rem 0.45rem; font-size: 0.85rem; }
+      .embedded-comm-shell { grid-template-columns: 1fr; height: 520px; }
+      .embedded-contact-list { max-height: 155px; border-right: none; border-bottom: 1px solid var(--border-light); }
     }
 
     @page {
@@ -672,6 +849,7 @@
         margin: 0 !important;
       }
       #devLivePresenceSection,
+      #commCommandSection,
       #tomorrowExamBanner,
       #reportAlertSection,
       #devApplicationSection,
@@ -683,6 +861,7 @@
       #adminPasswordSection,
       #trendModal,
       #helperAssignModal,
+      #adminVoiceCallModal,
       .btn-group,
       .no-print {
         display: none !important;
@@ -745,6 +924,28 @@
   </style>
 </head>
 <body>
+  <audio id="adminRemoteAudio" autoplay playsinline></audio>
+
+  <!-- 📞 後台語音通話彈窗（點對點加密，絕不錄音，僅同步通聯名單與時間） -->
+  <div class="modal" id="adminVoiceCallModal">
+    <div class="modal-content call-modal-card">
+      <div class="call-avatar-pulse" id="adminCallAvatar">📞</div>
+      <h3 id="adminCallPeerName" style="border:none; padding:0; margin-bottom:0.35rem; font-size:1.12rem;">正在連線...</h3>
+      <div id="adminCallStatusText" class="mono" style="font-size:0.88rem; font-weight:700; color:var(--accent-emerald);">正在撥號中...</div>
+      <div class="hint" style="margin-top:0.65rem;">🔒 點對點加密語音・系統僅記錄通聯名單與秒數，絕不錄音</div>
+
+      <div id="adminIncomingCallControls" style="display:none; gap:0.75rem; margin-top:1.25rem;">
+        <button type="button" class="del-btn" style="flex:1; padding:0.72rem; border-radius:999px; font-size:0.88rem;" onclick="adminRejectIncomingCall()">📵 拒接</button>
+        <button type="button" class="excel-btn" style="flex:1; justify-content:center; padding:0.72rem; border-radius:999px; font-size:0.88rem;" onclick="adminAcceptIncomingCall()">📞 接聽來電</button>
+      </div>
+
+      <div id="adminActiveCallControls" style="display:flex; gap:0.75rem; margin-top:1.25rem;">
+        <button type="button" class="pw-edit-btn" id="adminMicMuteBtn" style="flex:1; padding:0.7rem; border-radius:999px;" onclick="adminToggleMicMute()">🎙️ 麥克風：開</button>
+        <button type="button" class="del-btn" style="flex:1; padding:0.7rem; border-radius:999px;" onclick="adminHangupCall(true)">📵 掛斷通話</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal" id="trendModal">
     <div class="modal-content">
       <span class="close-modal" onclick="closeTrendModal()">&times;</span>
@@ -811,7 +1012,7 @@
   <div class="container" id="entrySection">
     <div class="header" id="entryHeader">
       <div>
-        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V5.2.1</span>
+        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V5.3.0</span>
         <h2 id="commandTitle">國二-2 成績系統指揮中心（老師專用）</h2>
       </div>
       <div class="btn-group">
@@ -819,7 +1020,7 @@
           <span style="font-size:0.78rem; font-weight:800; color:var(--text-secondary);">🏫 檢視班級：</span>
           <select id="activeClassSelect" onchange="handleClassSwitch()"></select>
         </div>
-        <button class="chat-portal-btn" onclick="window.location.href='chat.html'">💬 班級訊息中心</button>
+        <button class="chat-portal-btn" onclick="window.location.href='chat.html'">💬 進入完整訊息中心</button>
         <button class="pw-edit-btn" onclick="toggleSection('entryCollapsibleBody', 'entryHeader', '1.5rem')">📂 展開 / 收合成績登錄區</button>
         <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
         <button class="pw-edit-btn" onclick="changeMyPassword()">修改我的密碼</button>
@@ -910,6 +1111,73 @@
 
       <button class="submit-btn" id="submitBtn" onclick="submitScores()">確認無誤，一鍵整合寫入雲端並正式發布</button>
       <div id="status"></div>
+    </div>
+  </div>
+
+  <!-- 📞 師生／親師即時聯絡控管、通話狀態監控與內建一對一專線（導師與開發者專用） -->
+  <div class="container comm-container" id="commCommandSection">
+    <div class="section-header-bar" style="border-bottom: 1px solid var(--border-light); padding-bottom: 0.85rem; margin-bottom: 1.15rem;">
+      <div>
+        <h3>📞 師生／親師即時聯絡與通話控制台</h3>
+        <div class="hint">系統已鎖定學生與家長「僅能與本班導師及系統開發者聯絡」；您可在此即時開關權限、檢視通聯狀態（絕不錄音）或直接傳訊／撥號</div>
+      </div>
+      <span class="badge mono" id="commUnreadBadge">未讀訊息：0 則</span>
+    </div>
+
+    <!-- 1. 班級訊息與語音通話即時雙開關 -->
+    <div class="comm-control-grid">
+      <div class="switch-card">
+        <div>
+          <div style="font-weight: 800; font-size: 0.94rem; color: var(--text-primary);">💬 班級訊息發送開關</div>
+          <div class="hint" style="margin-top: 2px;">關閉後學生與家長將無法發送新訊息（導師仍可發送）</div>
+        </div>
+        <button type="button" class="switch-toggle-btn is-on" id="adminChatSwitchBtn" onclick="toggleAdminClassSwitch('is_chat_enabled')">開啟中</button>
+      </div>
+
+      <div class="switch-card">
+        <div>
+          <div style="font-weight: 800; font-size: 0.94rem; color: var(--text-primary);">📞 一對一語音通話開關</div>
+          <div class="hint" style="margin-top: 2px;">關閉後學生與家長無法主動撥打語音電話</div>
+        </div>
+        <button type="button" class="switch-toggle-btn is-on" id="adminCallSwitchBtn" onclick="toggleAdminClassSwitch('is_call_enabled')">開啟中</button>
+      </div>
+    </div>
+
+    <!-- 2. 全站即時通話狀態監控（僅同步誰與誰通話，絕不錄音） -->
+    <div class="live-call-monitor-bar">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+        <span style="font-size:0.84rem; font-weight:800; color:var(--text-primary);">📡 即時通話狀態（僅同步通聯雙方・點對點加密絕不錄音）：</span>
+        <span style="font-size:0.75rem; color:var(--text-muted);" id="recentCallSummaryText">近期無通話紀錄</span>
+      </div>
+      <div id="liveActiveCallsList" style="margin-top: 0.45rem;">
+        <span style="font-size: 0.8rem; color: var(--text-muted);">目前無進行中的語音通話</span>
+      </div>
+    </div>
+
+    <!-- 3. 後台內建師生／親師直接聯絡面板 -->
+    <div class="embedded-comm-shell">
+      <div class="embedded-contact-list" id="embeddedContactList">
+        <div style="padding:0.75rem; color:var(--text-muted); font-size:0.82rem;">載入聯絡名單...</div>
+      </div>
+      <div class="embedded-chat-pane">
+        <div class="embedded-chat-top">
+          <div>
+            <strong id="embChatPeerTitle" style="font-size:0.94rem;">請從左側選擇學生、家長或開發者</strong>
+            <div id="embChatPeerSub" style="font-size:0.74rem; color:var(--text-muted);">點選成員即可直接傳訊或撥打語音電話</div>
+          </div>
+          <div style="display:flex; gap:0.4rem;">
+            <button type="button" class="excel-btn" id="embVoiceCallBtn" style="padding:0.38rem 0.78rem; font-size:0.8rem; display:none;" onclick="adminInitiateVoiceCall()">📞 語音通話</button>
+            <button type="button" class="pw-edit-btn" id="embFullChatBtn" style="padding:0.38rem 0.72rem; font-size:0.78rem; display:none;" onclick="openFullChatWithPeer()">完整視窗 ↗</button>
+          </div>
+        </div>
+        <div class="embedded-msg-stream" id="embMessageStream">
+          <div style="text-align:center; color:var(--text-muted); margin-top:4rem; font-size:0.85rem;">👈 點選左側任一成員即可在後台直接一對一聯絡</div>
+        </div>
+        <div class="embedded-input-row">
+          <input type="text" id="embMessageInput" maxlength="500" placeholder="輸入訊息直接傳送給對方..." disabled onkeydown="if(event.key==='Enter'){event.preventDefault();sendEmbeddedMessage();}">
+          <button type="button" class="chat-portal-btn" id="embSendBtn" disabled onclick="sendEmbeddedMessage()">傳送</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1137,11 +1405,12 @@
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const SCHOOL_DOMAIN = 'cysh.khc.edu.tw';
+    const DEV_EMAIL = '202020@cysh.khc.edu.tw';
 
     const BOARD_SUBJECTS = ['國文', '英文', '數學', '自然', '社會', '班務'];
 
     let currentUserId = null;
+    let currentUserProfile = null;
     let currentUserLabel = '導師';
     let currentClassName = '國二-2';
     let availableClasses = ['國二-2'];
@@ -1158,6 +1427,24 @@
     let parsedExcelState = null;
     let isDeveloperUser = false;
     let globalPresenceChannel = null;
+
+    // 師生聯絡控管與內建私聊＋語音通話狀態
+    let classCommSwitches = { is_chat_enabled: true, is_call_enabled: true };
+    let commContacts = [];
+    let selectedEmbPeer = null;
+    let embDmMessages = [];
+    let directRealtimeChannel = null;
+    let adminPeerConnection = null;
+    let adminLocalStream = null;
+    let adminCallState = null;
+    let adminMicMuted = false;
+
+    const RTC_CONFIG = {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+      ]
+    };
 
     function getLocalDateStr(offsetDays = 0) {
       const d = new Date();
@@ -1203,7 +1490,8 @@
         student: '學生',
         parent: '家長',
         teacher: '導師',
-        admin: '導師'
+        admin: '導師',
+        developer: '開發者'
       };
 
       entries.sort((a, b) => (a.seat_number ?? 999) - (b.seat_number ?? 999));
@@ -1241,14 +1529,14 @@
       }
 
       globalPresenceChannel.subscribe(async status => {
-        if (status === 'SUBSCRIBED' && !devMode) {
+        if (status === 'SUBSCRIBED') {
           await globalPresenceChannel.track({
             user_id: userId,
-            name: (profile && profile.name) ? profile.name : '導師',
+            name: (profile && profile.name) ? profile.name : (devMode ? '系統開發者' : '導師'),
             seat_number: (profile && profile.seat_number != null) ? profile.seat_number : null,
-            role: (profile && profile.role) ? profile.role : 'teacher',
+            role: (profile && profile.role) ? profile.role : (devMode ? 'developer' : 'teacher'),
             class_name: (profile && profile.class_name) ? profile.class_name : '國二-2',
-            page: '導師管理後台',
+            page: devMode ? '系統開發者終端' : '導師管理後台',
             online_at: new Date().toISOString()
           });
         }
@@ -1279,11 +1567,12 @@
       const sessionEmail = (session.user.email || '').toLowerCase();
       const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('role, email, name, class_name, seat_number')
+        .select('id, role, email, name, class_name, seat_number')
         .eq('id', currentUserId)
         .single();
 
-      isDeveloperUser = sessionEmail === '202020@cysh.khc.edu.tw' || (profile && profile.role === 'developer');
+      currentUserProfile = profile;
+      isDeveloperUser = sessionEmail === DEV_EMAIL || (profile && profile.role === 'developer');
       const isTeacherRole = profile && (profile.role === 'admin' || profile.role === 'teacher');
 
       if (!isDeveloperUser && !isTeacherRole) {
@@ -1297,7 +1586,7 @@
       if (isDeveloperUser) {
         await loadAvailableClasses();
         currentClassName = availableClasses[0] || '國二-2';
-        currentUserLabel = '系統開發者';
+        currentUserLabel = `${profile?.name || '系統開發者'}（開發者）`;
         document.getElementById('devLivePresenceSection').style.display = 'block';
         document.getElementById('classSwitcherContainer').style.display = 'inline-flex';
         document.getElementById('devApplicationSection').style.display = 'block';
@@ -1310,14 +1599,15 @@
 
       updateHeaderTitleByClass();
       await loadClassScopedData();
+      subscribeDirectRealtime();
     }
 
     function updateHeaderTitleByClass() {
       if (isDeveloperUser) {
-        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V5.2.1';
+        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V5.3.0';
         document.getElementById('commandTitle').innerText = `${currentClassName} 智慧成績系統（系統開發者）`;
       } else {
-        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V5.2.1';
+        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V5.3.0';
         document.getElementById('commandTitle').innerText = `${currentClassName} 成績系統指揮中心（老師專用）`;
       }
       document.getElementById('printSheetTitle').innerText = `${currentClassName} 各場次小考成績明細一覽表（含科目與考試日期）`;
@@ -1342,19 +1632,18 @@
       currentClassName = document.getElementById('activeClassSelect').value;
       updateHeaderTitleByClass();
       resetEntryFormAfterSubmit();
+      selectedEmbPeer = null;
       await loadClassScopedData();
     }
 
     async function loadClassScopedData() {
-      let query = supabaseClient
+      const { data, error } = await supabaseClient
         .from('profiles')
         .select('id, seat_number, name, email, role, parent_of_student_id, class_name')
-        .in('role', ['student', 'parent'])
         .order('seat_number', { ascending: true });
 
-      const { data, error } = await query;
-
-      const scopedUsers = (data || []).filter(u => {
+      const allProfiles = data || [];
+      const scopedUsers = allProfiles.filter(u => {
         const uClass = u.class_name || '國二-2';
         return uClass === currentClassName;
       });
@@ -1363,11 +1652,21 @@
       const studentOnly = scopedUsers.filter(u => u.role === 'student');
       parentAccountsList = scopedUsers.filter(u => u.role === 'parent');
 
+      // 建立後台內建聯絡名單（包含系統開發者/導師、本班學生、本班家長）
+      commContacts = allProfiles.filter(u => {
+        if (u.id === currentUserId) return false;
+        const uIsDev = u.role === 'developer' || (u.email || '').toLowerCase() === DEV_EMAIL;
+        const uIsTeacher = u.role === 'admin' || u.role === 'teacher';
+        const sameClass = (u.class_name || '國二-2') === currentClassName;
+        if (isDeveloperUser) return uIsTeacher || uIsDev || sameClass;
+        return uIsDev || sameClass;
+      });
+
       if (error || studentOnly.length === 0) {
         students = [];
         tbody.innerHTML = `<tr><td colspan="3">「${escapeHtml(currentClassName)}」目前沒有學生資料</td></tr>`;
         renderStudentAccounts();
-        await Promise.all([refreshScoresData(), loadClassBoard()]);
+        await Promise.all([refreshScoresData(), loadClassBoard(), loadClassCommSwitches(), loadEmbeddedDmMessages(), loadLiveCallLogs()]);
         return;
       }
 
@@ -1382,7 +1681,518 @@
       `).join('');
 
       renderStudentAccounts();
-      await Promise.all([refreshScoresData(), loadClassBoard()]);
+      await Promise.all([refreshScoresData(), loadClassBoard(), loadClassCommSwitches(), loadEmbeddedDmMessages(), loadLiveCallLogs()]);
+    }
+
+    /* ================= 師生／親師即時聯絡控制台＋通聯狀態＋內建對話窗 ================= */
+    async function loadClassCommSwitches() {
+      try {
+        const { data } = await supabaseClient
+          .from('classes')
+          .select('is_chat_enabled, is_call_enabled')
+          .eq('class_name', currentClassName)
+          .maybeSingle();
+
+        if (data) {
+          classCommSwitches.is_chat_enabled = data.is_chat_enabled !== false;
+          classCommSwitches.is_call_enabled = data.is_call_enabled !== false;
+        } else {
+          classCommSwitches.is_chat_enabled = true;
+          classCommSwitches.is_call_enabled = true;
+        }
+      } catch (e) {}
+      renderCommSwitchButtons();
+    }
+
+    function renderCommSwitchButtons() {
+      const chatBtn = document.getElementById('adminChatSwitchBtn');
+      const callBtn = document.getElementById('adminCallSwitchBtn');
+      if (chatBtn) {
+        chatBtn.innerText = classCommSwitches.is_chat_enabled ? '🟢 訊息：開啟中' : '🔴 訊息：已關閉';
+        chatBtn.className = `switch-toggle-btn ${classCommSwitches.is_chat_enabled ? 'is-on' : 'is-off'}`;
+      }
+      if (callBtn) {
+        callBtn.innerText = classCommSwitches.is_call_enabled ? '🟢 通話：開啟中' : '🔴 通話：已關閉';
+        callBtn.className = `switch-toggle-btn ${classCommSwitches.is_call_enabled ? 'is-on' : 'is-off'}`;
+      }
+    }
+
+    async function toggleAdminClassSwitch(field) {
+      const nextVal = !classCommSwitches[field];
+      classCommSwitches[field] = nextVal;
+      renderCommSwitchButtons();
+
+      const { error } = await supabaseClient
+        .from('classes')
+        .upsert({
+          class_name: currentClassName,
+          is_chat_enabled: classCommSwitches.is_chat_enabled,
+          is_call_enabled: classCommSwitches.is_call_enabled
+        }, { onConflict: 'class_name' });
+
+      if (error) {
+        alert('更新班級開關失敗（請確認已執行 classes 欄位 SQL）：' + error.message);
+      }
+    }
+
+    async function loadLiveCallLogs() {
+      const activeListEl = document.getElementById('liveActiveCallsList');
+      const summaryEl = document.getElementById('recentCallSummaryText');
+      if (!activeListEl) return;
+
+      try {
+        let query = supabaseClient
+          .from('call_logs')
+          .select('*')
+          .order('started_at', { ascending: false })
+          .limit(20);
+
+        if (!isDeveloperUser) {
+          query = query.eq('class_name', currentClassName);
+        }
+
+        const { data, error } = await query;
+        if (error || !data) return;
+
+        const ongoing = data.filter(c => c.status === 'ringing' || c.status === 'active');
+        if (ongoing.length === 0) {
+          activeListEl.innerHTML = '<span style="font-size: 0.8rem; color: var(--text-muted);">目前無進行中的語音通話</span>';
+        } else {
+          activeListEl.innerHTML = ongoing.map(c => {
+            const stateTag = c.status === 'active' ? '🟢 通話中' : '🔔 響鈴中';
+            return `<span class="active-call-chip">${stateTag}：${escapeHtml(c.caller_name)} ⇄ ${escapeHtml(c.callee_name)}（${escapeHtml(c.class_name || '')}）</span>`;
+          }).join('');
+        }
+
+        const latestEnded = data.find(c => c.status === 'ended');
+        if (latestEnded && summaryEl) {
+          summaryEl.innerText = `最近完成通話：${latestEnded.caller_name} ⇄ ${latestEnded.callee_name}（${latestEnded.duration_sec || 0} 秒）`;
+        }
+      } catch (e) {}
+    }
+
+    async function loadEmbeddedDmMessages() {
+      const { data } = await supabaseClient
+        .from('chat_messages')
+        .select('*')
+        .eq('channel_type', 'dm')
+        .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
+        .order('created_at', { ascending: false })
+        .limit(400);
+
+      embDmMessages = (data || []).reverse();
+      renderEmbeddedContactList();
+      renderEmbeddedChatStream();
+    }
+
+    function formatCommContactName(u) {
+      const isDev = u.role === 'developer' || (u.email || '').toLowerCase() === DEV_EMAIL;
+      const isTeacher = u.role === 'admin' || u.role === 'teacher';
+      if (isDev) return `🛠️ ${u.name || '系統開發者'}（開發者）`;
+      if (isTeacher) return `👑 ${u.name}（導師）`;
+      if (u.role === 'parent') return `👪 ${u.name}（家長）`;
+      return `${u.seat_number ?? '-'}號 ${u.name}`;
+    }
+
+    function renderEmbeddedContactList() {
+      const listEl = document.getElementById('embeddedContactList');
+      const badgeEl = document.getElementById('commUnreadBadge');
+      if (!listEl) return;
+
+      const totalUnread = embDmMessages.filter(m => m.receiver_id === currentUserId && !m.is_read).length;
+      if (badgeEl) badgeEl.innerText = `未讀訊息：${totalUnread} 則`;
+
+      if (commContacts.length === 0) {
+        listEl.innerHTML = '<div style="padding:0.75rem; color:var(--text-muted); font-size:0.82rem;">目前無可聯絡成員</div>';
+        return;
+      }
+
+      listEl.innerHTML = commContacts.map(c => {
+        const unread = embDmMessages.filter(m => m.sender_id === c.id && m.receiver_id === currentUserId && !m.is_read).length;
+        const isActive = selectedEmbPeer && selectedEmbPeer.id === c.id;
+        return `
+          <div class="embedded-contact-item ${isActive ? 'active' : ''}" onclick="selectEmbeddedPeer('${c.id}')">
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(formatCommContactName(c))}</span>
+            ${unread > 0 ? `<span class="type-pill-exam" style="background:var(--accent-rose); color:#fff;">${unread}</span>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function selectEmbeddedPeer(peerId) {
+      const peer = commContacts.find(c => c.id === peerId);
+      if (!peer) return;
+      selectedEmbPeer = peer;
+
+      document.getElementById('embChatPeerTitle').innerText = formatCommContactName(peer);
+      document.getElementById('embChatPeerSub').innerText = '1 對 1 師生／親師專線（支援即時語音通話）';
+      document.getElementById('embVoiceCallBtn').style.display = 'inline-flex';
+      document.getElementById('embFullChatBtn').style.display = 'inline-block';
+      document.getElementById('embMessageInput').disabled = false;
+      document.getElementById('embSendBtn').disabled = false;
+
+      // 標記已讀
+      const unreadIds = embDmMessages
+        .filter(m => m.sender_id === peer.id && m.receiver_id === currentUserId && !m.is_read)
+        .map(m => m.id);
+      if (unreadIds.length > 0) {
+        embDmMessages.forEach(m => { if (unreadIds.includes(m.id)) m.is_read = true; });
+        await supabaseClient.from('chat_messages').update({ is_read: true }).in('id', unreadIds);
+      }
+
+      renderEmbeddedContactList();
+      renderEmbeddedChatStream();
+    }
+
+    function openFullChatWithPeer() {
+      if (!selectedEmbPeer) {
+        window.location.href = `chat.html?class=${encodeURIComponent(currentClassName)}`;
+        return;
+      }
+      window.location.href = `chat.html?class=${encodeURIComponent(currentClassName)}&dm=${encodeURIComponent(selectedEmbPeer.id)}`;
+    }
+
+    function renderEmbeddedChatStream() {
+      const streamEl = document.getElementById('embMessageStream');
+      if (!streamEl || !selectedEmbPeer) return;
+
+      const msgs = embDmMessages.filter(m =>
+        (m.sender_id === currentUserId && m.receiver_id === selectedEmbPeer.id) ||
+        (m.sender_id === selectedEmbPeer.id && m.receiver_id === currentUserId)
+      );
+
+      if (msgs.length === 0) {
+        streamEl.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:4rem; font-size:0.84rem;">尚無對話紀錄，輸入文字或點擊右上角「📞 語音通話」即可開始聯絡</div>';
+        return;
+      }
+
+      streamEl.innerHTML = msgs.map(m => {
+        const isMine = m.sender_id === currentUserId;
+        const dt = new Date(m.created_at);
+        const tStr = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+        const contentTxt = m.image_url ? `[圖片] ${m.content || ''}` : (m.content || '');
+        return `
+          <div class="emb-msg ${isMine ? 'mine' : 'others'}">
+            <div>${escapeHtml(contentTxt)}</div>
+            <div style="font-size:0.68rem; opacity:0.75; margin-top:2px; text-align:right;">${tStr}${isMine && m.is_read ? ' · 已讀' : ''}</div>
+          </div>
+        `;
+      }).join('');
+      streamEl.scrollTop = streamEl.scrollHeight;
+    }
+
+    async function sendEmbeddedMessage() {
+      if (!selectedEmbPeer) return;
+      const input = document.getElementById('embMessageInput');
+      const content = input.value.trim();
+      if (!content) return;
+
+      input.value = '';
+      const payload = {
+        channel_type: 'dm',
+        class_name: currentClassName,
+        sender_id: currentUserId,
+        sender_name: currentUserProfile?.name || (isDeveloperUser ? '系統開發者' : '導師'),
+        sender_seat: currentUserProfile?.seat_number ?? null,
+        sender_role: currentUserProfile?.role || (isDeveloperUser ? 'developer' : 'teacher'),
+        receiver_id: selectedEmbPeer.id,
+        content
+      };
+
+      const { data, error } = await supabaseClient
+        .from('chat_messages')
+        .insert([payload])
+        .select()
+        .single();
+
+      if (error) {
+        alert('傳送失敗：' + error.message);
+        input.value = content;
+        return;
+      }
+      if (data && !embDmMessages.some(m => m.id === data.id)) {
+        embDmMessages.push(data);
+        renderEmbeddedChatStream();
+      }
+    }
+
+    /* ================= 後台 WebRTC 語音通話與來電接聽 ================= */
+    function subscribeDirectRealtime() {
+      directRealtimeChannel = supabaseClient.channel('nexus-direct-realtime');
+      directRealtimeChannel
+        .on('broadcast', { event: 'webrtc-signal' }, async ({ payload }) => {
+          if (!payload || payload.to !== currentUserId) return;
+          await handleAdminWebRTCSignal(payload);
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'call_logs' }, async () => {
+          await loadLiveCallLogs();
+        })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, async payload => {
+          const m = payload.new;
+          if (m.channel_type !== 'dm') return;
+          if (m.sender_id !== currentUserId && m.receiver_id !== currentUserId) return;
+          if (!embDmMessages.some(x => x.id === m.id)) {
+            embDmMessages.push(m);
+            if (selectedEmbPeer && m.sender_id === selectedEmbPeer.id) {
+              m.is_read = true;
+              await supabaseClient.from('chat_messages').update({ is_read: true }).eq('id', m.id);
+            }
+            renderEmbeddedContactList();
+            renderEmbeddedChatStream();
+          }
+        })
+        .subscribe();
+    }
+
+    function sendAdminWebRTCSignal(toUserId, signalType, dataPayload = {}) {
+      if (!directRealtimeChannel || !currentUserId) return;
+      directRealtimeChannel.send({
+        type: 'broadcast',
+        event: 'webrtc-signal',
+        payload: {
+          from: currentUserId,
+          fromName: currentUserLabel,
+          to: toUserId,
+          signalType,
+          ...dataPayload
+        }
+      });
+    }
+
+    function startAdminCallCounter() {
+      if (!adminCallState) return;
+      clearInterval(adminCallState.timerInterval);
+      adminCallState.startedSec = 0;
+      document.getElementById('adminCallStatusText').innerText = '🟢 通話中・00:00';
+      adminCallState.timerInterval = setInterval(() => {
+        if (!adminCallState) return;
+        adminCallState.startedSec += 1;
+        const m = String(Math.floor(adminCallState.startedSec / 60)).padStart(2, '0');
+        const s = String(adminCallState.startedSec % 60).padStart(2, '0');
+        document.getElementById('adminCallStatusText').innerText = `🟢 通話中・${m}:${s}`;
+      }, 1000);
+    }
+
+    async function adminInitiateVoiceCall() {
+      if (!selectedEmbPeer) return;
+      if (adminCallState) {
+        alert('目前正在通話中！');
+        return;
+      }
+
+      try {
+        adminLocalStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      } catch (err) {
+        alert('無法取得麥克風權限：' + err.message);
+        return;
+      }
+
+      const roomKey = `${[currentUserId, selectedEmbPeer.id].sort().join('_')}_${Date.now()}`;
+      const peerLabel = formatCommContactName(selectedEmbPeer);
+
+      const { data: logRow } = await supabaseClient
+        .from('call_logs')
+        .insert([{
+          room_key: roomKey,
+          class_name: currentClassName,
+          caller_id: currentUserId,
+          caller_name: currentUserLabel,
+          callee_id: selectedEmbPeer.id,
+          callee_name: peerLabel,
+          status: 'ringing',
+          started_at: new Date().toISOString()
+        }])
+        .select()
+        .single();
+
+      adminCallState = {
+        logId: logRow ? logRow.id : null,
+        roomKey,
+        peerId: selectedEmbPeer.id,
+        peerName: peerLabel,
+        isCaller: true,
+        status: 'ringing',
+        timerInterval: null,
+        startedSec: 0
+      };
+
+      adminMicMuted = false;
+      document.getElementById('adminMicMuteBtn').innerText = '🎙️ 麥克風：開';
+      document.getElementById('adminCallPeerName').innerText = peerLabel;
+      document.getElementById('adminCallStatusText').innerText = '⏳ 正在呼叫對方...';
+      document.getElementById('adminIncomingCallControls').style.display = 'none';
+      document.getElementById('adminActiveCallControls').style.display = 'flex';
+      document.getElementById('adminVoiceCallModal').style.display = 'flex';
+
+      setupAdminPeerConnection(selectedEmbPeer.id);
+      const offer = await adminPeerConnection.createOffer();
+      await adminPeerConnection.setLocalDescription(offer);
+
+      sendAdminWebRTCSignal(selectedEmbPeer.id, 'offer', {
+        sdp: offer,
+        logId: adminCallState.logId,
+        roomKey
+      });
+    }
+
+    function setupAdminPeerConnection(peerId) {
+      adminPeerConnection = new RTCPeerConnection(RTC_CONFIG);
+      if (adminLocalStream) {
+        adminLocalStream.getTracks().forEach(track => adminPeerConnection.addTrack(track, adminLocalStream));
+      }
+      adminPeerConnection.onicecandidate = e => {
+        if (e.candidate) sendAdminWebRTCSignal(peerId, 'ice-candidate', { candidate: e.candidate });
+      };
+      adminPeerConnection.ontrack = e => {
+        const audioEl = document.getElementById('adminRemoteAudio');
+        if (audioEl && e.streams && e.streams[0]) audioEl.srcObject = e.streams[0];
+      };
+      adminPeerConnection.onconnectionstatechange = () => {
+        if (!adminPeerConnection) return;
+        if (adminPeerConnection.connectionState === 'disconnected' || adminPeerConnection.connectionState === 'failed') {
+          adminHangupCall(false);
+        }
+      };
+    }
+
+    async function handleAdminWebRTCSignal(payload) {
+      const { from, fromName, signalType, sdp, candidate, logId, roomKey } = payload;
+
+      if (signalType === 'offer') {
+        if (adminCallState) {
+          sendAdminWebRTCSignal(from, 'busy', { logId });
+          return;
+        }
+        adminCallState = {
+          logId: logId || null,
+          roomKey: roomKey || '',
+          peerId: from,
+          peerName: fromName || '來電成員',
+          isCaller: false,
+          status: 'ringing',
+          pendingOffer: sdp,
+          pendingCandidates: [],
+          timerInterval: null,
+          startedSec: 0
+        };
+        document.getElementById('adminCallPeerName').innerText = adminCallState.peerName;
+        document.getElementById('adminCallStatusText').innerText = '🔔 來電中（點擊接聽）...';
+        document.getElementById('adminIncomingCallControls').style.display = 'flex';
+        document.getElementById('adminActiveCallControls').style.display = 'none';
+        document.getElementById('adminVoiceCallModal').style.display = 'flex';
+        return;
+      }
+
+      if (!adminCallState || adminCallState.peerId !== from) return;
+
+      if (signalType === 'answer' && adminPeerConnection) {
+        await adminPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+        adminCallState.status = 'active';
+        startAdminCallCounter();
+      } else if (signalType === 'ice-candidate' && candidate) {
+        if (adminPeerConnection && adminPeerConnection.remoteDescription) {
+          await adminPeerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        } else if (adminCallState.pendingCandidates) {
+          adminCallState.pendingCandidates.push(candidate);
+        }
+      } else if (signalType === 'reject' || signalType === 'busy' || signalType === 'hangup') {
+        cleanupAdminCall();
+        alert(signalType === 'busy' ? '對方目前正在通話中！' : signalType === 'reject' ? '對方已拒接通話。' : '對方已結束通話。');
+      }
+    }
+
+    async function adminAcceptIncomingCall() {
+      if (!adminCallState || adminCallState.isCaller) return;
+      try {
+        adminLocalStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      } catch (err) {
+        alert('無法取得麥克風權限：' + err.message);
+        adminRejectIncomingCall();
+        return;
+      }
+
+      adminMicMuted = false;
+      document.getElementById('adminMicMuteBtn').innerText = '🎙️ 麥克風：開';
+      document.getElementById('adminIncomingCallControls').style.display = 'none';
+      document.getElementById('adminActiveCallControls').style.display = 'flex';
+
+      setupAdminPeerConnection(adminCallState.peerId);
+      await adminPeerConnection.setRemoteDescription(new RTCSessionDescription(adminCallState.pendingOffer));
+      if (adminCallState.pendingCandidates) {
+        for (const c of adminCallState.pendingCandidates) {
+          await adminPeerConnection.addIceCandidate(new RTCIceCandidate(c));
+        }
+        adminCallState.pendingCandidates = [];
+      }
+
+      const answer = await adminPeerConnection.createAnswer();
+      await adminPeerConnection.setLocalDescription(answer);
+      adminCallState.status = 'active';
+      startAdminCallCounter();
+
+      if (adminCallState.logId) {
+        await supabaseClient
+          .from('call_logs')
+          .update({ status: 'active', connected_at: new Date().toISOString() })
+          .eq('id', adminCallState.logId);
+      }
+
+      sendAdminWebRTCSignal(adminCallState.peerId, 'answer', { sdp: answer });
+    }
+
+    async function adminRejectIncomingCall() {
+      if (!adminCallState) return;
+      const { peerId, logId } = adminCallState;
+      sendAdminWebRTCSignal(peerId, 'reject', { logId });
+      if (logId) {
+        await supabaseClient.from('call_logs').update({ status: 'rejected', ended_at: new Date().toISOString() }).eq('id', logId);
+      }
+      cleanupAdminCall();
+    }
+
+    function adminToggleMicMute() {
+      if (!adminLocalStream) return;
+      adminMicMuted = !adminMicMuted;
+      adminLocalStream.getAudioTracks().forEach(t => { t.enabled = !adminMicMuted; });
+      document.getElementById('adminMicMuteBtn').innerText = adminMicMuted ? '🔇 麥克風：靜音' : '🎙️ 麥克風：開';
+    }
+
+    async function adminHangupCall(notifyPeer = true) {
+      if (!adminCallState) {
+        cleanupAdminCall();
+        return;
+      }
+      const { logId, peerId, status, startedSec } = adminCallState;
+      if (notifyPeer && peerId) {
+        sendAdminWebRTCSignal(peerId, 'hangup', { logId });
+      }
+      if (logId) {
+        await supabaseClient
+          .from('call_logs')
+          .update({
+            status: status === 'active' ? 'ended' : 'missed',
+            ended_at: new Date().toISOString(),
+            duration_sec: startedSec || 0
+          })
+          .eq('id', logId);
+      }
+      cleanupAdminCall();
+    }
+
+    function cleanupAdminCall() {
+      if (adminCallState && adminCallState.timerInterval) clearInterval(adminCallState.timerInterval);
+      adminCallState = null;
+      if (adminPeerConnection) {
+        try { adminPeerConnection.close(); } catch (e) {}
+        adminPeerConnection = null;
+      }
+      if (adminLocalStream) {
+        adminLocalStream.getTracks().forEach(t => t.stop());
+        adminLocalStream = null;
+      }
+      const audioEl = document.getElementById('adminRemoteAudio');
+      if (audioEl) audioEl.srcObject = null;
+      document.getElementById('adminVoiceCallModal').style.display = 'none';
     }
 
     /* ================= 開發者：導師申請開通新班級審核 ================= */
@@ -2742,7 +3552,12 @@
       }
     }
 
+    window.addEventListener('beforeunload', () => {
+      if (adminCallState) adminHangupCall(true);
+    });
+
     async function logout() {
+      if (adminCallState) await adminHangupCall(true);
       if (globalPresenceChannel) {
         try { await globalPresenceChannel.untrack(); } catch (e) {}
       }
