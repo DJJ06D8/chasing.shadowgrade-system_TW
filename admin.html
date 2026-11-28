@@ -1440,6 +1440,7 @@
                 <button class="resolve-btn" id="approveAppBtn_${app.id}" style="padding:0.5rem 0.9rem; font-size:0.85rem;" onclick="approveTeacherApplication(${app.id})">✅ 核准並一鍵建檔</button>
                 <button class="del-btn" style="padding:0.5rem 0.85rem; font-size:0.85rem;" onclick="rejectTeacherApplication(${app.id})">✕ 婉拒</button>
               ` : ''}
+              <button class="del-btn" style="padding:0.5rem 0.85rem; font-size:0.85rem;" onclick="deleteTeacherApplication(${app.id})">🗑️ 刪除紀錄</button>
             </div>
           </div>
         `;
@@ -1485,6 +1486,23 @@
 
       if (error) alert('操作失敗：' + error.message);
       else await loadTeacherApplications();
+    }
+
+    async function deleteTeacherApplication(appId) {
+      const app = applicationsCache.find(a => a.id === appId);
+      const label = app ? `「${app.class_name} - ${app.teacher_name}」` : '此筆';
+      if (!confirm(`確定要永久刪除 ${label} 的申請紀錄嗎？`)) return;
+
+      const { error } = await supabaseClient
+        .from('teacher_applications')
+        .delete()
+        .eq('id', appId);
+
+      if (error) {
+        alert('刪除失敗：' + error.message);
+      } else {
+        await loadTeacherApplications();
+      }
     }
 
     /* ================= 功課＆考試布告欄 + 明日考試置頂 ================= */
