@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE // 老師與系統開發者指揮終端</title>
+  <title>NEXUS GRADE V5.2.1 // 老師與系統開發者指揮終端</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -99,6 +99,48 @@
       font-size: 0.74rem;
       font-weight: 800;
       margin-left: 0.45rem;
+    }
+
+    /* 🟢 開發者即時在線人員監控樣式 */
+    .live-presence-box {
+      max-width: 980px;
+      margin: 0 auto 1.5rem auto;
+      background: var(--accent-emerald-soft);
+      border: 1.5px solid var(--accent-emerald);
+      border-radius: var(--radius-xl);
+      padding: 1.35rem 1.75rem;
+      box-shadow: var(--shadow-card);
+    }
+    .live-pulse-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10B981;
+      margin-right: 6px;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: livePulse 1.6s infinite;
+    }
+    @keyframes livePulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .online-user-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 0.75rem;
+    }
+    .online-user-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 0.7rem 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
     }
 
     .alert-box {
@@ -610,7 +652,7 @@
 
     @media (max-width: 768px) {
       body { padding: 0.85rem; }
-      .container, .alert-box, .tomorrow-exam-banner { padding: 1.25rem 1rem; border-radius: 16px; }
+      .container, .alert-box, .tomorrow-exam-banner, .live-presence-box { padding: 1.25rem 1rem; border-radius: 16px; }
       h2 { font-size: 1.18rem; }
       .form-group { min-width: 100%; }
       input[type="text"], input[type="number"], input[type="date"], select, textarea { font-size: 16px; }
@@ -629,6 +671,7 @@
         padding: 0 !important;
         margin: 0 !important;
       }
+      #devLivePresenceSection,
       #tomorrowExamBanner,
       #reportAlertSection,
       #devApplicationSection,
@@ -723,6 +766,19 @@
     </div>
   </div>
 
+  <!-- 🟢 系統開發者專用：全站即時在線人員與所在頁面監控 -->
+  <div class="live-presence-box" id="devLivePresenceSection" style="display: none;">
+    <div class="section-header-bar" style="margin-bottom: 0.85rem;">
+      <div style="font-size: 1.02rem; font-weight: 900; color: var(--accent-emerald); display: flex; align-items: center;">
+        <span class="live-pulse-dot"></span>開發者即時在線監控（全站 LIVE）
+      </div>
+      <span class="badge mono" id="liveOnlineCountBadge" style="background: var(--bg-card); color: var(--accent-emerald); border: 1px solid var(--accent-emerald);">目前在線：0 人</span>
+    </div>
+    <div class="online-user-grid" id="liveOnlineUserGrid">
+      <div style="color: var(--text-secondary); font-size: 0.86rem;">目前尚無其他成員在線上...</div>
+    </div>
+  </div>
+
   <!-- 🚨 明日考試自動置頂提醒（免點開直接顯示） -->
   <div class="tomorrow-exam-banner" id="tomorrowExamBanner" style="display: none;">
     <div class="tomorrow-exam-header">
@@ -755,7 +811,7 @@
   <div class="container" id="entrySection">
     <div class="header" id="entryHeader">
       <div>
-        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V5.0</span>
+        <span class="role-tag" id="commandRoleTag">TEACHER COMMAND CENTER // V5.2.1</span>
         <h2 id="commandTitle">國二-2 成績系統指揮中心（老師專用）</h2>
       </div>
       <div class="btn-group">
@@ -1101,6 +1157,7 @@
     let myChart = null;
     let parsedExcelState = null;
     let isDeveloperUser = false;
+    let globalPresenceChannel = null;
 
     function getLocalDateStr(offsetDays = 0) {
       const d = new Date();
@@ -1120,6 +1177,82 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    }
+
+    function renderLiveOnlineUsers(state) {
+      const grid = document.getElementById('liveOnlineUserGrid');
+      const badge = document.getElementById('liveOnlineCountBadge');
+      if (!grid || !badge) return;
+
+      const entries = [];
+      Object.keys(state || {}).forEach(key => {
+        const list = state[key];
+        if (Array.isArray(list) && list.length > 0) {
+          entries.push(list[list.length - 1]);
+        }
+      });
+
+      badge.innerText = `目前在線：${entries.length} 人`;
+
+      if (entries.length === 0) {
+        grid.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.86rem;">目前尚無其他成員在線上...</div>';
+        return;
+      }
+
+      const roleLabelMap = {
+        student: '學生',
+        parent: '家長',
+        teacher: '導師',
+        admin: '導師'
+      };
+
+      entries.sort((a, b) => (a.seat_number ?? 999) - (b.seat_number ?? 999));
+
+      grid.innerHTML = entries.map(u => {
+        const seatStr = u.seat_number ? `${u.seat_number}號 ` : '';
+        const roleStr = roleLabelMap[u.role] || u.role || '成員';
+        const pageStr = u.page || '系統瀏覽中';
+        const classStr = u.class_name || '國二-2';
+        return `
+          <div class="online-user-card">
+            <div style="min-width: 0;">
+              <div style="font-weight: 800; font-size: 0.92rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                🟢 ${escapeHtml(seatStr + (u.name || '未知'))}
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+                ${escapeHtml(classStr)}・${escapeHtml(roleStr)}
+              </div>
+            </div>
+            <span class="badge" style="flex-shrink: 0; font-size: 0.74rem;">${escapeHtml(pageStr)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function initGlobalOnlinePresence(userId, profile, devMode) {
+      globalPresenceChannel = supabaseClient.channel('nexus-global-online', {
+        config: { presence: { key: userId } }
+      });
+
+      if (devMode) {
+        globalPresenceChannel.on('presence', { event: 'sync' }, () => {
+          renderLiveOnlineUsers(globalPresenceChannel.presenceState());
+        });
+      }
+
+      globalPresenceChannel.subscribe(async status => {
+        if (status === 'SUBSCRIBED' && !devMode) {
+          await globalPresenceChannel.track({
+            user_id: userId,
+            name: (profile && profile.name) ? profile.name : '導師',
+            seat_number: (profile && profile.seat_number != null) ? profile.seat_number : null,
+            role: (profile && profile.role) ? profile.role : 'teacher',
+            class_name: (profile && profile.class_name) ? profile.class_name : '國二-2',
+            page: '導師管理後台',
+            online_at: new Date().toISOString()
+          });
+        }
+      });
     }
 
     const dropzone = document.getElementById('excelDropzone');
@@ -1146,7 +1279,7 @@
       const sessionEmail = (session.user.email || '').toLowerCase();
       const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('role, email, name, class_name')
+        .select('role, email, name, class_name, seat_number')
         .eq('id', currentUserId)
         .single();
 
@@ -1159,10 +1292,13 @@
         return;
       }
 
+      initGlobalOnlinePresence(currentUserId, profile, isDeveloperUser);
+
       if (isDeveloperUser) {
         await loadAvailableClasses();
         currentClassName = availableClasses[0] || '國二-2';
         currentUserLabel = '系統開發者';
+        document.getElementById('devLivePresenceSection').style.display = 'block';
         document.getElementById('classSwitcherContainer').style.display = 'inline-flex';
         document.getElementById('devApplicationSection').style.display = 'block';
         document.getElementById('devAnnouncementSection').style.display = 'block';
@@ -1178,10 +1314,10 @@
 
     function updateHeaderTitleByClass() {
       if (isDeveloperUser) {
-        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V5.0';
+        document.getElementById('commandRoleTag').innerText = 'SYSTEM DEVELOPER // V5.2.1';
         document.getElementById('commandTitle').innerText = `${currentClassName} 智慧成績系統（系統開發者）`;
       } else {
-        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V5.0';
+        document.getElementById('commandRoleTag').innerText = 'TEACHER COMMAND CENTER // V5.2.1';
         document.getElementById('commandTitle').innerText = `${currentClassName} 成績系統指揮中心（老師專用）`;
       }
       document.getElementById('printSheetTitle').innerText = `${currentClassName} 各場次小考成績明細一覽表（含科目與考試日期）`;
@@ -1320,13 +1456,11 @@
       const btn = document.getElementById(`approveAppBtn_${appId}`);
       if (btn) { btn.disabled = true; btn.innerText = '正在一鍵建檔中...'; }
 
-      // 1. 優先嘗試呼叫後端 RPC 函數一鍵建置 Auth 與 Profiles
       const { error: rpcError } = await supabaseClient.rpc('approve_teacher_application', {
         app_id: appId
       });
 
       if (rpcError) {
-        // 若資料庫尚未部署該 RPC，則先更新 classes 與申請狀態，並提示執行 SQL
         await supabaseClient.from('classes').upsert({
           class_name: app.class_name,
           teacher_name: app.teacher_name,
@@ -2591,6 +2725,9 @@
     }
 
     async function logout() {
+      if (globalPresenceChannel) {
+        try { await globalPresenceChannel.untrack(); } catch (e) {}
+      }
       await supabaseClient.auth.signOut();
       window.location.href = 'index.html';
     }

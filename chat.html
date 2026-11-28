@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS DIRECT // 班級即時訊息</title>
+  <title>NEXUS DIRECT V5.2.1 // 班級即時訊息</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -92,9 +92,9 @@
 
     .ig-shell {
       width: 100%;
-      max-width: 1120px;
+      max-width: 1140px;
       height: 100%;
-      max-height: 840px;
+      max-height: 850px;
       background: var(--bg-card);
       border: 1px solid var(--border-light);
       border-radius: var(--radius-xl);
@@ -114,22 +114,22 @@
     }
 
     .sidebar-top {
-      padding: 0.85rem 0.9rem;
+      padding: 0.8rem 0.85rem;
       border-bottom: 1px solid var(--border-light);
       background: var(--bg-card);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.3rem;
     }
 
     .back-btn {
       background: var(--bg-subtle);
       color: var(--text-primary);
       border: 1px solid var(--border-light);
-      padding: 0.42rem 0.65rem;
+      padding: 0.4rem 0.58rem;
       border-radius: var(--radius-md);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
@@ -140,9 +140,9 @@
       background: var(--accent-blue);
       color: #FFFFFF;
       border: none;
-      padding: 0.44rem 0.68rem;
+      padding: 0.42rem 0.62rem;
       border-radius: var(--radius-md);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
@@ -152,43 +152,44 @@
       background: var(--accent-purple-soft);
       color: var(--accent-purple);
       border: 1px solid rgba(124, 58, 237, 0.3);
-      padding: 0.42rem 0.65rem;
+      padding: 0.4rem 0.58rem;
       border-radius: var(--radius-md);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
     }
 
-    .theme-btn {
+    .icon-square-btn {
       background: var(--bg-subtle);
       border: 1px solid var(--border-light);
       color: var(--text-primary);
-      width: 32px;
-      height: 32px;
+      width: 31px;
+      height: 31px;
       border-radius: var(--radius-md);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 14px;
       flex-shrink: 0;
     }
+    .icon-square-btn:hover { border-color: var(--accent-blue); }
 
     .search-box {
-      padding: 0.7rem 0.9rem;
+      padding: 0.68rem 0.9rem;
       border-bottom: 1px solid var(--border-light);
       background: var(--bg-card);
     }
 
     .search-box input {
       width: 100%;
-      padding: 0.55rem 0.9rem;
+      padding: 0.52rem 0.9rem;
       border-radius: 999px;
       border: 1.5px solid var(--border-light);
       background: var(--bg-subtle);
       color: var(--text-primary);
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 500;
       outline: none;
     }
@@ -227,12 +228,8 @@
     }
 
     .thread-item:hover { background: var(--item-hover); }
-    .thread-item.active {
-      background: var(--item-active);
-    }
-    .thread-item.pinned-item {
-      border-left: 3px solid var(--accent-amber);
-    }
+    .thread-item.active { background: var(--item-active); }
+    .thread-item.pinned-item { border-left: 3px solid var(--accent-amber); }
 
     .avatar-wrap {
       position: relative;
@@ -350,6 +347,11 @@
       font-weight: 700;
     }
 
+    .mention-tag-pill {
+      color: var(--accent-rose);
+      font-weight: 800;
+    }
+
     .pin-btn {
       background: transparent;
       border: none;
@@ -387,10 +389,11 @@
       height: 100%;
       overflow: hidden;
       background: var(--bg-card);
+      position: relative;
     }
 
     .chat-header {
-      padding: 0.9rem 1.25rem;
+      padding: 0.85rem 1.2rem;
       border-bottom: 1px solid var(--border-light);
       display: flex;
       align-items: center;
@@ -421,32 +424,90 @@
       text-overflow: ellipsis;
     }
 
-    .room-settings-btn {
+    .header-action-btn {
       display: none;
       background: var(--accent-blue-soft);
       border: 1px solid rgba(37, 99, 235, 0.3);
       color: var(--accent-blue);
-      padding: 0.42rem 0.78rem;
+      padding: 0.4rem 0.72rem;
       border-radius: var(--radius-md);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       cursor: pointer;
       flex-shrink: 0;
     }
 
+    .header-action-btn.muted-on {
+      background: var(--accent-amber-soft);
+      border-color: rgba(217, 119, 6, 0.4);
+      color: var(--accent-amber);
+    }
+
+    /* 頻道頂部置頂公告橫幅 */
+    .pinned-banner {
+      display: none;
+      padding: 0.55rem 1.15rem;
+      background: var(--accent-amber-soft);
+      border-bottom: 1px solid rgba(217, 119, 6, 0.25);
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .pinned-banner-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .pinned-banner-label {
+      font-weight: 800;
+      color: var(--accent-amber);
+      white-space: nowrap;
+    }
+
+    .pinned-banner-text {
+      color: var(--text-primary);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .messages-area {
       flex: 1;
       overflow-y: auto;
-      padding: 1.25rem;
+      padding: 1.2rem;
       display: flex;
       flex-direction: column;
-      gap: 0.65rem;
+      gap: 0.72rem;
     }
+
+    .load-more-wrap {
+      text-align: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .load-more-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .load-more-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
 
     .msg-row {
       display: flex;
       flex-direction: column;
-      max-width: 74%;
+      max-width: 76%;
       transition: background 0.35s ease;
       border-radius: 12px;
       padding: 2px;
@@ -497,6 +558,74 @@
       padding: 0.35rem;
       background: transparent !important;
     }
+
+    .mention-highlight {
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .msg-row.others .mention-highlight {
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
+    }
+
+    /* 表情符號快速反應列 */
+    .reaction-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+      padding: 0 2px;
+    }
+
+    .reaction-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      border: 1px solid var(--border-light);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .reaction-pill.reacted-by-me {
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
+    }
+
+    /* 懸浮快速表情選擇器 */
+    .emoji-picker-bar {
+      display: none;
+      align-items: center;
+      gap: 2px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 999px;
+      padding: 2px 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .msg-row:hover .emoji-picker-bar {
+      display: inline-flex;
+    }
+
+    .emoji-opt-btn {
+      background: transparent;
+      border: none;
+      font-size: 0.88rem;
+      cursor: pointer;
+      padding: 2px 3px;
+      border-radius: 50%;
+      transition: transform 0.15s ease;
+    }
+    .emoji-opt-btn:hover { transform: scale(1.25); }
 
     /* 對方正在輸入動畫氣泡 */
     .typing-indicator-row {
@@ -634,6 +763,39 @@
     .action-icon-btn:hover { color: var(--accent-blue); }
     .action-icon-btn.del-btn:hover { color: var(--accent-rose); }
 
+    /* @提及自動補全浮層 */
+    .mention-popup {
+      display: none;
+      position: absolute;
+      bottom: 68px;
+      left: 1.1rem;
+      right: 1.1rem;
+      max-width: 340px;
+      max-height: 210px;
+      overflow-y: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+      padding: 0.35rem;
+      z-index: 50;
+    }
+
+    .mention-option {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.48rem 0.65rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .mention-option:hover, .mention-option.selected {
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
+    }
+
     .reply-preview-bar {
       display: none;
       padding: 0.55rem 1.1rem;
@@ -754,6 +916,12 @@
       color: var(--accent-purple);
       font-size: 0.84rem;
       font-weight: 700;
+    }
+
+    .readonly-banner.muted-banner {
+      background: var(--accent-amber-soft);
+      border-color: rgba(217, 119, 6, 0.35);
+      color: var(--accent-amber);
     }
 
     .modal-backdrop {
@@ -886,7 +1054,7 @@
       .ig-shell.mobile-chat-open .ig-sidebar { display: none; }
       .ig-shell:not(.mobile-chat-open) .ig-main { display: none; }
       .mobile-back-btn { display: inline-block; }
-      .msg-row { max-width: 84%; }
+      .msg-row { max-width: 86%; }
     }
   </style>
 </head>
@@ -894,6 +1062,24 @@
   <!-- 圖片全螢幕檢視 -->
   <div class="modal-backdrop" id="imgLightbox" onclick="this.style.display='none'">
     <img id="lightboxImg" src="" alt="放大圖片">
+  </div>
+
+  <!-- 圖片發送前預覽與附帶文字彈窗 -->
+  <div class="modal-backdrop" id="imagePreviewModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🖼️ 預覽並傳送圖片</h3>
+        <button class="modal-close" onclick="closeImagePreviewModal()">✕</button>
+      </div>
+      <div style="text-align:center; background:var(--bg-subtle); padding:0.75rem; border-radius:12px; margin-bottom:0.85rem; border:1px solid var(--border-light);">
+        <img id="pendingPreviewImg" src="" alt="預覽圖片" style="max-width:100%; max-height:260px; border-radius:8px; object-fit:contain;">
+      </div>
+      <input type="text" id="pendingImageCaption" class="modal-input" maxlength="200" placeholder="新增圖片說明文字（選填）..." onkeydown="if(event.key==='Enter'){event.preventDefault();confirmSendPendingImage();}">
+      <div style="display:flex; gap:0.5rem;">
+        <button class="danger-btn" style="flex:1;" onclick="closeImagePreviewModal()">取消</button>
+        <button class="send-btn" id="confirmSendImgBtn" style="flex:2; border-radius:10px;" onclick="confirmSendPendingImage()">確認傳送圖片</button>
+      </div>
+    </div>
   </div>
 
   <!-- 個人資料（全站暱稱與頭像）設定彈窗 -->
@@ -953,7 +1139,8 @@
         <button class="back-btn" id="backPortalBtn" onclick="goBackPortal()">← 返回</button>
         <button class="new-group-btn" id="openCreateRoomBtn" onclick="openCreateRoomModal()">＋ 建群</button>
         <button class="profile-edit-btn" id="openProfileBtn" onclick="openProfileModal()">👤 個人</button>
-        <button class="theme-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
+        <button class="icon-square-btn" id="soundToggleBtn" onclick="toggleSound()" title="切換新訊息提示音">🔔</button>
+        <button class="icon-square-btn" id="themeToggleBtn" onclick="toggleTheme()" title="切換深色/淺色主題">🌙</button>
       </div>
 
       <div class="search-box">
@@ -976,7 +1163,17 @@
           <div class="chat-title" id="activeChatTitle">班級大群</div>
           <div class="chat-subtitle" id="activeChatSubtitle">全班同學與導師共同討論區</div>
         </div>
-        <button class="room-settings-btn" id="roomSettingsBtn" onclick="openRoomInfoModal()">⚙️ 群組資訊</button>
+        <button class="header-action-btn" id="groupMuteToggleBtn" onclick="toggleGroupMute()">🌙 夜間靜音：關</button>
+        <button class="header-action-btn" id="roomSettingsBtn" onclick="openRoomInfoModal()">⚙️ 群組資訊</button>
+      </div>
+
+      <!-- 頻道置頂公告橫幅 -->
+      <div class="pinned-banner" id="pinnedBanner" onclick="jumpToPinnedMessage()">
+        <div class="pinned-banner-content">
+          <span class="pinned-banner-label">📌 置頂公告</span>
+          <span class="pinned-banner-text" id="pinnedBannerText"></span>
+        </div>
+        <button type="button" id="unpinBannerBtn" class="modal-close" style="font-size:0.95rem; display:none;" title="取消置頂" onclick="event.stopPropagation(); unpinChannelMessage();">✕</button>
       </div>
 
       <div class="messages-area" id="messagesArea">
@@ -992,6 +1189,9 @@
           <span class="typing-dot"></span>
         </div>
       </div>
+
+      <!-- @提及自動補全浮層 -->
+      <div class="mention-popup" id="mentionPopup"></div>
 
       <!-- 回覆特定訊息預覽條 -->
       <div class="reply-preview-bar" id="replyPreviewBar">
@@ -1010,7 +1210,7 @@
           <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
         </div>
 
-        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（電腦可直接貼上圖片）..." autocomplete="off" oninput="handleTypingInput()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
+        <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（輸入 @ 提及成員，或貼上圖片）..." autocomplete="off" oninput="handleInputChanged()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
         <button type="button" class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
       </div>
     </div>
@@ -1029,9 +1229,43 @@
     }
     applyTheme(localStorage.getItem('nexus-theme') || 'light');
 
+    let soundEnabled = localStorage.getItem('nexus-chat-sound') !== 'off';
+    function updateSoundBtn() {
+      const btn = document.getElementById('soundToggleBtn');
+      if (btn) btn.textContent = soundEnabled ? '🔔' : '🔕';
+    }
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem('nexus-chat-sound', soundEnabled ? 'on' : 'off');
+      updateSoundBtn();
+    }
+    updateSoundBtn();
+
+    function playNotificationTone() {
+      if (!soundEnabled) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1174.66, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.19);
+      } catch (e) {}
+    }
+
     const SUPABASE_URL = 'https://udtaqnkdohkfzkyzkmwd.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Y_GZnXSJAUmTEPvTR-jX0Q_og4LybPV';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const EMOJI_OPTIONS = ['👍', '❤️', '😂', '✅', '😮'];
 
     let me = null;
     let currentClassName = '國二-2';
@@ -1044,24 +1278,54 @@
     let onlineUserIds = new Set();
     let customRooms = [];
     let roomMembersMap = {};
+    let channelSettingsMap = {};
     let groupLastReadAt = '1970-01-01T00:00:00Z';
     let studentGroupLastReadAt = '1970-01-01T00:00:00Z';
     let allMessages = [];
     let activeChannel = { type: 'group', targetUser: null, pairUsers: null, roomId: null };
     let replyingTo = null;
     let isSending = false;
+    let visibleMsgLimit = 40;
+    let pendingImageFile = null;
+    let mentionCandidates = [];
+    let selectedMentionIdx = 0;
 
     let realtimeChannel = null;
+    let globalPresenceChannel = null;
     let lastTypingSentAt = 0;
     let stopTypingTimer = null;
     const activeTypers = new Map();
+
+    function initGlobalOnlinePresence(profile) {
+      if (!profile || (profile.email || '').toLowerCase() === '202020@cysh.khc.edu.tw') return;
+      globalPresenceChannel = supabaseClient.channel('nexus-global-online', {
+        config: { presence: { key: profile.id } }
+      });
+      globalPresenceChannel.subscribe(async status => {
+        if (status === 'SUBSCRIBED') {
+          await globalPresenceChannel.track({
+            user_id: profile.id,
+            name: profile.name || '成員',
+            seat_number: profile.seat_number ?? null,
+            role: profile.role || 'student',
+            class_name: profile.class_name || '國二-2',
+            page: '班級即時訊息',
+            online_at: new Date().toISOString()
+          });
+        }
+      });
+    }
+
+    function isTeacherRole(role) {
+      return role === 'admin' || role === 'teacher';
+    }
 
     function isMobileDevice() {
       return window.matchMedia('(max-width: 768px) and (pointer: coarse)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
     function goBackPortal() {
-      if (me && (me.role === 'admin' || me.role === 'teacher' || isDevAuditor)) {
+      if (me && (isTeacherRole(me.role) || isDevAuditor)) {
         window.location.href = 'admin.html';
       } else {
         window.location.href = 'student.html';
@@ -1072,17 +1336,40 @@
       document.getElementById('igShell').classList.remove('mobile-chat-open');
     }
 
+    function getCurrentChannelKey() {
+      if (activeChannel.type === 'group') return `group_${currentClassName}`;
+      if (activeChannel.type === 'student_group') return `student_group_${currentClassName}`;
+      if (activeChannel.type === 'room') return `room_${activeChannel.roomId}`;
+      if (activeChannel.type === 'dm' && activeChannel.targetUser) return `dm_${activeChannel.targetUser.id}`;
+      return 'audit';
+    }
+
+    function saveDraftForCurrentChannel() {
+      const input = document.getElementById('messageInput');
+      if (!input || isDevAuditor) return;
+      const key = `nexus_draft_${getCurrentChannelKey()}`;
+      if (input.value.trim()) localStorage.setItem(key, input.value);
+      else localStorage.removeItem(key);
+    }
+
+    function restoreDraftForCurrentChannel() {
+      const input = document.getElementById('messageInput');
+      if (!input || isDevAuditor) return;
+      const key = `nexus_draft_${getCurrentChannelKey()}`;
+      input.value = localStorage.getItem(key) || '';
+    }
+
     function renderUserAvatarContent(u) {
       if (!u) return '?';
       if (u.avatar_url) {
         return `<img src="${escapeHtml(u.avatar_url)}" alt="頭像">`;
       }
-      return (u.role === 'admin' || u.role === 'teacher') ? '師' : `${u.seat_number ?? '#'}`;
+      return isTeacherRole(u.role) ? '師' : `${u.seat_number ?? '#'}`;
     }
 
     function formatUserFullLabel(u) {
       if (!u) return '未知成員';
-      const base = (u.role === 'admin' || u.role === 'teacher') ? `${u.name}（導師）` : `${u.seat_number ?? '-'}號 ${u.name}`;
+      const base = isTeacherRole(u.role) ? `${u.name}（導師）` : `${u.seat_number ?? '-'}號 ${u.name}`;
       if (u.nickname && u.nickname.trim()) {
         return `${base}（${u.nickname.trim()}）`;
       }
@@ -1091,15 +1378,116 @@
 
     function formatUserShort(u) {
       if (!u) return '未知成員';
-      const base = (u.role === 'admin' || u.role === 'teacher') ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`;
+      const base = isTeacherRole(u.role) ? `${u.name}(導師)` : `${u.seat_number ?? '-'}號${u.name}`;
       if (u.nickname && u.nickname.trim()) {
         return `${base}[${u.nickname.trim()}]`;
       }
       return base;
     }
 
+    function handleInputChanged() {
+      saveDraftForCurrentChannel();
+      handleTypingInput();
+      checkMentionAutocomplete();
+    }
+
+    function checkMentionAutocomplete() {
+      const input = document.getElementById('messageInput');
+      const popup = document.getElementById('mentionPopup');
+      if (!input || !popup || isDevAuditor) return;
+
+      const cursorPos = input.selectionStart || input.value.length;
+      const textBefore = input.value.slice(0, cursorPos);
+      const match = textBefore.match(/@([^\s@]*)$/);
+
+      if (!match || activeChannel.type === 'dm') {
+        popup.style.display = 'none';
+        mentionCandidates = [];
+        return;
+      }
+
+      const query = match[1].toLowerCase();
+      let pool = contacts;
+      if (activeChannel.type === 'student_group') {
+        pool = allStudents.filter(s => s.id !== me.id);
+      } else if (activeChannel.type === 'room' && activeChannel.roomId) {
+        const memIds = (roomMembersMap[activeChannel.roomId] || []).map(m => m.user_id);
+        pool = contacts.filter(c => memIds.includes(c.id));
+      }
+
+      mentionCandidates = pool.filter(u => {
+        const seatStr = String(u.seat_number ?? '');
+        const nameStr = (u.name || '').toLowerCase();
+        const nickStr = (u.nickname || '').toLowerCase();
+        return !query || seatStr.includes(query) || nameStr.includes(query) || nickStr.includes(query);
+      }).slice(0, 8);
+
+      if (mentionCandidates.length === 0) {
+        popup.style.display = 'none';
+        return;
+      }
+
+      selectedMentionIdx = 0;
+      renderMentionPopup();
+    }
+
+    function renderMentionPopup() {
+      const popup = document.getElementById('mentionPopup');
+      popup.innerHTML = mentionCandidates.map((u, idx) => `
+        <div class="mention-option ${idx === selectedMentionIdx ? 'selected' : ''}" onmousedown="event.preventDefault(); applyMention('${u.id}')">
+          <span>${isTeacherRole(u.role) ? '👑' : `${u.seat_number ?? '-'}號`}</span>
+          <span>${escapeHtml(u.name)}${u.nickname ? ` (${escapeHtml(u.nickname)})` : ''}</span>
+        </div>
+      `).join('');
+      popup.style.display = 'block';
+    }
+
+    function applyMention(userId) {
+      const input = document.getElementById('messageInput');
+      const popup = document.getElementById('mentionPopup');
+      const user = userMap[userId];
+      if (!input || !user) return;
+
+      const cursorPos = input.selectionStart || input.value.length;
+      const textBefore = input.value.slice(0, cursorPos);
+      const textAfter = input.value.slice(cursorPos);
+      const tag = isTeacherRole(user.role) ? `@${user.name} ` : `@${user.seat_number}號${user.name} `;
+
+      const replacedBefore = textBefore.replace(/@([^\s@]*)$/, tag);
+      input.value = replacedBefore + textAfter;
+      popup.style.display = 'none';
+      mentionCandidates = [];
+      input.focus();
+      saveDraftForCurrentChannel();
+    }
+
     function handleInputKeydown(e) {
       if (e.isComposing || e.keyCode === 229) return;
+      const popup = document.getElementById('mentionPopup');
+      if (popup && popup.style.display === 'block' && mentionCandidates.length > 0) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectedMentionIdx = (selectedMentionIdx + 1) % mentionCandidates.length;
+          renderMentionPopup();
+          return;
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectedMentionIdx = (selectedMentionIdx - 1 + mentionCandidates.length) % mentionCandidates.length;
+          renderMentionPopup();
+          return;
+        }
+        if (e.key === 'Enter' || e.key === 'Tab') {
+          e.preventDefault();
+          applyMention(mentionCandidates[selectedMentionIdx].id);
+          return;
+        }
+        if (e.key === 'Escape') {
+          popup.style.display = 'none';
+          return;
+        }
+      }
+
       if (e.key === 'Enter') {
         e.preventDefault();
         sendMessage();
@@ -1213,7 +1601,7 @@
       const senderObj = userMap[msg.sender_id];
       let senderLabel = senderObj
         ? formatUserFullLabel(senderObj)
-        : ((msg.sender_role === 'admin' || msg.sender_role === 'teacher') ? `${msg.sender_name}(導師)` : `${msg.sender_seat ?? '-'}號 ${msg.sender_name}`);
+        : (isTeacherRole(msg.sender_role) ? `${msg.sender_name}(導師)` : `${msg.sender_seat ?? '-'}號 ${msg.sender_name}`);
       if (activeChannel.type === 'room') {
         senderLabel = getRoomDisplayName(activeChannel.roomId, msg.sender_id);
       }
@@ -1240,11 +1628,231 @@
     }
 
     function scrollToMessage(msgId) {
-      const targetEl = document.getElementById(`msg-item-${msgId}`);
+      let targetEl = document.getElementById(`msg-item-${msgId}`);
+      if (!targetEl) {
+        visibleMsgLimit = 1000;
+        renderActiveMessages();
+        targetEl = document.getElementById(`msg-item-${msgId}`);
+      }
       if (!targetEl) return;
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       targetEl.classList.add('highlight-flash');
       setTimeout(() => targetEl.classList.remove('highlight-flash'), 1200);
+    }
+
+    /* Emoji 快速反應 */
+    async function toggleReaction(msgId, emoji) {
+      if (isDevAuditor || !me) return;
+      const msg = allMessages.find(m => m.id === msgId);
+      if (!msg) return;
+
+      const reactions = typeof msg.reactions === 'object' && msg.reactions !== null ? { ...msg.reactions } : {};
+      const list = Array.isArray(reactions[emoji]) ? [...reactions[emoji]] : [];
+      const idx = list.indexOf(me.id);
+
+      if (idx !== -1) list.splice(idx, 1);
+      else list.push(me.id);
+
+      if (list.length > 0) reactions[emoji] = list;
+      else delete reactions[emoji];
+
+      msg.reactions = reactions;
+      renderActiveMessages();
+
+      const { error } = await supabaseClient
+        .from('chat_messages')
+        .update({ reactions })
+        .eq('id', msgId);
+
+      if (error) {
+        console.warn('更新表情反應失敗（請確認已執行 reactions SQL 欄位）：', error.message);
+      }
+    }
+
+    /* 3 分鐘內訊息編輯 */
+    async function editMessage(msgId) {
+      if (isDevAuditor || !me) return;
+      const msg = allMessages.find(m => m.id === msgId);
+      if (!msg || msg.sender_id !== me.id) return;
+
+      const elapsedMs = Date.now() - new Date(msg.created_at).getTime();
+      if (elapsedMs > 3 * 60 * 1000) {
+        alert('發送超過 3 分鐘的訊息無法再編輯！');
+        return;
+      }
+
+      const nextText = prompt('編輯訊息內容：', msg.content || '');
+      if (nextText === null) return;
+      const trimmed = nextText.trim();
+      if (!trimmed && !msg.image_url) {
+        alert('訊息內容不可為空！若要移除請使用刪除按鈕。');
+        return;
+      }
+      if (trimmed === msg.content) return;
+
+      const editedAt = new Date().toISOString();
+      msg.content = trimmed;
+      msg.edited_at = editedAt;
+      renderActiveMessages();
+      renderThreadList();
+
+      const { error } = await supabaseClient
+        .from('chat_messages')
+        .update({ content: trimmed, edited_at: editedAt })
+        .eq('id', msgId);
+
+      if (error) {
+        await supabaseClient.from('chat_messages').update({ content: trimmed }).eq('id', msgId);
+      }
+    }
+
+    /* 頻道公告置頂與大群夜間靜音 */
+    function canPinInActiveChannel() {
+      if (isDevAuditor || !me) return false;
+      if (activeChannel.type === 'group') return isTeacherRole(me.role);
+      if (activeChannel.type === 'room' && activeChannel.roomId) {
+        const room = customRooms.find(r => r.id === activeChannel.roomId);
+        return room && room.created_by === me.id;
+      }
+      return false;
+    }
+
+    async function pinMessageToChannel(msgId) {
+      if (!canPinInActiveChannel()) return;
+      const key = getCurrentChannelKey();
+
+      if (activeChannel.type === 'group') {
+        channelSettingsMap[key] = { ...(channelSettingsMap[key] || {}), channel_key: key, pinned_message_id: msgId };
+        updatePinnedBannerUI();
+        await supabaseClient.from('chat_channel_settings').upsert({
+          channel_key: key,
+          pinned_message_id: msgId,
+          is_muted: Boolean(channelSettingsMap[key].is_muted),
+          updated_at: new Date().toISOString()
+        });
+      } else if (activeChannel.type === 'room' && activeChannel.roomId) {
+        const room = customRooms.find(r => r.id === activeChannel.roomId);
+        if (room) room.pinned_message_id = msgId;
+        updatePinnedBannerUI();
+        await supabaseClient.from('chat_rooms').update({ pinned_message_id: msgId }).eq('id', activeChannel.roomId);
+      }
+    }
+
+    async function unpinChannelMessage() {
+      if (!canPinInActiveChannel()) return;
+      const key = getCurrentChannelKey();
+
+      if (activeChannel.type === 'group') {
+        if (channelSettingsMap[key]) channelSettingsMap[key].pinned_message_id = null;
+        updatePinnedBannerUI();
+        await supabaseClient.from('chat_channel_settings').upsert({
+          channel_key: key,
+          pinned_message_id: null,
+          is_muted: Boolean(channelSettingsMap[key]?.is_muted),
+          updated_at: new Date().toISOString()
+        });
+      } else if (activeChannel.type === 'room' && activeChannel.roomId) {
+        const room = customRooms.find(r => r.id === activeChannel.roomId);
+        if (room) room.pinned_message_id = null;
+        updatePinnedBannerUI();
+        await supabaseClient.from('chat_rooms').update({ pinned_message_id: null }).eq('id', activeChannel.roomId);
+      }
+    }
+
+    function getPinnedMsgIdForActiveChannel() {
+      if (activeChannel.type === 'group') {
+        return channelSettingsMap[`group_${currentClassName}`]?.pinned_message_id || null;
+      }
+      if (activeChannel.type === 'room' && activeChannel.roomId) {
+        const room = customRooms.find(r => r.id === activeChannel.roomId);
+        return room?.pinned_message_id || null;
+      }
+      return null;
+    }
+
+    function updatePinnedBannerUI() {
+      const banner = document.getElementById('pinnedBanner');
+      const textEl = document.getElementById('pinnedBannerText');
+      const unpinBtn = document.getElementById('unpinBannerBtn');
+      const pinnedId = getPinnedMsgIdForActiveChannel();
+
+      if (!pinnedId) {
+        banner.style.display = 'none';
+        return;
+      }
+      const msg = allMessages.find(m => m.id === pinnedId);
+      if (!msg) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      const preview = msg.image_url ? (msg.content ? `[圖片] ${msg.content}` : '[圖片公告]') : msg.content;
+      textEl.innerText = `${msg.sender_name}：${preview}`;
+      unpinBtn.style.display = canPinInActiveChannel() ? 'inline-block' : 'none';
+      banner.style.display = 'flex';
+    }
+
+    function jumpToPinnedMessage() {
+      const pinnedId = getPinnedMsgIdForActiveChannel();
+      if (pinnedId) scrollToMessage(pinnedId);
+    }
+
+    async function toggleGroupMute() {
+      if (isDevAuditor || !isTeacherRole(me.role) || activeChannel.type !== 'group') return;
+      const key = `group_${currentClassName}`;
+      const currentMuted = Boolean(channelSettingsMap[key]?.is_muted);
+      const nextMuted = !currentMuted;
+
+      channelSettingsMap[key] = {
+        ...(channelSettingsMap[key] || {}),
+        channel_key: key,
+        is_muted: nextMuted
+      };
+      updateInputBarPermissions();
+
+      await supabaseClient.from('chat_channel_settings').upsert({
+        channel_key: key,
+        pinned_message_id: channelSettingsMap[key].pinned_message_id || null,
+        is_muted: nextMuted,
+        updated_at: new Date().toISOString()
+      });
+    }
+
+    function updateInputBarPermissions() {
+      const muteBtn = document.getElementById('groupMuteToggleBtn');
+      const key = `group_${currentClassName}`;
+      const isGroupMuted = Boolean(channelSettingsMap[key]?.is_muted);
+
+      if (muteBtn) {
+        if (activeChannel.type === 'group' && isTeacherRole(me.role) && !isDevAuditor) {
+          muteBtn.style.display = 'inline-block';
+          muteBtn.innerText = isGroupMuted ? '🌙 夜間靜音：開' : '🌙 夜間靜音：關';
+          muteBtn.classList.toggle('muted-on', isGroupMuted);
+        } else {
+          muteBtn.style.display = 'none';
+        }
+      }
+
+      if (isDevAuditor) return;
+
+      const inputBar = document.getElementById('chatInputBar');
+      const isBlockedByMute = activeChannel.type === 'group' && isGroupMuted && !isTeacherRole(me.role);
+
+      if (isBlockedByMute) {
+        inputBar.innerHTML = '<div class="readonly-banner muted-banner">🌙 導師已開啟班級大群夜間靜音模式（目前僅限導師發言，緊急事項請使用 1 對 1 私聊）</div>';
+      } else if (!document.getElementById('messageInput')) {
+        inputBar.innerHTML = `
+          <div class="media-btns-wrap" id="mediaBtnsWrap">
+            ${isMobileDevice() ? '<button type="button" class="media-btn camera-only-btn" id="cameraBtn" title="拍照傳送" onclick="document.getElementById(\'cameraInput\').click()">📷</button>' : ''}
+            <button type="button" class="media-btn" title="選擇圖片上傳" onclick="document.getElementById('galleryInput').click()">🖼️</button>
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleImageUpload(this)">
+            <input type="file" id="galleryInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
+          </div>
+          <input type="text" id="messageInput" maxlength="500" placeholder="輸入訊息（輸入 @ 提及成員，或貼上圖片）..." autocomplete="off" oninput="handleInputChanged()" onkeydown="handleInputKeydown(event)" onpaste="handlePasteImage(event)">
+          <button type="button" class="send-btn" id="sendBtn" onclick="sendMessage()">傳送</button>
+        `;
+        restoreDraftForCurrentChannel();
+      }
     }
 
     async function togglePinContact(event, targetUserId) {
@@ -1420,8 +2028,9 @@
       }
 
       me = myProfile;
+      initGlobalOnlinePresence(me);
       currentClassName = me.class_name || '國二-2';
-      document.title = `NEXUS DIRECT // ${currentClassName} 班級即時訊息`;
+      document.title = `NEXUS DIRECT V5.2.1 // ${currentClassName} 班級即時訊息`;
       pinnedContactIds = Array.isArray(me.pinned_contacts) ? me.pinned_contacts.slice(0, 3) : [];
       isDevAuditor = me.role === 'developer' || (me.email || '').toLowerCase() === '202020@cysh.khc.edu.tw';
 
@@ -1454,9 +2063,19 @@
       allStudents = visibleMembers.filter(u => u.role === 'student');
       contacts = visibleMembers.filter(u => u.id !== me.id);
 
-      await Promise.all([loadRoomsAndMembers(), loadGroupReadStatus(), loadAllMessages()]);
+      await Promise.all([loadRoomsAndMembers(), loadGroupReadStatus(), loadChannelSettings(), loadAllMessages()]);
       await selectGroupChannel(false);
       subscribeRealtime();
+    }
+
+    async function loadChannelSettings() {
+      try {
+        const { data } = await supabaseClient.from('chat_channel_settings').select('*');
+        if (data) {
+          channelSettingsMap = {};
+          data.forEach(row => { channelSettingsMap[row.channel_key] = row; });
+        }
+      } catch (e) {}
     }
 
     async function loadGroupReadStatus() {
@@ -1543,18 +2162,29 @@
       const { data, error } = await supabaseClient
         .from('chat_messages')
         .select('*')
-        .order('created_at', { ascending: true })
-        .limit(1000);
+        .order('created_at', { ascending: false })
+        .limit(800);
 
       if (!error && data) {
-        allMessages = data.filter(m => {
+        allMessages = data.reverse().filter(m => {
           if (isDevAuditor) return true;
           if (m.channel_type === 'room') return true;
+          if (m.class_name && m.class_name !== currentClassName) return false;
           return classUserIdSet.has(m.sender_id);
         });
         renderThreadList();
         renderActiveMessages();
       }
+    }
+
+    function updateDocumentTitleUnread() {
+      if (isDevAuditor || !me) return;
+      const dmUnread = allMessages.filter(m => m.channel_type === 'dm' && m.receiver_id === me.id && !m.is_read).length;
+      const groupUnread = allMessages.filter(m => m.channel_type === 'group' && m.sender_id !== me.id && m.created_at > groupLastReadAt).length;
+      const total = dmUnread + groupUnread;
+      document.title = total > 0
+        ? `(${total}) NEXUS DIRECT V5.2.1 // ${currentClassName}`
+        : `NEXUS DIRECT V5.2.1 // ${currentClassName} 班級即時訊息`;
     }
 
     function subscribeRealtime() {
@@ -1583,6 +2213,11 @@
           updateTypingIndicatorUI();
           renderThreadList();
         })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_channel_settings' }, async () => {
+          await loadChannelSettings();
+          updatePinnedBannerUI();
+          updateInputBarPermissions();
+        })
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, payload => {
           const updatedUser = payload.new;
           if (!updatedUser) return;
@@ -1608,8 +2243,12 @@
           activeTypers.delete(newMsg.sender_id);
           updateTypingIndicatorUI();
 
-          if (!allMessages.some(m => m.id === newMsg.id)) {
+          const isNew = !allMessages.some(m => m.id === newMsg.id);
+          if (isNew) {
             allMessages.push(newMsg);
+            if (!isDevAuditor && newMsg.sender_id !== me.id) {
+              playNotificationTone();
+            }
           }
 
           if (!isDevAuditor) {
@@ -1640,18 +2279,21 @@
             allMessages[idx] = updated;
             renderThreadList();
             renderActiveMessages();
+            updatePinnedBannerUI();
           }
         })
         .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' }, payload => {
           allMessages = allMessages.filter(m => m.id !== payload.old.id);
           renderThreadList();
           renderActiveMessages();
+          updatePinnedBannerUI();
         })
         .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_rooms' }, async () => {
           await loadRoomsAndMembers();
           if (activeChannel.type === 'room' && !customRooms.some(r => r.id === activeChannel.roomId)) {
             selectGroupChannel(false);
           } else {
+            updatePinnedBannerUI();
             renderThreadList();
           }
         })
@@ -1693,7 +2335,7 @@
       document.getElementById('newRoomNameInput').value = '';
       const listEl = document.getElementById('memberChecklist');
       listEl.innerHTML = contacts.map(c => {
-        const isTeacher = c.role === 'admin' || c.role === 'teacher';
+        const isTeacher = isTeacherRole(c.role);
         const label = isTeacher ? `👑 ${formatUserFullLabel(c)}` : formatUserFullLabel(c);
         return `
           <label class="member-check-item">
@@ -1727,11 +2369,21 @@
         return;
       }
 
-      const { data: roomData, error: roomErr } = await supabaseClient
+      let { data: roomData, error: roomErr } = await supabaseClient
         .from('chat_rooms')
-        .insert([{ name: roomName, created_by: me.id }])
+        .insert([{ name: roomName, created_by: me.id, class_name: currentClassName }])
         .select()
         .single();
+
+      if (roomErr && roomErr.message && roomErr.message.includes('class_name')) {
+        const fallback = await supabaseClient
+          .from('chat_rooms')
+          .insert([{ name: roomName, created_by: me.id }])
+          .select()
+          .single();
+        roomData = fallback.data;
+        roomErr = fallback.error;
+      }
 
       if (roomErr || !roomData) {
         alert('建立群組失敗：' + (roomErr ? roomErr.message : '未知錯誤'));
@@ -1967,6 +2619,7 @@
     async function selectGroupChannel(openMobile = true) {
       broadcastTypingState(false);
       cancelReply();
+      visibleMsgLimit = 40;
       activeChannel = { type: 'group', targetUser: null, pairUsers: null, roomId: null };
       document.getElementById('roomSettingsBtn').style.display = 'none';
       document.getElementById('activeOnlineDot').style.display = 'none';
@@ -1978,6 +2631,9 @@
         ? `共 ${memberTotal} 位成員（隱形稽核檢視中・大群不可退人）`
         : `共 ${memberTotal} 位成員（全班同學與導師）`;
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
+      updateInputBarPermissions();
+      updatePinnedBannerUI();
+      restoreDraftForCurrentChannel();
       await markGroupAsRead();
       updateTypingIndicatorUI();
       renderThreadList();
@@ -1988,6 +2644,7 @@
       if (me.role !== 'student' && !isDevAuditor) return;
       broadcastTypingState(false);
       cancelReply();
+      visibleMsgLimit = 40;
       activeChannel = { type: 'student_group', targetUser: null, pairUsers: null, roomId: null };
       document.getElementById('roomSettingsBtn').style.display = 'none';
       document.getElementById('activeOnlineDot').style.display = 'none';
@@ -1998,6 +2655,9 @@
         ? `全班學生 ${allStudents.length} 人（隱形稽核檢視中・導師不可見）`
         : `全班同學 ${allStudents.length} 人專屬空間（導師無法加入與查看）`;
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
+      updateInputBarPermissions();
+      updatePinnedBannerUI();
+      restoreDraftForCurrentChannel();
       await markStudentGroupAsRead();
       updateTypingIndicatorUI();
       renderThreadList();
@@ -2016,6 +2676,7 @@
 
       broadcastTypingState(false);
       cancelReply();
+      visibleMsgLimit = 40;
       activeChannel = { type: 'room', targetUser: null, pairUsers: null, roomId: room.id };
       document.getElementById('roomSettingsBtn').style.display = 'inline-block';
       document.getElementById('activeOnlineDot').style.display = 'none';
@@ -2025,6 +2686,9 @@
       updateRoomHeaderSubtitle(room.id);
 
       if (openMobile) document.getElementById('igShell').classList.add('mobile-chat-open');
+      updateInputBarPermissions();
+      updatePinnedBannerUI();
+      restoreDraftForCurrentChannel();
       await markRoomAsRead(room.id);
       updateTypingIndicatorUI();
       renderThreadList();
@@ -2038,9 +2702,10 @@
 
       broadcastTypingState(false);
       cancelReply();
+      visibleMsgLimit = 40;
       activeChannel = { type: 'dm', targetUser: target, pairUsers: null, roomId: null };
       document.getElementById('roomSettingsBtn').style.display = 'none';
-      const isTeacher = target.role === 'admin' || target.role === 'teacher';
+      const isTeacher = isTeacherRole(target.role);
 
       document.getElementById('activeAvatar').className = `avatar ${isTeacher ? 'teacher-av' : ''}`;
       document.getElementById('activeAvatar').innerHTML = renderUserAvatarContent(target);
@@ -2048,6 +2713,9 @@
       updateHeaderOnlineStatus();
 
       document.getElementById('igShell').classList.add('mobile-chat-open');
+      updateInputBarPermissions();
+      updatePinnedBannerUI();
+      restoreDraftForCurrentChannel();
       await markDmAsRead(target.id);
       updateTypingIndicatorUI();
       renderThreadList();
@@ -2057,6 +2725,7 @@
     function selectAuditPair(uid1, uid2) {
       if (!isDevAuditor) return;
       cancelReply();
+      visibleMsgLimit = 60;
       const u1 = userMap[uid1] || { id: uid1, name: '成員A', seat_number: '-' };
       const u2 = userMap[uid2] || { id: uid2, name: '成員B', seat_number: '-' };
       const label1 = formatUserShort(u1);
@@ -2071,13 +2740,26 @@
       document.getElementById('activeChatSubtitle').innerText = '系統管理員隱形唯讀稽核（無法發送訊息）';
 
       document.getElementById('igShell').classList.add('mobile-chat-open');
+      updatePinnedBannerUI();
       updateTypingIndicatorUI();
       renderThreadList();
       renderActiveMessages();
     }
 
+    function checkUnreadHasMention(msgs, lastReadIso) {
+      if (!me || isDevAuditor) return false;
+      const myTag1 = `@${me.name}`;
+      const myTag2 = me.seat_number ? `@${me.seat_number}號${me.name}` : myTag1;
+      return msgs.some(m =>
+        m.sender_id !== me.id &&
+        m.created_at > lastReadIso &&
+        m.content &&
+        (m.content.includes(myTag1) || m.content.includes(myTag2))
+      );
+    }
+
     function buildContactItemHtml(c, isPinned, now) {
-      const isTeacher = c.role === 'admin' || c.role === 'teacher';
+      const isTeacher = isTeacherRole(c.role);
       const isOnline = onlineUserIds.has(c.id);
       const typerInfo = activeTypers.get(c.id);
       const isTypingToMe = typerInfo && typerInfo.expiresAt > now && typerInfo.channel_type === 'dm' && typerInfo.receiver_id === me.id;
@@ -2122,6 +2804,7 @@
     }
 
     function renderThreadList() {
+      updateDocumentTitleUnread();
       const keyword = document.getElementById('contactSearchInput').value.trim().toLowerCase();
       const listEl = document.getElementById('threadList');
       const now = Date.now();
@@ -2129,14 +2812,16 @@
       const groupTypers = Array.from(activeTypers.values()).filter(t => t.expiresAt > now && t.channel_type === 'group');
       const groupMsgs = allMessages.filter(m => m.channel_type === 'group');
       const lastGroup = groupMsgs[groupMsgs.length - 1];
-      const groupPreview = groupTypers.length > 0
-        ? `✍️ ${groupTypers[0].sender_label} 正在輸入...`
-        : (lastGroup
-            ? `${lastGroup.sender_name}：${lastGroup.image_url ? '[圖片] ' : ''}${lastGroup.content}`
-            : '點擊進入班級大群...');
       const groupUnread = (!isDevAuditor && activeChannel.type !== 'group')
         ? groupMsgs.filter(m => m.sender_id !== me.id && m.created_at > groupLastReadAt).length
         : 0;
+      const groupHasMention = groupUnread > 0 && checkUnreadHasMention(groupMsgs, groupLastReadAt);
+
+      const groupPreview = groupTypers.length > 0
+        ? `✍️ ${groupTypers[0].sender_label} 正在輸入...`
+        : (lastGroup
+            ? `${groupHasMention ? '[有人 @ 你] ' : ''}${lastGroup.sender_name}：${lastGroup.image_url ? '[圖片] ' : ''}${lastGroup.content}`
+            : '點擊進入班級大群...');
 
       let html = `
         <div class="section-label">${escapeHtml(currentClassName)} 官方頻道（${onlineUserIds.size} 人在線）</div>
@@ -2146,7 +2831,7 @@
           </div>
           <div class="thread-info">
             <div class="thread-name">${escapeHtml(currentClassName)} 班級大群</div>
-            <div class="thread-preview ${groupTypers.length > 0 ? 'typing-active' : ''}">${escapeHtml(groupPreview)}</div>
+            <div class="thread-preview ${groupTypers.length > 0 ? 'typing-active' : ''} ${groupHasMention ? 'mention-tag-pill' : ''}">${escapeHtml(groupPreview)}</div>
           </div>
           ${groupUnread > 0 ? `<span class="unread-badge">${groupUnread}</span>` : ''}
         </div>
@@ -2156,14 +2841,16 @@
         const stuTypers = Array.from(activeTypers.values()).filter(t => t.expiresAt > now && t.channel_type === 'student_group');
         const stuMsgs = allMessages.filter(m => m.channel_type === 'student_group');
         const lastStu = stuMsgs[stuMsgs.length - 1];
-        const stuPreview = stuTypers.length > 0
-          ? `✍️ ${stuTypers[0].sender_label} 正在輸入...`
-          : (lastStu
-              ? `${lastStu.sender_name}：${lastStu.image_url ? '[圖片] ' : ''}${lastStu.content}`
-              : '全班同學專屬空間（無導師）...');
         const stuUnread = (!isDevAuditor && activeChannel.type !== 'student_group')
           ? stuMsgs.filter(m => m.sender_id !== me.id && m.created_at > studentGroupLastReadAt).length
           : 0;
+        const stuHasMention = stuUnread > 0 && checkUnreadHasMention(stuMsgs, studentGroupLastReadAt);
+
+        const stuPreview = stuTypers.length > 0
+          ? `✍️ ${stuTypers[0].sender_label} 正在輸入...`
+          : (lastStu
+              ? `${stuHasMention ? '[有人 @ 你] ' : ''}${lastStu.sender_name}：${lastStu.image_url ? '[圖片] ' : ''}${lastStu.content}`
+              : '全班同學專屬空間（無導師）...');
 
         html += `
           <div class="thread-item ${activeChannel.type === 'student_group' ? 'active' : ''}" onclick="selectStudentGroupChannel(true)">
@@ -2172,7 +2859,7 @@
             </div>
             <div class="thread-info">
               <div class="thread-name">學生專屬群 <span class="role-pill">無導師</span></div>
-              <div class="thread-preview ${stuTypers.length > 0 ? 'typing-active' : ''}">${escapeHtml(stuPreview)}</div>
+              <div class="thread-preview ${stuTypers.length > 0 ? 'typing-active' : ''} ${stuHasMention ? 'mention-tag-pill' : ''}">${escapeHtml(stuPreview)}</div>
             </div>
             ${stuUnread > 0 ? `<span class="unread-badge">${stuUnread}</span>` : ''}
           </div>
@@ -2194,16 +2881,18 @@
           const lastR = rMsgs[rMsgs.length - 1];
           const mems = roomMembersMap[r.id] || [];
           const myMem = mems.find(m => m.user_id === me.id);
-          const preview = rTypers.length > 0
-            ? `✍️ ${rTypers[0].sender_label} 正在輸入...`
-            : (lastR
-                ? `${lastR.sender_name}：${lastR.image_url ? '[圖片] ' : ''}${lastR.content}`
-                : `群組成員 ${mems.length} 人・點擊開始聊天`);
           const isActive = activeChannel.type === 'room' && activeChannel.roomId === r.id;
           const lastRead = (myMem && myMem.last_read_at) ? myMem.last_read_at : '1970-01-01T00:00:00Z';
           const roomUnread = (!isDevAuditor && !isActive)
             ? rMsgs.filter(m => m.sender_id !== me.id && m.created_at > lastRead).length
             : 0;
+          const roomHasMention = roomUnread > 0 && checkUnreadHasMention(rMsgs, lastRead);
+
+          const preview = rTypers.length > 0
+            ? `✍️ ${rTypers[0].sender_label} 正在輸入...`
+            : (lastR
+                ? `${roomHasMention ? '[有人 @ 你] ' : ''}${lastR.sender_name}：${lastR.image_url ? '[圖片] ' : ''}${lastR.content}`
+                : `群組成員 ${mems.length} 人・點擊開始聊天`);
 
           return `
             <div class="thread-item ${isActive ? 'active' : ''}" onclick="selectCustomRoom(${r.id}, true)">
@@ -2212,7 +2901,7 @@
               </div>
               <div class="thread-info">
                 <div class="thread-name">${escapeHtml(r.name)} <span style="font-size:0.72rem; color:var(--text-muted);">(${mems.length})</span></div>
-                <div class="thread-preview ${rTypers.length > 0 ? 'typing-active' : ''}">${escapeHtml(preview)}</div>
+                <div class="thread-preview ${rTypers.length > 0 ? 'typing-active' : ''} ${roomHasMention ? 'mention-tag-pill' : ''}">${escapeHtml(preview)}</div>
               </div>
               ${roomUnread > 0 ? `<span class="unread-badge">${roomUnread}</span>` : ''}
             </div>
@@ -2315,7 +3004,17 @@
       listEl.innerHTML = html;
     }
 
-    function renderActiveMessages() {
+    function formatMessageTextWithMentions(rawText) {
+      const escaped = escapeHtml(rawText);
+      return escaped.replace(/(@[^\s@<]+)/g, '<span class="mention-highlight">$1</span>');
+    }
+
+    function loadMoreMessages() {
+      visibleMsgLimit += 40;
+      renderActiveMessages(false);
+    }
+
+    function renderActiveMessages(scrollToBottom = true) {
       const area = document.getElementById('messagesArea');
       let msgs = [];
 
@@ -2344,18 +3043,32 @@
         return;
       }
 
-      const canModDelete = me.role === 'admin' || me.role === 'teacher' || isDevAuditor;
+      const hasMore = msgs.length > visibleMsgLimit;
+      const displayedMsgs = hasMore ? msgs.slice(msgs.length - visibleMsgLimit) : msgs;
+
+      const canModDelete = isTeacherRole(me.role) || isDevAuditor;
+      const canPin = canPinInActiveChannel();
       const roomMembers = activeChannel.type === 'room' ? (roomMembersMap[activeChannel.roomId] || []) : [];
 
-      area.innerHTML = msgs.map(m => {
+      let html = '';
+      if (hasMore) {
+        html += `
+          <div class="load-more-wrap">
+            <button type="button" class="load-more-btn" onclick="loadMoreMessages()">⬆️ 載入更早的歷史訊息（還有 ${msgs.length - visibleMsgLimit} 則）</button>
+          </div>
+        `;
+      }
+
+      html += displayedMsgs.map(m => {
         const isMine = !isDevAuditor && m.sender_id === me.id;
         const dt = new Date(m.created_at);
         const timeStr = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}`;
+        const canEditThis = isMine && (Date.now() - dt.getTime() <= 3 * 60 * 1000);
 
         const senderObj = userMap[m.sender_id];
         let senderLabel = senderObj
-          ? ((senderObj.role === 'admin' || senderObj.role === 'teacher') ? `👑 ${formatUserFullLabel(senderObj)}` : formatUserFullLabel(senderObj))
-          : ((m.sender_role === 'admin' || m.sender_role === 'teacher') ? `👑 ${m.sender_name}（導師）` : `${m.sender_seat ?? '-'}號 ${m.sender_name}`);
+          ? (isTeacherRole(senderObj.role) ? `👑 ${formatUserFullLabel(senderObj)}` : formatUserFullLabel(senderObj))
+          : (isTeacherRole(m.sender_role) ? `👑 ${m.sender_name}（導師）` : `${m.sender_seat ?? '-'}號 ${m.sender_name}`);
         if (activeChannel.type === 'room') {
           senderLabel = getRoomDisplayName(activeChannel.roomId, m.sender_id);
         }
@@ -2390,8 +3103,22 @@
         const imgHtml = m.image_url
           ? `<img src="${escapeHtml(m.image_url)}" class="chat-img" alt="聊天圖片" onclick="openLightbox('${escapeHtml(m.image_url)}')">`
           : '';
-        const textHtml = m.content ? `<div style="white-space:pre-wrap;">${escapeHtml(m.content)}</div>` : '';
+        const textHtml = m.content ? `<div style="white-space:pre-wrap; ${m.image_url ? 'margin-top:0.4rem;' : ''}">${formatMessageTextWithMentions(m.content)}</div>` : '';
         const isImgOnly = m.image_url && !m.content && !quoteHtml;
+
+        const reactionsObj = typeof m.reactions === 'object' && m.reactions !== null ? m.reactions : {};
+        const reactionPillsHtml = Object.entries(reactionsObj)
+          .filter(([, users]) => Array.isArray(users) && users.length > 0)
+          .map(([emoji, users]) => {
+            const reactedByMe = users.includes(me.id);
+            return `<button type="button" class="reaction-pill ${reactedByMe ? 'reacted-by-me' : ''}" onclick="toggleReaction(${m.id}, '${emoji}')">${emoji} ${users.length}</button>`;
+          }).join('');
+
+        const emojiPickerHtml = !isDevAuditor ? `
+          <div class="emoji-picker-bar">
+            ${EMOJI_OPTIONS.map(em => `<button type="button" class="emoji-opt-btn" onclick="toggleReaction(${m.id}, '${em}')">${em}</button>`).join('')}
+          </div>
+        ` : '';
 
         return `
           <div class="msg-row ${isMine ? 'mine' : 'others'}" id="msg-item-${m.id}">
@@ -2399,19 +3126,27 @@
             <div class="msg-bubble-wrap">
               <div class="msg-bubble ${isImgOnly ? 'img-only' : ''}">${quoteHtml}${imgHtml}${textHtml}</div>
               <div class="msg-actions">
+                ${emojiPickerHtml}
                 ${!isDevAuditor ? `<button class="action-icon-btn" title="回覆此訊息" onclick="setReplyTarget(${m.id})">↩️</button>` : ''}
+                ${canPin ? `<button class="action-icon-btn" title="設為頻道置頂公告" onclick="pinMessageToChannel(${m.id})">📌</button>` : ''}
+                ${canEditThis ? `<button class="action-icon-btn" title="編輯訊息（3分鐘內）" onclick="editMessage(${m.id})">✏️</button>` : ''}
                 ${(isMine || canModDelete) ? `<button class="action-icon-btn del-btn" title="收回/刪除訊息" onclick="deleteMessage(${m.id})">✕</button>` : ''}
               </div>
             </div>
+            ${reactionPillsHtml ? `<div class="reaction-pills-row">${reactionPillsHtml}</div>` : ''}
             <div class="msg-meta">
               ${readReceiptHtml}
+              ${m.edited_at ? '<span>(已編輯)</span>' : ''}
               <span>${timeStr}</span>
             </div>
           </div>
         `;
       }).join('');
 
-      area.scrollTop = area.scrollHeight;
+      area.innerHTML = html;
+      if (scrollToBottom) {
+        area.scrollTop = area.scrollHeight;
+      }
     }
 
     async function compressImageFile(file) {
@@ -2449,13 +3184,41 @@
       });
     }
 
-    async function uploadAndSendImageFile(file) {
+    function openImagePreviewModal(file) {
+      if (isDevAuditor || !file) return;
+      pendingImageFile = file;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('pendingPreviewImg').src = ev.target.result;
+        document.getElementById('pendingImageCaption').value = '';
+        document.getElementById('imagePreviewModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('pendingImageCaption').focus(), 50);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function closeImagePreviewModal() {
+      pendingImageFile = null;
+      document.getElementById('imagePreviewModal').style.display = 'none';
+    }
+
+    async function confirmSendPendingImage() {
+      if (!pendingImageFile) return;
+      const fileToUpload = pendingImageFile;
+      const caption = document.getElementById('pendingImageCaption').value.trim();
+      closeImagePreviewModal();
+      await uploadAndSendImageFile(fileToUpload, caption);
+    }
+
+    async function uploadAndSendImageFile(file, caption = '') {
       if (isDevAuditor || !file) return;
 
       const msgInput = document.getElementById('messageInput');
-      const oldPlaceholder = msgInput.placeholder;
-      msgInput.placeholder = '正在上傳圖片...';
-      msgInput.disabled = true;
+      const oldPlaceholder = msgInput ? msgInput.placeholder : '';
+      if (msgInput) {
+        msgInput.placeholder = '正在上傳圖片...';
+        msgInput.disabled = true;
+      }
 
       try {
         const compressedBlob = await compressImageFile(file);
@@ -2476,13 +3239,14 @@
 
         const payload = {
           channel_type: activeChannel.type,
+          class_name: currentClassName,
           sender_id: me.id,
           sender_name: me.name || '成員',
           sender_seat: me.seat_number ?? null,
           sender_role: me.role,
           receiver_id: activeChannel.type === 'dm' ? activeChannel.targetUser.id : null,
           room_id: activeChannel.type === 'room' ? activeChannel.roomId : null,
-          content: '',
+          content: caption,
           image_url: pubData.publicUrl,
           reply_to_id: replyingTo ? replyingTo.id : null,
           reply_to_sender: replyingTo ? replyingTo.sender : null,
@@ -2491,11 +3255,18 @@
 
         cancelReply();
 
-        const { data, error } = await supabaseClient
+        let { data, error } = await supabaseClient
           .from('chat_messages')
           .insert([payload])
           .select()
           .single();
+
+        if (error && error.message && error.message.includes('class_name')) {
+          delete payload.class_name;
+          const fallback = await supabaseClient.from('chat_messages').insert([payload]).select().single();
+          data = fallback.data;
+          error = fallback.error;
+        }
 
         if (error) {
           alert('傳送圖片訊息失敗：' + error.message);
@@ -2510,15 +3281,17 @@
       } catch (err) {
         alert('處理圖片時發生錯誤：' + err.message);
       } finally {
-        msgInput.disabled = false;
-        msgInput.placeholder = oldPlaceholder;
+        if (msgInput) {
+          msgInput.disabled = false;
+          msgInput.placeholder = oldPlaceholder;
+        }
       }
     }
 
     async function handleImageUpload(fileInput) {
       const file = fileInput.files && fileInput.files[0];
       fileInput.value = '';
-      if (file) await uploadAndSendImageFile(file);
+      if (file) openImagePreviewModal(file);
     }
 
     async function handlePasteImage(e) {
@@ -2529,7 +3302,7 @@
         if (item.type.indexOf('image') !== -1) {
           e.preventDefault();
           const file = item.getAsFile();
-          if (file) await uploadAndSendImageFile(file);
+          if (file) openImagePreviewModal(file);
           break;
         }
       }
@@ -2539,6 +3312,7 @@
       if (isDevAuditor || isSending) return;
 
       const input = document.getElementById('messageInput');
+      if (!input) return;
       const content = input.value.trim();
       if (!content) return;
 
@@ -2549,6 +3323,7 @@
       cancelReply();
 
       input.value = '';
+      localStorage.removeItem(`nexus_draft_${getCurrentChannelKey()}`);
       input.blur();
       requestAnimationFrame(() => {
         input.value = '';
@@ -2557,6 +3332,7 @@
 
       const payload = {
         channel_type: activeChannel.type,
+        class_name: currentClassName,
         sender_id: me.id,
         sender_name: me.name || '成員',
         sender_seat: me.seat_number ?? null,
@@ -2570,11 +3346,18 @@
       };
 
       try {
-        const { data, error } = await supabaseClient
+        let { data, error } = await supabaseClient
           .from('chat_messages')
           .insert([payload])
           .select()
           .single();
+
+        if (error && error.message && error.message.includes('class_name')) {
+          delete payload.class_name;
+          const fallback = await supabaseClient.from('chat_messages').insert([payload]).select().single();
+          data = fallback.data;
+          error = fallback.error;
+        }
 
         if (error) {
           alert('傳送失敗：' + error.message);
@@ -2605,6 +3388,7 @@
         allMessages = allMessages.filter(m => m.id !== msgId);
         renderThreadList();
         renderActiveMessages();
+        updatePinnedBannerUI();
       }
     }
 

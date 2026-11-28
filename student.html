@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE // 學生學習終端</title>
+  <title>NEXUS GRADE V5.2.1 // 學生學習終端</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -525,7 +525,7 @@
   <div class="container" id="studentBoardContainer">
     <div class="header" style="margin-bottom: 1.1rem;">
       <div>
-        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD</span>
+        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // V5.2.1</span>
         <h2 style="font-size: 1.22rem;">📋 功課＆考試布告欄</h2>
       </div>
       <span class="badge" id="myHelperBadge" style="display:none;">👩‍🏫 小老師權限已啟用</span>
@@ -568,7 +568,7 @@
   <div class="container">
     <div class="header">
       <div>
-        <span class="role-tag" id="studentRoleTag">STUDENT ANALYTICS PORTAL // V5.0</span>
+        <span class="role-tag" id="studentRoleTag">STUDENT ANALYTICS PORTAL // V5.2.1</span>
         <h2 id="studentHeaderTitle">載入學生資料中...</h2>
       </div>
       <div class="btn-group">
@@ -658,6 +658,27 @@
     let boardItemsCache = [];
     let publishedScoresCache = [];
     let studentTotalsCache = [];
+    let globalPresenceChannel = null;
+
+    function initGlobalOnlinePresence(profile) {
+      if (!profile || (profile.email || '').toLowerCase() === '202020@cysh.khc.edu.tw') return;
+      globalPresenceChannel = supabaseClient.channel('nexus-global-online', {
+        config: { presence: { key: profile.id } }
+      });
+      globalPresenceChannel.subscribe(async status => {
+        if (status === 'SUBSCRIBED') {
+          await globalPresenceChannel.track({
+            user_id: profile.id,
+            name: profile.name || '成員',
+            seat_number: profile.seat_number ?? null,
+            role: profile.role || 'student',
+            class_name: profile.class_name || '國二-2',
+            page: '成績與布告欄',
+            online_at: new Date().toISOString()
+          });
+        }
+      });
+    }
 
     function getLocalDateStr(offsetDays = 0) {
       const d = new Date();
@@ -809,9 +830,11 @@
       if (profile.role === 'admin' || profile.role === 'developer' || profile.role === 'teacher') { window.location.href = 'admin.html'; return; }
       if (profile.role === 'parent') { window.location.href = 'parent.html'; return; }
 
+      initGlobalOnlinePresence(profile);
+
       currentClassName = profile.class_name || '國二-2';
       currentUserLabel = `${profile.seat_number ?? '-'}號 ${profile.name}（小老師）`;
-      document.getElementById('studentRoleTag').innerText = `STUDENT ANALYTICS PORTAL // ${currentClassName}`;
+      document.getElementById('studentRoleTag').innerText = `STUDENT ANALYTICS PORTAL // ${currentClassName} // V5.2.1`;
       document.getElementById('studentHeaderTitle').innerText = `[${currentClassName}・${profile.seat_number ?? '-'}號] ${profile.name} 的成績檔案`;
       document.getElementById('helperDateInput').value = getLocalDateStr(1);
 
@@ -1202,6 +1225,9 @@
     }
 
     async function logout() {
+      if (globalPresenceChannel) {
+        try { await globalPresenceChannel.untrack(); } catch (e) {}
+      }
       await supabaseClient.auth.signOut();
       window.location.href = 'index.html';
     }

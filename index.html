@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS GRADE // 智慧成績與班級通訊系統</title>
+    <title>NEXUS GRADE V5.2.1 // 智慧成績與班級通訊系統</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -104,7 +104,8 @@
         .brand-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
         .brand-logo-row { display: flex; align-items: center; gap: 12px; }
         .brand-mark { width: 42px; height: 42px; background: var(--text-primary); color: var(--bg-main); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 19px; }
-        .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+        .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .version-pill { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: var(--accent-blue-soft); color: var(--accent-blue); border: 1px solid rgba(37, 99, 235, 0.25); letter-spacing: 0.4px; }
         .brand-text p { font-size: 12px; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
 
         .theme-btn { background: var(--bg-subtle); border: 1px solid var(--border-light); color: var(--text-primary); width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: 0.2s; flex-shrink: 0; }
@@ -152,7 +153,7 @@
     <!-- 開機進場畫面 -->
     <div id="bootSplash">
         <div class="splash-logo mono">N</div>
-        <div class="splash-title mono">NEXUS GRADE</div>
+        <div class="splash-title mono">NEXUS GRADE V5.2.1</div>
         <div class="splash-sub">智慧成績與班級通訊系統 // INITIALIZING</div>
         <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
     </div>
@@ -179,7 +180,7 @@
 
             <div class="nb-footer">
                 <span>重要考程通知與系統動態</span>
-                <span class="mono">STATUS: ONLINE</span>
+                <span class="mono">V5.2.1 // STATUS: ONLINE</span>
             </div>
         </div>
 
@@ -190,7 +191,7 @@
                     <div class="brand-logo-row">
                         <div class="brand-mark mono">N</div>
                         <div class="brand-text">
-                            <h1>NEXUS GRADE</h1>
+                            <h1>NEXUS GRADE <span class="version-pill mono">V5.2.1</span></h1>
                             <p>多班級智慧成績與班級通訊系統</p>
                         </div>
                     </div>

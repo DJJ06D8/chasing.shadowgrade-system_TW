@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NEXUS GRADE // 家長關懷終端</title>
+  <title>NEXUS GRADE V5.2.1 // 家長關懷終端</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -448,7 +448,7 @@
   <div class="container">
     <div class="header" style="margin-bottom: 1.1rem;">
       <div>
-        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // 班級布告欄</span>
+        <span class="role-tag">CLASS HOMEWORK & EXAM BOARD // V5.2.1</span>
         <h2 style="font-size: 1.22rem;">📋 功課＆考試布告欄</h2>
       </div>
     </div>
@@ -460,7 +460,7 @@
   <div class="container">
     <div class="header">
       <div>
-        <span class="role-tag" id="parentRoleTag">PARENT GUARDIAN PORTAL // 家長專用終端</span>
+        <span class="role-tag" id="parentRoleTag">PARENT GUARDIAN PORTAL // V5.2.1</span>
         <h2 id="parentHeaderTitle">載入家長與學生資料中...</h2>
       </div>
       <div class="btn-group">
@@ -543,6 +543,7 @@
     let classStudentIdSet = null;
     let publishedScoresCache = [];
     let studentTotalsCache = [];
+    let globalPresenceChannel = null;
 
     function getLocalDateStr(offsetDays = 0) {
       const d = new Date();
@@ -559,6 +560,26 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+    }
+
+    function initGlobalOnlinePresence(userId, displayName, seatNo, className) {
+      globalPresenceChannel = supabaseClient.channel('nexus-global-online', {
+        config: { presence: { key: userId } }
+      });
+
+      globalPresenceChannel.subscribe(async status => {
+        if (status === 'SUBSCRIBED') {
+          await globalPresenceChannel.track({
+            user_id: userId,
+            name: displayName,
+            seat_number: seatNo,
+            role: 'parent',
+            class_name: className,
+            page: '家長關懷終端',
+            online_at: new Date().toISOString()
+          });
+        }
+      });
     }
 
     const SCORE_BINS = [
@@ -638,8 +659,15 @@
       currentClassName = childProfile?.class_name || parentProfile.class_name || '國二-2';
       const childSeat = childProfile?.seat_number ?? parentProfile.seat_number ?? '-';
       const childName = childProfile?.name ?? parentProfile.name.replace(' 家長', '');
-      document.getElementById('parentRoleTag').innerText = `PARENT GUARDIAN PORTAL // ${currentClassName}`;
+      document.getElementById('parentRoleTag').innerText = `PARENT GUARDIAN PORTAL // ${currentClassName} // V5.2.1`;
       document.getElementById('parentHeaderTitle').innerText = `[${currentClassName}・${childSeat}號] ${childName} 的家長終端`;
+
+      initGlobalOnlinePresence(
+        session.user.id,
+        `${childName}的家長`,
+        typeof childSeat === 'number' ? childSeat : null,
+        currentClassName
+      );
 
       // 取得同班學生 ID 名單（若資料庫尚未新增 class_name 欄位則自動相容全部學生）
       const { data: allStudents } = await supabaseClient
@@ -895,6 +923,9 @@
     }
 
     async function logout() {
+      if (globalPresenceChannel) {
+        try { await globalPresenceChannel.untrack(); } catch (e) {}
+      }
       await supabaseClient.auth.signOut();
       window.location.href = 'index.html';
     }
