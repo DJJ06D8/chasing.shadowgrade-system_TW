@@ -19,6 +19,7 @@
             --accent-emerald: #059669; --accent-emerald-soft: #ECFDF5;
             --accent-amber: #D97706; --accent-amber-soft: #FFFBEB;
             --accent-rose: #DC2626; --accent-rose-soft: #FEF2F2;
+            --accent-purple: #7C3AED; --accent-purple-soft: #F5F3FF;
             --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
             --radius-xl: 20px; --radius-lg: 14px; --radius-md: 10px;
             --splash-bg: #F4F5F7;
@@ -32,6 +33,7 @@
             --accent-emerald: #34D399; --accent-emerald-soft: rgba(16, 185, 129, 0.15);
             --accent-amber: #FBBF24; --accent-amber-soft: rgba(245, 158, 11, 0.15);
             --accent-rose: #F87171; --accent-rose-soft: rgba(239, 68, 68, 0.15);
+            --accent-purple: #A78BFA; --accent-purple-soft: rgba(139, 92, 246, 0.15);
             --shadow-card: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
             --splash-bg: #0B0F19;
         }
@@ -64,40 +66,61 @@
 
         /* 主容器雙欄佈局 */
         .portal-wrapper {
-            position: relative; z-index: 10; width: 100%; max-width: 1020px;
-            display: grid; grid-template-columns: 1.15fr 0.95fr; gap: 28px; align-items: stretch;
+            position: relative; z-index: 10; width: 100%; max-width: 1060px;
+            display: grid; grid-template-columns: 1.2fr 0.92fr; gap: 28px; align-items: stretch;
             opacity: 0; transform: translateY(12px); transition: opacity 0.55s ease, transform 0.55s ease;
         }
         .portal-wrapper.card-ready { opacity: 1; transform: translateY(0); }
 
         .panel-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); transition: background-color 0.3s, border-color 0.3s; }
 
-        /* 左側：班級與系統公告欄 */
-        .notice-board-panel { padding: 34px 36px; display: flex; flex-direction: column; max-height: 640px; }
-        .nb-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; border-bottom: 1px solid var(--border-light); margin-bottom: 18px; }
-        .nb-title-wrap { display: flex; align-items: center; gap: 10px; }
-        .nb-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--accent-blue-soft); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; }
-        .nb-title { font-size: 18px; font-weight: 900; letter-spacing: -0.3px; }
-        .nb-badge { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 99px; background: var(--bg-subtle); border: 1px solid var(--border-light); color: var(--text-secondary); }
+        /* 左側：系統公告欄（強化版布告欄） */
+        .notice-board-panel { padding: 30px 32px; display: flex; flex-direction: column; max-height: 670px; }
+        .nb-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid var(--border-light); margin-bottom: 14px; gap: 10px; }
+        .nb-title-wrap { display: flex; align-items: center; gap: 11px; }
+        .nb-icon { width: 38px; height: 38px; border-radius: 11px; background: var(--accent-blue-soft); color: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; flex-shrink: 0; }
+        .nb-title { font-size: 18px; font-weight: 900; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
+        .nb-live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-emerald); display: inline-block; box-shadow: 0 0 0 3px var(--accent-emerald-soft); }
+        .nb-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: var(--bg-subtle); border: 1px solid var(--border-light); color: var(--text-secondary); white-space: nowrap; }
 
-        .nb-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; }
+        /* 公告工具列（分類篩選 + 搜尋） */
+        .nb-toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+        .nb-filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+        .nb-filter-btn {
+            background: var(--bg-subtle); border: 1px solid var(--border-light); color: var(--text-secondary);
+            font-size: 11.5px; font-weight: 800; padding: 5px 11px; border-radius: 99px; cursor: pointer; transition: 0.18s;
+        }
+        .nb-filter-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+        .nb-filter-btn.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #FFFFFF; }
+
+        .nb-search-wrap { position: relative; }
+        .nb-search-input {
+            width: 100%; background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 9px;
+            padding: 7px 12px 7px 32px; font-size: 12.5px; font-weight: 600; color: var(--text-primary);
+        }
+        .nb-search-input:focus { border-color: var(--accent-blue); background: var(--bg-input); box-shadow: none; }
+        .nb-search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-muted); pointer-events: none; }
+
+        .nb-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; }
         .nb-list::-webkit-scrollbar { width: 5px; }
         .nb-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 99px; }
 
-        .nb-item { background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 16px 18px; transition: 0.2s; }
-        .nb-item:hover { border-color: var(--accent-blue); }
-        .nb-item.pinned { border-left: 4px solid var(--accent-amber); background: var(--bg-card); }
+        .nb-item { background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 15px 17px; transition: 0.2s; }
+        .nb-item:hover { border-color: var(--accent-blue); transform: translateY(-1px); }
+        .nb-item.pinned { border-left: 4px solid var(--accent-amber); background: var(--bg-card); box-shadow: 0 4px 12px rgba(217, 119, 6, 0.06); }
         .nb-item-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .nb-tag { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; }
+        .nb-tag { font-size: 11px; font-weight: 800; padding: 2px 9px; border-radius: 6px; }
         .tag-sys { background: var(--accent-blue-soft); color: var(--accent-blue); }
         .tag-pin { background: var(--accent-amber-soft); color: var(--accent-amber); }
         .tag-upd { background: var(--accent-emerald-soft); color: var(--accent-emerald); }
         .tag-imp { background: var(--accent-rose-soft); color: var(--accent-rose); }
+        .tag-exam { background: var(--accent-purple-soft); color: var(--accent-purple); }
         .nb-date { font-size: 11px; color: var(--text-muted); font-weight: 600; }
         .nb-item-title { font-size: 15px; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; line-height: 1.4; }
-        .nb-item-body { font-size: 13px; color: var(--text-secondary); line-height: 1.6; white-space: pre-line; word-break: break-word; }
+        .nb-item-body { font-size: 13px; color: var(--text-secondary); line-height: 1.65; white-space: pre-line; word-break: break-word; }
+        .nb-item-body a { color: var(--accent-blue); font-weight: 700; text-decoration: underline; }
 
-        .nb-footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); }
+        .nb-footer { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: var(--text-muted); gap: 8px; flex-wrap: wrap; }
 
         /* 右側：登入區塊 */
         .login-panel { padding: 36px 38px; display: flex; flex-direction: column; justify-content: space-between; }
@@ -139,7 +162,7 @@
         @media (max-width: 860px) {
             body { align-items: flex-start; padding: 16px; }
             .portal-wrapper { display: flex; flex-direction: column-reverse; gap: 20px; max-width: 520px; }
-            .notice-board-panel { max-height: 380px; padding: 24px; }
+            .notice-board-panel { max-height: 460px; padding: 22px; }
             .login-panel { padding: 28px 24px; }
             .modal-grid-2 { grid-template-columns: 1fr; }
         }
@@ -161,25 +184,39 @@
     <!-- 主容器 -->
     <div class="portal-wrapper" id="portalWrapper">
         
-        <!-- 左側：班級與系統公告欄 -->
+        <!-- 左側：系統公告欄 -->
         <div class="panel-card notice-board-panel">
             <div class="nb-header">
                 <div class="nb-title-wrap">
                     <div class="nb-icon">📢</div>
                     <div>
-                        <div class="nb-title">班級與系統公告欄</div>
-                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">BULLETIN BOARD // 最新公告事項</div>
+                        <div class="nb-title">系統公告欄 <span class="nb-live-dot" title="系統公告同步中"></span></div>
+                        <div style="font-size:11px; color:var(--text-muted); font-weight:600;">SYSTEM BULLETIN BOARD // 全站系統與維護公告</div>
                     </div>
                 </div>
                 <span class="nb-badge mono" id="notice-count">載入中...</span>
             </div>
 
+            <!-- 系統公告分類篩選與搜尋工具列 -->
+            <div class="nb-toolbar">
+                <div class="nb-filter-row" id="nbFilterRow">
+                    <button type="button" class="nb-filter-btn active" onclick="setNoticeFilter('ALL', this)">全部</button>
+                    <button type="button" class="nb-filter-btn" onclick="setNoticeFilter('PINNED', this)">📌 重要置頂</button>
+                    <button type="button" class="nb-filter-btn" onclick="setNoticeFilter('UPDATE', this)">✨ 功能更新</button>
+                    <button type="button" class="nb-filter-btn" onclick="setNoticeFilter('MAINT', this)">🔧 系統維護</button>
+                </div>
+                <div class="nb-search-wrap">
+                    <span class="nb-search-icon">🔍</span>
+                    <input type="text" id="nbSearchInput" class="nb-search-input" placeholder="搜尋系統公告標題或內容..." oninput="renderFilteredAnnouncements()">
+                </div>
+            </div>
+
             <div class="nb-list" id="announcementList">
-                <div style="text-align:center; padding:40px 10px; color:var(--text-muted); font-size:13px;">正在載入最新公告...</div>
+                <div style="text-align:center; padding:40px 10px; color:var(--text-muted); font-size:13px;">正在載入最新系統公告...</div>
             </div>
 
             <div class="nb-footer">
-                <span>重要考程通知與系統動態</span>
+                <span>全站系統公告與版本維護通知</span>
                 <span class="mono">V5.2.1 // STATUS: ONLINE</span>
             </div>
         </div>
@@ -296,6 +333,81 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const SCHOOL_DOMAIN = 'cysh.khc.edu.tw';
 
+        let allAnnouncementsCache = [];
+        let currentNoticeFilter = 'ALL';
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function formatNoticeContent(text) {
+            const safe = escapeHtml(text);
+            return safe.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+        }
+
+        function setNoticeFilter(filterKey, btnEl) {
+            currentNoticeFilter = filterKey;
+            document.querySelectorAll('#nbFilterRow .nb-filter-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            renderFilteredAnnouncements();
+        }
+
+        function renderFilteredAnnouncements() {
+            const listEl = document.getElementById('announcementList');
+            const countEl = document.getElementById('notice-count');
+            const keyword = (document.getElementById('nbSearchInput')?.value || '').trim().toLowerCase();
+
+            const filtered = allAnnouncementsCache.filter(item => {
+                const tagStr = item.tag || '一般通知';
+                if (currentNoticeFilter === 'PINNED' && !item.is_pinned && tagStr !== '重要置頂') return false;
+                if (currentNoticeFilter === 'UPDATE' && !tagStr.includes('更新')) return false;
+                if (currentNoticeFilter === 'MAINT' && !tagStr.includes('維護')) return false;
+
+                if (keyword) {
+                    const hay = `${item.title || ''} ${item.content || ''} ${tagStr}`.toLowerCase();
+                    if (!hay.includes(keyword)) return false;
+                }
+                return true;
+            });
+
+            if (countEl) {
+                countEl.textContent = filtered.length === allAnnouncementsCache.length
+                    ? `${allAnnouncementsCache.length} 則公告`
+                    : `${filtered.length} / ${allAnnouncementsCache.length} 則`;
+            }
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 13px; padding: 36px 10px;">找不到符合條件的系統公告</div>';
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(item => {
+                const dt = new Date(item.created_at);
+                const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
+                const tagText = item.tag || '一般通知';
+                let tagClass = 'tag-sys';
+                if (item.is_pinned || tagText === '重要置頂') tagClass = 'tag-pin';
+                else if (tagText.includes('更新')) tagClass = 'tag-upd';
+                else if (tagText.includes('維護') || tagText.includes('重要')) tagClass = 'tag-imp';
+                else if (tagText.includes('考程')) tagClass = 'tag-exam';
+
+                return `
+                    <div class="nb-item ${item.is_pinned ? 'pinned' : ''}">
+                        <div class="nb-item-top">
+                            <span class="nb-tag ${tagClass}">${item.is_pinned ? '📌 ' : ''}${escapeHtml(tagText)}</span>
+                            <span class="nb-date mono">${dateStr}</span>
+                        </div>
+                        <div class="nb-item-title">${escapeHtml(item.title)}</div>
+                        <div class="nb-item-body">${formatNoticeContent(item.content)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         async function loadAnnouncements() {
             const listEl = document.getElementById('announcementList');
             const countEl = document.getElementById('notice-count');
@@ -307,34 +419,17 @@
                     .order('created_at', { ascending: false });
 
                 if (error || !data || data.length === 0) {
+                    allAnnouncementsCache = [];
                     if (countEl) countEl.textContent = '0 則公告';
-                    listEl.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 13px; padding: 36px 10px;">目前尚無公告事項</div>';
+                    listEl.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 13px; padding: 36px 10px;">目前尚無系統公告事項</div>';
                     return;
                 }
 
-                if (countEl) countEl.textContent = `${data.length} 則公告`;
-                listEl.innerHTML = data.map(item => {
-                    const dt = new Date(item.created_at);
-                    const dateStr = `${dt.getFullYear()}/${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`;
-                    let tagClass = 'tag-sys';
-                    if (item.is_pinned) tagClass = 'tag-pin';
-                    else if (item.tag === '功能更新') tagClass = 'tag-upd';
-                    else if (item.tag === '重要通知') tagClass = 'tag-imp';
-
-                    return `
-                        <div class="nb-item ${item.is_pinned ? 'pinned' : ''}">
-                            <div class="nb-item-top">
-                                <span class="nb-tag ${tagClass}">${item.is_pinned ? '📌 ' : ''}${item.tag || '一般通知'}</span>
-                                <span class="nb-date mono">${dateStr}</span>
-                            </div>
-                            <div class="nb-item-title">${item.title}</div>
-                            <div class="nb-item-body">${item.content}</div>
-                        </div>
-                    `;
-                }).join('');
+                allAnnouncementsCache = data;
+                renderFilteredAnnouncements();
             } catch (e) {
                 if (countEl) countEl.textContent = '0 則公告';
-                listEl.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 13px; padding: 36px 10px;">目前尚無公告事項</div>';
+                listEl.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 13px; padding: 36px 10px;">目前尚無系統公告事項</div>';
             }
         }
 
